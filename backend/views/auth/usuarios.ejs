@@ -1,0 +1,82 @@
+<div class="page-title">Gestión de usuarios</div>
+<div class="page-subtitle">Administre las cuentas de acceso al sistema</div>
+
+<div class="row g-4">
+  <!-- Lista -->
+  <div class="col-lg-8">
+    <div class="card-panel">
+      <div class="card-panel-header">
+        <h2 class="card-panel-title"><i class="bi bi-people-fill me-2"></i>Usuarios registrados</h2>
+        <span class="badge bg-primary"><%= usuarios.length %></span>
+      </div>
+      <table class="table-app">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Usuario</th>
+            <th>Rol</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% usuarios.forEach(u => { %>
+          <tr>
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <div class="avatar" style="width:28px;height:28px;font-size:11px;border-radius:8px;">
+                  <%= u.nombre.charAt(0).toUpperCase() %>
+                </div>
+                <span class="fw-semibold"><%= u.nombre %></span>
+              </div>
+            </td>
+            <td class="text-muted">@<%= u.username %></td>
+            <td><span class="badge-app badge-<%= u.rol %>"><%= u.rol %></span></td>
+            <td>
+              <% if (u.activo) { %>
+                <span style="color:#15803d;font-size:12px;"><i class="bi bi-circle-fill" style="font-size:8px;"></i> Activo</span>
+              <% } else { %>
+                <span style="color:#b91c1c;font-size:12px;"><i class="bi bi-circle" style="font-size:8px;"></i> Inactivo</span>
+              <% } %>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Crear usuario -->
+  <div class="col-lg-4">
+    <div class="card-panel">
+      <div class="card-panel-header">
+        <h2 class="card-panel-title"><i class="bi bi-person-plus-fill me-2 text-primary"></i>Nuevo usuario</h2>
+      </div>
+      <form method="POST" action="/auth/usuarios" class="p-4">
+        <div class="mb-3">
+          <label class="form-label fw-semibold" style="font-size:13px;">Nombre completo</label>
+          <input type="text" name="nombre" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold" style="font-size:13px;">Nombre de usuario</label>
+          <input type="text" name="username" class="form-control" required autocomplete="off">
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold" style="font-size:13px;">Contraseña inicial</label>
+          <input type="password" name="password" class="form-control" required minlength="8">
+        </div>
+        <div class="mb-4">
+          <label class="form-label fw-semibold" style="font-size:13px;">Rol</label>
+          <select name="rol" class="form-select" required>
+            <option value="docente">Docente</option>
+            <option value="administrativo">Administrativo</option>
+            <option value="validador_ocr">Validador OCR</option>
+            <option value="director">Director</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-primary-app w-100 justify-content-center">
+          <i class="bi bi-plus-circle-fill"></i> Crear usuario
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

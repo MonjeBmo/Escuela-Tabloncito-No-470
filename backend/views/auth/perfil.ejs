@@ -1,0 +1,51 @@
+<div class="page-title">Mi perfil</div>
+<div class="page-subtitle">Información de su cuenta y cambio de contraseña</div>
+
+<div class="row g-4">
+  <div class="col-md-5">
+    <div class="card-panel">
+      <div class="card-panel-header">
+        <h2 class="card-panel-title"><i class="bi bi-person-circle me-2 text-primary"></i>Datos de cuenta</h2>
+      </div>
+      <div class="p-4">
+        <div class="d-flex align-items-center gap-3 mb-4">
+          <div class="avatar" style="width:56px;height:56px;font-size:22px;border-radius:14px;">
+            <%= usuario.nombre.charAt(0).toUpperCase() %>
+          </div>
+          <div>
+            <div class="fw-bold" style="font-size:16px;"><%= usuario.nombre %></div>
+            <div class="text-muted" style="font-size:13px;">@<%= usuario.username %></div>
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Rol</div>
+          <div class="detail-value">
+            <span class="badge-app badge-<%= usuario.rol %>"><%= usuario.rol %></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-7">
+    <div class="card-panel">
+      <div class="card-panel-header">
+        <h2 class="card-panel-title"><i class="bi bi-key-fill me-2 text-warning"></i>Cambiar contraseña</h2>
+      </div>
+      <form method="POST" action="/auth/perfil" class="p-4">
+        <div class="mb-3">
+          <label class="form-label fw-semibold" style="font-size:13px;">Contraseña actual</label>
+          <input type="password" name="old_password" class="form-control" required>
+        </div>
+        <div class="mb-4">
+          <label class="form-label fw-semibold" style="font-size:13px;">Nueva contraseña</label>
+          <input type="password" name="new_password" class="form-control" required minlength="8">
+          <div class="form-text">Mínimo 8 caracteres.</div>
+        </div>
+        <button type="submit" class="btn-primary-app">
+          <i class="bi bi-floppy-fill"></i> Guardar cambio
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
