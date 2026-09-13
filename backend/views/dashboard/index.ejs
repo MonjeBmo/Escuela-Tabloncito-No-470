@@ -1,0 +1,121 @@
+<div class="page-title">Panel principal</div>
+<div class="page-subtitle">Bienvenido, <%= usuario.nombre.split(' ')[0] %>. Aquí está el resumen del sistema.</div>
+
+<!-- Tarjetas de estadísticas -->
+<div class="row g-3 mb-4">
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card">
+      <div class="stat-icon blue"><i class="bi bi-folder2-open"></i></div>
+      <div>
+        <div class="stat-value"><%= totalCuadros %></div>
+        <div class="stat-label">Cuadros PRIM registrados</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card">
+      <div class="stat-icon green"><i class="bi bi-people-fill"></i></div>
+      <div>
+        <div class="stat-value"><%= totalAlumnos %></div>
+        <div class="stat-label">Alumnos registrados</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card">
+      <div class="stat-icon amber"><i class="bi bi-hourglass-split"></i></div>
+      <div>
+        <div class="stat-value"><%= ocrEstados.revision || 0 %></div>
+        <div class="stat-label">Pendientes de revisión OCR</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card">
+      <div class="stat-icon purple"><i class="bi bi-cpu-fill"></i></div>
+      <div>
+        <div class="stat-value"><%= (ocrEstados.validado || 0) + (ocrEstados.rechazado || 0) + (ocrEstados.revision || 0) + (ocrEstados.pendiente || 0) %></div>
+        <div class="stat-label">Total trabajos OCR</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <!-- Acceso rápido -->
+  <div class="col-lg-4">
+    <div class="card-panel h-100">
+      <div class="card-panel-header">
+        <h2 class="card-panel-title"><i class="bi bi-lightning-fill me-2 text-warning"></i>Acceso rápido</h2>
+      </div>
+      <div class="p-4 d-flex flex-column gap-2">
+        <a href="/cuadros/crear" class="btn-primary-app justify-content-start">
+          <i class="bi bi-file-earmark-plus"></i> Registrar cuadro
+        </a>
+        <a href="/alumnos/crear" class="btn-secondary-app justify-content-start">
+          <i class="bi bi-person-plus-fill"></i> Nuevo alumno
+        </a>
+        <a href="/ocr/subir" class="btn-secondary-app justify-content-start">
+          <i class="bi bi-cloud-upload-fill"></i> Subir documento para OCR
+        </a>
+        <a href="/cuadros/busqueda" class="btn-secondary-app justify-content-start">
+          <i class="bi bi-search"></i> Buscar cuadros
+        </a>
+        <% if (ocrEstados.revision > 0) { %>
+        <a href="/ocr" class="d-flex align-items-center gap-2 justify-content-start btn-secondary-app" style="background:#fff7ed;border-color:#fed7aa;color:#c2410c;">
+          <i class="bi bi-exclamation-triangle-fill"></i>
+          Revisar <%= ocrEstados.revision %> documento(s) OCR
+        </a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Últimos cuadros -->
+  <div class="col-lg-8">
+    <div class="card-panel">
+      <div class="card-panel-header">
+        <h2 class="card-panel-title"><i class="bi bi-clock-history me-2"></i>Cuadros recientes</h2>
+        <a href="/cuadros" class="btn-secondary-app" style="padding:5px 12px;font-size:12.5px;">
+          Ver todos <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+      <% if (ultimosCuadros.length === 0) { %>
+        <div class="empty-state">
+          <i class="bi bi-folder2-open"></i>
+          <p>No hay cuadros registrados aún.</p>
+        </div>
+      <% } else { %>
+      <table class="table-app">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Grado</th>
+            <th>Año</th>
+            <th>Origen</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% ultimosCuadros.forEach(c => { %>
+          <tr>
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <div style="width:32px;height:32px;border-radius:8px;background:#dbeafe;display:flex;align-items:center;justify-content:center;">
+                  <i class="bi bi-file-earmark-text" style="color:#1d4ed8;font-size:15px;"></i>
+                </div>
+                <span class="fw-semibold"><%= c.codigo %></span>
+              </div>
+            </td>
+            <td class="text-muted"><%= c.grado_nombre || '—' %></td>
+            <td><%= c.anio %></td>
+            <td><span class="badge-app badge-<%= c.origen %>"><%= c.origen %></span></td>
+            <td><a href="/cuadros/<%= c.id %>" class="btn-secondary-app" style="padding:4px 10px;font-size:12px;">Ver</a></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      <% } %>
+    </div>
+  </div>
+</div>
