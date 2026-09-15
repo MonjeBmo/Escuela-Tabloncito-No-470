@@ -1,0 +1,121 @@
+<div class="page-title">Buscar cuadros</div>
+<div class="page-subtitle">Motor de búsqueda avanzada en el repositorio PRIM</div>
+
+<!-- Formulario de búsqueda -->
+<div class="search-form">
+  <form method="GET" action="/cuadros/busqueda">
+    <div class="row g-3 align-items-end">
+      <div class="col-md-4">
+        <label class="form-label fw-semibold" style="font-size:12.5px;">Búsqueda de texto</label>
+        <div class="input-group">
+          <span class="input-group-text bg-white"><i class="bi bi-search text-muted"></i></span>
+          <input type="text" name="q" class="form-control border-start-0"
+            placeholder="Nombre, código, docente..."
+            value="<%= filtros.q || '' %>">
+        </div>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label fw-semibold" style="font-size:12.5px;">Año</label>
+        <select name="anio" class="form-select" data-select2 data-placeholder="Todos">
+          <option value="">Todos</option>
+          <% anios.forEach(a => { %>
+            <option value="<%= a %>" <%= filtros.anio == a ? 'selected' : '' %>><%= a %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label fw-semibold" style="font-size:12.5px;">Grado</label>
+        <select name="grado_id" class="form-select" data-select2 data-placeholder="Todos">
+          <option value="">Todos</option>
+          <% grados.forEach(g => { %>
+            <option value="<%= g.id %>" <%= filtros.grado_id == g.id ? 'selected' : '' %>><%= g.nombre %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label fw-semibold" style="font-size:12.5px;">Origen</label>
+        <select name="origen" class="form-select">
+          <option value="">Todos</option>
+          <option value="manual" <%= filtros.origen === 'manual' ? 'selected' : '' %>>Manual</option>
+          <option value="ocr" <%= filtros.origen === 'ocr' ? 'selected' : '' %>>OCR</option>
+        </select>
+      </div>
+      <div class="col-md-1">
+        <button type="submit" class="btn-primary-app w-100 justify-content-center" style="padding:8.5px;">
+          <i class="bi bi-search"></i>
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- Resultados -->
+<div class="card-panel">
+  <div class="card-panel-header">
+    <h2 class="card-panel-title">
+      <% if (hayFiltros) { %>
+        <i class="bi bi-list-check me-2"></i><%= cuadros.length %> resultado(s)
+      <% } else { %>
+        <i class="bi bi-arrow-up-circle me-2 text-muted"></i>Ingrese criterios de búsqueda
+      <% } %>
+    </h2>
+  </div>
+
+  <% if (!hayFiltros) { %>
+    <div class="empty-state">
+      <i class="bi bi-search"></i>
+      <p>Use los filtros de arriba para buscar cuadros.</p>
+    </div>
+  <% } else if (cuadros.length === 0) { %>
+    <div class="empty-state">
+      <i class="bi bi-inbox"></i>
+      <p>No se encontraron cuadros con los criterios indicados.</p>
+    </div>
+  <% } else { %>
+  <table class="table-app">
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Año</th>
+        <th>Grado</th>
+        <th>Docente</th>
+        <th>Alumnos</th>
+        <th>Origen</th>
+        <th>Documento</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% cuadros.forEach(c => { %>
+      <tr>
+        <td>
+          <div class="d-flex align-items-center gap-2">
+            <div style="width:30px;height:30px;border-radius:7px;background:#dbeafe;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <i class="bi bi-file-earmark-text" style="color:#1d4ed8;font-size:14px;"></i>
+            </div>
+            <span class="fw-semibold"><%= c.codigo %></span>
+          </div>
+        </td>
+        <td><%= c.anio %></td>
+        <td class="text-muted"><%= c.grado_nombre || '—' %></td>
+        <td class="text-muted"><%= c.docente || '—' %></td>
+        <td><%= c.total_alumnos ?? '—' %></td>
+        <td><span class="badge-app badge-<%= c.origen %>"><%= c.origen %></span></td>
+        <td>
+          <% if (c.documento_key) { %>
+            <span style="color:#15803d;font-size:12.5px;"><i class="bi bi-file-earmark-check-fill"></i> Adjunto</span>
+          <% } else { %>
+            <span class="text-muted" style="font-size:12.5px;">Sin archivo</span>
+          <% } %>
+        </td>
+        <td>
+          <a href="/cuadros/<%= c.id %>" class="btn-secondary-app" style="padding:4px 10px;font-size:12px;">
+            <i class="bi bi-eye"></i> Ver
+          </a>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+  <% } %>
+</div>

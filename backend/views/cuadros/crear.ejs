@@ -1,0 +1,76 @@
+<div class="d-flex align-items-center gap-3 mb-1">
+  <a href="/cuadros" class="btn-secondary-app" style="padding:6px 12px;font-size:12.5px;">
+    <i class="bi bi-arrow-left"></i>
+  </a>
+  <div>
+    <div class="page-title">Registrar cuadro PRIM</div>
+    <div class="page-subtitle">Ingrese los datos del cuadro y adjunte el documento escaneado (Capa 1)</div>
+  </div>
+</div>
+
+<form method="POST" action="/cuadros/crear" enctype="multipart/form-data">
+  <div class="row g-4">
+    <!-- Datos del cuadro -->
+    <div class="col-lg-7">
+      <div class="form-panel">
+        <div class="form-section-title">Datos del cuadro</div>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" style="font-size:13px;">Código de cuadro <span class="text-danger">*</span></label>
+            <input type="text" name="codigo" class="form-control" placeholder="ej. PRIM-2024-001" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" style="font-size:13px;">Año <span class="text-danger">*</span></label>
+            <input type="number" name="anio" class="form-control"
+              min="1990" max="<%= new Date().getFullYear() %>"
+              value="<%= new Date().getFullYear() %>" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" style="font-size:13px;">Grado / sección</label>
+            <select name="grado_id" class="form-select" data-select2 data-placeholder="Seleccione grado">
+              <option value="">Sin especificar</option>
+              <% grados.forEach(g => { %>
+                <option value="<%= g.id %>"><%= g.nombre %></option>
+              <% }) %>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" style="font-size:13px;">Total de alumnos</label>
+            <input type="number" name="total_alumnos" class="form-control" min="0" max="100" placeholder="ej. 30">
+          </div>
+          <div class="col-12">
+            <label class="form-label fw-semibold" style="font-size:13px;">Docente</label>
+            <input type="text" name="docente" class="form-control" placeholder="Nombre completo del docente">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Documento fuente -->
+    <div class="col-lg-5">
+      <div class="form-panel">
+        <div class="form-section-title">Documento fuente — Capa 1</div>
+        <p class="text-muted" style="font-size:12.5px;">
+          Adjunte el escaneo original del cuadro (PDF o imagen). Este archivo es el documento con valor legal y no puede ser reemplazado.
+        </p>
+        <div class="mb-3">
+          <label class="form-label fw-semibold" style="font-size:13px;">Archivo (PDF, JPG, PNG)</label>
+          <input type="file" name="documento" id="doc-file" class="form-control"
+            accept=".pdf,.jpg,.jpeg,.png,.tiff">
+          <div id="file-preview" class="form-text mt-1" style="color:#1d6fc4;"></div>
+        </div>
+        <div class="alert alert-light border" style="font-size:12px;">
+          <i class="bi bi-info-circle text-primary"></i>
+          El archivo se almacenará de forma segura en MinIO y solo se entregará el original al solicitante.
+        </div>
+      </div>
+
+      <div class="d-flex gap-2 mt-3">
+        <button type="submit" class="btn-primary-app flex-grow-1 justify-content-center">
+          <i class="bi bi-floppy-fill"></i> Registrar cuadro
+        </button>
+        <a href="/cuadros" class="btn-secondary-app">Cancelar</a>
+      </div>
+    </div>
+  </div>
+</form>

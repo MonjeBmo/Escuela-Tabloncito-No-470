@@ -1,0 +1,101 @@
+<div class="d-flex align-items-center justify-content-between mb-1">
+  <div>
+    <div class="page-title">Cuadros PRIM</div>
+    <div class="page-subtitle"><%= total %> cuadro(s) en total</div>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="/cuadros/busqueda" class="btn-secondary-app">
+      <i class="bi bi-search"></i> Buscar
+    </a>
+    <a href="/cuadros/crear" class="btn-primary-app">
+      <i class="bi bi-plus-lg"></i> Registrar cuadro
+    </a>
+  </div>
+</div>
+
+<div class="card-panel mt-3">
+  <% if (cuadros.length === 0) { %>
+    <div class="empty-state">
+      <i class="bi bi-folder2-open"></i>
+      <p>No hay cuadros registrados aún.</p>
+      <a href="/cuadros/crear" class="btn-primary-app mt-3 d-inline-flex">
+        <i class="bi bi-plus-lg"></i> Registrar el primero
+      </a>
+    </div>
+  <% } else { %>
+  <table class="table-app">
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Año</th>
+        <th>Grado</th>
+        <th>Docente</th>
+        <th>Alumnos</th>
+        <th>Origen</th>
+        <th>Validado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% cuadros.forEach(c => { %>
+      <tr>
+        <td>
+          <div class="d-flex align-items-center gap-2">
+            <div style="width:30px;height:30px;border-radius:7px;background:<%= c.origen==='ocr'?'#ede9fe':'#dbeafe' %>;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <i class="bi bi-file-earmark-text" style="color:<%= c.origen==='ocr'?'#6d28d9':'#1d4ed8' %>;font-size:14px;"></i>
+            </div>
+            <a href="/cuadros/<%= c.id %>" class="fw-semibold text-decoration-none" style="color:#1e293b;"><%= c.codigo %></a>
+          </div>
+        </td>
+        <td><%= c.anio %></td>
+        <td class="text-muted"><%= c.grado_nombre || '—' %></td>
+        <td class="text-muted" style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><%= c.docente || '—' %></td>
+        <td><%= c.total_alumnos ?? '—' %></td>
+        <td><span class="badge-app badge-<%= c.origen %>"><%= c.origen %></span></td>
+        <td>
+          <% if (c.validado_por) { %>
+            <span style="color:#15803d;font-size:12.5px;"><i class="bi bi-check-circle-fill"></i> Sí</span>
+          <% } else { %>
+            <span style="color:#94a3b8;font-size:12.5px;">Pendiente</span>
+          <% } %>
+        </td>
+        <td>
+          <div class="d-flex gap-1">
+            <a href="/cuadros/<%= c.id %>" class="btn-secondary-app" style="padding:4px 10px;font-size:12px;" data-bs-toggle="tooltip" title="Ver detalle">
+              <i class="bi bi-eye"></i>
+            </a>
+            <% if (usuario.rol === 'director') { %>
+            <form method="POST" action="/cuadros/<%= c.id %>/eliminar" style="display:inline;">
+              <button type="button" class="btn-secondary-app" style="padding:4px 10px;font-size:12px;color:#b91c1c;border-color:#fecaca;"
+                data-confirm="¿Eliminar el cuadro <%= c.codigo %>? Esta acción no se puede deshacer.">
+                <i class="bi bi-trash"></i>
+              </button>
+            </form>
+            <% } %>
+          </div>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+
+  <!-- Paginación -->
+  <% if (totalPaginas > 1) { %>
+  <div class="pagination-app">
+    <% if (pagina > 1) { %>
+      <a href="?pagina=<%= pagina-1 %>"><i class="bi bi-chevron-left"></i></a>
+    <% } %>
+    <% for(let p=1; p<=totalPaginas; p++) { %>
+      <% if (p===pagina) { %>
+        <span class="active"><%= p %></span>
+      <% } else { %>
+        <a href="?pagina=<%= p %>"><%= p %></a>
+      <% } %>
+    <% } %>
+    <% if (pagina < totalPaginas) { %>
+      <a href="?pagina=<%= pagina+1 %>"><i class="bi bi-chevron-right"></i></a>
+    <% } %>
+  </div>
+  <% } %>
+  <% } %>
+</div>
