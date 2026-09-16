@@ -1,0 +1,119 @@
+<div class="d-flex align-items-center justify-content-between mb-1">
+  <div>
+    <div class="page-title">Registro de alumnos</div>
+    <div class="page-subtitle"><%= total %> alumno(s) en total</div>
+  </div>
+  <a href="/alumnos/crear" class="btn-primary-app">
+    <i class="bi bi-person-plus-fill"></i> Nuevo alumno
+  </a>
+</div>
+
+<!-- Filtros -->
+<div class="search-form mt-3">
+  <form method="GET" action="/alumnos">
+    <div class="row g-3 align-items-end">
+      <div class="col-md-5">
+        <label class="form-label fw-semibold" style="font-size:12.5px;">Buscar</label>
+        <div class="input-group">
+          <span class="input-group-text bg-white"><i class="bi bi-search text-muted"></i></span>
+          <input type="text" name="q" class="form-control border-start-0"
+            placeholder="Nombre, apellido, CUI..."
+            value="<%= filtros.q || '' %>">
+        </div>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label fw-semibold" style="font-size:12.5px;">Grado</label>
+        <select name="grado_id" class="form-select" data-select2 data-placeholder="Todos">
+          <option value="">Todos</option>
+          <% grados.forEach(g => { %>
+            <option value="<%= g.id %>" <%= filtros.grado_id == g.id ? 'selected' : '' %>><%= g.nombre %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label fw-semibold" style="font-size:12.5px;">Año de ingreso</label>
+        <input type="number" name="anio_ingreso" class="form-control"
+          placeholder="ej. 2024" value="<%= filtros.anio_ingreso || '' %>">
+      </div>
+      <div class="col-md-2">
+        <button type="submit" class="btn-primary-app w-100 justify-content-center">
+          <i class="bi bi-search"></i> Filtrar
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="card-panel">
+  <% if (alumnos.length === 0) { %>
+    <div class="empty-state">
+      <i class="bi bi-people"></i>
+      <p>No se encontraron alumnos.</p>
+    </div>
+  <% } else { %>
+  <table class="table-app">
+    <thead>
+      <tr>
+        <th>Nombre completo</th>
+        <th>CUI</th>
+        <th>Grado</th>
+        <th>Año ingreso</th>
+        <th>Género</th>
+        <th>Encargado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% alumnos.forEach(a => { %>
+      <tr>
+        <td>
+          <div class="d-flex align-items-center gap-2">
+            <div style="width:30px;height:30px;border-radius:50%;background:<%= a.genero==='M'?'#dbeafe':'#fce7f3' %>;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;font-weight:700;color:<%= a.genero==='M'?'#1d4ed8':'#9d174d' %>;">
+              <%= (a.primer_nombre.charAt(0) + a.primer_apellido.charAt(0)).toUpperCase() %>
+            </div>
+            <div>
+              <div class="fw-semibold"><%= a.primer_apellido %> <%= a.segundo_apellido || '' %>, <%= a.primer_nombre %> <%= a.segundo_nombre || '' %></div>
+            </div>
+          </div>
+        </td>
+        <td class="text-muted" style="font-size:12.5px;"><%= a.cui || '—' %></td>
+        <td class="text-muted"><%= a.grado_nombre || '—' %></td>
+        <td><%= a.anio_ingreso %></td>
+        <td>
+          <% if (a.genero === 'M') { %>
+            <span style="color:#1d4ed8;font-size:12.5px;"><i class="bi bi-gender-male"></i> M</span>
+          <% } else if (a.genero === 'F') { %>
+            <span style="color:#9d174d;font-size:12.5px;"><i class="bi bi-gender-female"></i> F</span>
+          <% } else { %>—<% } %>
+        </td>
+        <td class="text-muted" style="font-size:12.5px;"><%= a.nombre_encargado || '—' %></td>
+        <td>
+          <div class="d-flex gap-1">
+            <a href="/alumnos/<%= a.id %>" class="btn-secondary-app" style="padding:4px 10px;font-size:12px;">
+              <i class="bi bi-eye"></i>
+            </a>
+            <% if (usuario.rol === 'director') { %>
+            <form method="POST" action="/alumnos/<%= a.id %>/eliminar">
+              <button type="button" class="btn-secondary-app" style="padding:4px 10px;font-size:12px;color:#b91c1c;border-color:#fecaca;"
+                data-confirm="¿Eliminar el registro de <%= a.primer_nombre %> <%= a.primer_apellido %>?">
+                <i class="bi bi-trash"></i>
+              </button>
+            </form>
+            <% } %>
+          </div>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+  <% if (totalPaginas > 1) { %>
+  <div class="pagination-app">
+    <% if (pagina > 1) { %><a href="?pagina=<%= pagina-1 %>"><i class="bi bi-chevron-left"></i></a><% } %>
+    <% for(let p=1; p<=totalPaginas; p++) { %>
+      <% if(p===pagina){%><span class="active"><%= p %></span><%}else{%><a href="?pagina=<%= p %>"><%= p %></a><%}%>
+    <% } %>
+    <% if (pagina < totalPaginas) { %><a href="?pagina=<%= pagina+1 %>"><i class="bi bi-chevron-right"></i></a><% } %>
+  </div>
+  <% } %>
+  <% } %>
+</div>

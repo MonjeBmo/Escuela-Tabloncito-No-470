@@ -1,0 +1,73 @@
+<div class="d-flex align-items-center gap-3 mb-4">
+  <a href="/alumnos" class="btn-secondary-app" style="padding:6px 12px;font-size:12.5px;">
+    <i class="bi bi-arrow-left"></i>
+  </a>
+  <div class="flex-grow-1">
+    <div class="page-title">
+      <%= alumno.primer_apellido %> <%= alumno.segundo_apellido || '' %>,
+      <%= alumno.primer_nombre %> <%= alumno.segundo_nombre || '' %>
+    </div>
+    <div class="page-subtitle">Perfil del alumno</div>
+  </div>
+  <% if (usuario.rol === 'director') { %>
+  <form method="POST" action="/alumnos/<%= alumno.id %>/eliminar">
+    <button type="button" class="btn-secondary-app" style="color:#b91c1c;border-color:#fecaca;"
+      data-confirm="¿Eliminar el registro de <%= alumno.primer_nombre %> <%= alumno.primer_apellido %>?">
+      <i class="bi bi-trash"></i> Eliminar
+    </button>
+  </form>
+  <% } %>
+</div>
+
+<div class="row g-4">
+  <div class="col-md-7">
+    <div class="card-panel">
+      <div class="card-panel-header">
+        <h2 class="card-panel-title"><i class="bi bi-person-circle me-2"></i>Datos personales</h2>
+      </div>
+      <div class="p-4">
+        <div class="d-flex align-items-center gap-3 mb-4">
+          <div style="width:60px;height:60px;border-radius:50%;background:<%= alumno.genero==='M'?'#dbeafe':'#fce7f3' %>;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:<%= alumno.genero==='M'?'#1d4ed8':'#9d174d' %>;">
+            <%= (alumno.primer_nombre.charAt(0) + alumno.primer_apellido.charAt(0)).toUpperCase() %>
+          </div>
+          <div>
+            <div class="fw-bold" style="font-size:17px;">
+              <%= alumno.primer_apellido %> <%= alumno.segundo_apellido || '' %>,
+              <%= alumno.primer_nombre %> <%= alumno.segundo_nombre || '' %>
+            </div>
+            <div class="text-muted" style="font-size:13px;">
+              <%= alumno.genero === 'M' ? 'Masculino' : alumno.genero === 'F' ? 'Femenino' : 'Género no especificado' %>
+            </div>
+          </div>
+        </div>
+        <div class="detail-row"><div class="detail-label">CUI</div><div class="detail-value"><%= alumno.cui || '—' %></div></div>
+        <div class="detail-row"><div class="detail-label">Fecha de nacimiento</div><div class="detail-value"><%= alumno.fecha_nacimiento ? new Date(alumno.fecha_nacimiento).toLocaleDateString('es-GT', {day:'2-digit',month:'long',year:'numeric'}) : '—' %></div></div>
+        <div class="detail-row"><div class="detail-label">Municipio</div><div class="detail-value"><%= alumno.municipio || '—' %></div></div>
+        <div class="detail-row"><div class="detail-label">Departamento</div><div class="detail-value"><%= alumno.departamento || '—' %></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-5">
+    <div class="card-panel mb-4">
+      <div class="card-panel-header">
+        <h2 class="card-panel-title"><i class="bi bi-mortarboard me-2"></i>Datos académicos</h2>
+      </div>
+      <div class="p-4">
+        <div class="detail-row"><div class="detail-label">Grado</div><div class="detail-value"><%= alumno.grado_nombre || '—' %></div></div>
+        <div class="detail-row"><div class="detail-label">Año de ingreso</div><div class="detail-value"><%= alumno.anio_ingreso %></div></div>
+        <div class="detail-row"><div class="detail-label">Registrado</div><div class="detail-value"><%= new Date(alumno.created_at).toLocaleDateString('es-GT') %></div></div>
+      </div>
+    </div>
+
+    <div class="card-panel">
+      <div class="card-panel-header">
+        <h2 class="card-panel-title"><i class="bi bi-telephone me-2"></i>Encargado</h2>
+      </div>
+      <div class="p-4">
+        <div class="detail-row"><div class="detail-label">Nombre</div><div class="detail-value"><%= alumno.nombre_encargado || '—' %></div></div>
+        <div class="detail-row"><div class="detail-label">Teléfono</div><div class="detail-value"><%= alumno.telefono_encargado || '—' %></div></div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,112 @@
+<div class="d-flex align-items-center gap-3 mb-1">
+  <a href="/alumnos" class="btn-secondary-app" style="padding:6px 12px;font-size:12.5px;">
+    <i class="bi bi-arrow-left"></i>
+  </a>
+  <div>
+    <div class="page-title">Registrar alumno de nuevo ingreso</div>
+    <div class="page-subtitle">Complete los datos del estudiante</div>
+  </div>
+</div>
+
+<form method="POST" action="/alumnos/crear">
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <!-- Datos personales -->
+      <div class="form-panel mb-4">
+        <div class="form-section-title">Datos personales</div>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" style="font-size:13px;">Primer nombre <span class="text-danger">*</span></label>
+            <input type="text" name="primer_nombre" class="form-control" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" style="font-size:13px;">Segundo nombre</label>
+            <input type="text" name="segundo_nombre" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" style="font-size:13px;">Primer apellido <span class="text-danger">*</span></label>
+            <input type="text" name="primer_apellido" class="form-control" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" style="font-size:13px;">Segundo apellido</label>
+            <input type="text" name="segundo_apellido" class="form-control">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold" style="font-size:13px;">CUI</label>
+            <input type="text" name="cui" class="form-control" placeholder="################">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold" style="font-size:13px;">Fecha de nacimiento</label>
+            <input type="date" name="fecha_nacimiento" class="form-control">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold" style="font-size:13px;">Género</label>
+            <select name="genero" class="form-select">
+              <option value="">Sin especificar</option>
+              <option value="M">Masculino</option>
+              <option value="F">Femenino</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Datos académicos -->
+      <div class="form-panel mb-4">
+        <div class="form-section-title">Datos académicos</div>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" style="font-size:13px;">Grado</label>
+            <select name="grado_id" class="form-select" data-select2 data-placeholder="Seleccione grado">
+              <option value="">Sin asignar</option>
+              <% grados.forEach(g => { %>
+                <option value="<%= g.id %>"><%= g.nombre %></option>
+              <% }) %>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" style="font-size:13px;">Año de ingreso</label>
+            <input type="number" name="anio_ingreso" class="form-control"
+              value="<%= new Date().getFullYear() %>" min="2000" max="<%= new Date().getFullYear() %>">
+          </div>
+        </div>
+      </div>
+
+      <!-- Lugar de origen -->
+      <div class="form-panel">
+        <div class="form-section-title">Lugar de origen</div>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" style="font-size:13px;">Municipio</label>
+            <input type="text" name="municipio" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" style="font-size:13px;">Departamento</label>
+            <input type="text" name="departamento" class="form-control">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Encargado -->
+    <div class="col-lg-4">
+      <div class="form-panel mb-4">
+        <div class="form-section-title">Encargado / padre de familia</div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold" style="font-size:13px;">Nombre del encargado</label>
+          <input type="text" name="nombre_encargado" class="form-control">
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold" style="font-size:13px;">Teléfono</label>
+          <input type="tel" name="telefono_encargado" class="form-control" placeholder="####-####">
+        </div>
+      </div>
+
+      <div class="d-flex flex-column gap-2">
+        <button type="submit" class="btn-primary-app justify-content-center" style="padding:10px;">
+          <i class="bi bi-floppy-fill"></i> Registrar alumno
+        </button>
+        <a href="/alumnos" class="btn-secondary-app justify-content-center">Cancelar</a>
+      </div>
+    </div>
+  </div>
+</form>
