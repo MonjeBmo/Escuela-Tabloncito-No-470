@@ -1,0 +1,39 @@
+<div class="d-flex align-items-center gap-3 mb-1">
+  <a href="/ocr" class="btn-secondary-app" style="padding:6px 12px;font-size:12.5px;">
+    <i class="bi bi-arrow-left"></i>
+  </a>
+  <div>
+    <div class="page-title">Subir documento para OCR</div>
+    <div class="page-subtitle">El sistema extraerá automáticamente los datos del cuadro</div>
+  </div>
+</div>
+
+<div class="row g-4 justify-content-center">
+  <div class="col-lg-7">
+    <div class="form-panel">
+      <div class="form-section-title">Seleccionar archivo</div>
+      <form method="POST" action="/ocr/subir" enctype="multipart/form-data">
+        <div class="mb-4">
+          <label class="form-label fw-semibold" style="font-size:13px;">Documento a procesar (PDF o imagen)</label>
+          <input type="file" name="documento" class="form-control" accept=".pdf,.jpg,.jpeg,.png,.tiff" required>
+          <div id="file-preview" class="form-text mt-1" style="color:#7c3aed;"></div>
+          <div class="form-text">Formatos: PDF, JPG, PNG, TIFF. Tamaño máximo: 20 MB.</div>
+        </div>
+
+        <div class="alert alert-light border mb-4" style="font-size:13px;">
+          <p class="mb-2"><strong><i class="bi bi-info-circle text-primary"></i> ¿Cómo funciona?</strong></p>
+          <ol class="mb-0 ps-3" style="line-height:1.8;">
+            <li>Suba el documento escaneado del cuadro PRIM.</li>
+            <li>El servicio OCR extrae automáticamente código, año, grado y docente.</li>
+            <li>Un validador revisará los campos extraídos antes de guardar.</li>
+            <li>Solo el validador puede confirmar o rechazar los datos.</li>
+          </ol>
+        </div>
+
+        <button type="submit" class="btn-primary-app w-100 justify-content-center" style="padding:11px;">
+          <i class="bi bi-cloud-upload-fill"></i> Enviar al procesamiento OCR
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,97 @@
+<div class="d-flex align-items-center justify-content-between mb-1">
+  <div>
+    <div class="page-title">Digitalización OCR</div>
+    <div class="page-subtitle">Seguimiento de documentos procesados por el motor de reconocimiento óptico</div>
+  </div>
+  <a href="/ocr/subir" class="btn-primary-app">
+    <i class="bi bi-cloud-upload-fill"></i> Subir documento
+  </a>
+</div>
+
+<!-- Resumen de estados -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="stat-card">
+      <div class="stat-icon amber"><i class="bi bi-hourglass-split"></i></div>
+      <div><div class="stat-value"><%= conteo.revision || 0 %></div><div class="stat-label">En revisión</div></div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card">
+      <div class="stat-icon blue"><i class="bi bi-cpu"></i></div>
+      <div><div class="stat-value"><%= conteo.pendiente || 0 %></div><div class="stat-label">Pendientes</div></div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card">
+      <div class="stat-icon green"><i class="bi bi-check-circle-fill"></i></div>
+      <div><div class="stat-value"><%= conteo.validado || 0 %></div><div class="stat-label">Validados</div></div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card">
+      <div class="stat-icon red"><i class="bi bi-x-circle-fill"></i></div>
+      <div><div class="stat-value"><%= conteo.rechazado || 0 %></div><div class="stat-label">Rechazados</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="card-panel">
+  <% if (jobs.length === 0) { %>
+    <div class="empty-state">
+      <i class="bi bi-cpu"></i>
+      <p>No hay trabajos OCR registrados.</p>
+      <a href="/ocr/subir" class="btn-primary-app mt-3 d-inline-flex">
+        <i class="bi bi-cloud-upload-fill"></i> Subir primer documento
+      </a>
+    </div>
+  <% } else { %>
+  <table class="table-app">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Documento</th>
+        <th>Estado</th>
+        <th>Subido por</th>
+        <th>Fecha</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% jobs.forEach(j => { %>
+      <tr>
+        <td class="text-muted" style="font-size:12px;">#<%= j.id %></td>
+        <td>
+          <div class="d-flex align-items-center gap-2">
+            <div style="width:30px;height:30px;border-radius:8px;background:#ede9fe;display:flex;align-items:center;justify-content:center;">
+              <i class="bi bi-file-earmark-text" style="color:#7c3aed;font-size:14px;"></i>
+            </div>
+            <span style="font-size:13px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+              <%= j.documento_nombre || j.documento_key %>
+            </span>
+          </div>
+        </td>
+        <td>
+          <span class="badge-app badge-<%= j.estado %>"><%= j.estado %></span>
+        </td>
+        <td class="text-muted" style="font-size:12.5px;"><%= j.subido_por_nombre || '—' %></td>
+        <td class="text-muted" style="font-size:12.5px;"><%= new Date(j.created_at).toLocaleDateString('es-GT') %></td>
+        <td>
+          <% if (j.estado === 'revision') { %>
+          <a href="/ocr/revision/<%= j.id %>" class="btn-primary-app" style="padding:4px 12px;font-size:12px;background:#f59e0b;border-color:#f59e0b;">
+            <i class="bi bi-pencil-square"></i> Revisar
+          </a>
+          <% } else if (j.estado === 'validado' && j.cuadro_id) { %>
+          <a href="/cuadros/<%= j.cuadro_id %>" class="btn-secondary-app" style="padding:4px 10px;font-size:12px;">
+            <i class="bi bi-eye"></i> Ver cuadro
+          </a>
+          <% } else { %>
+          <span class="text-muted" style="font-size:12px;">—</span>
+          <% } %>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+  <% } %>
+</div>
