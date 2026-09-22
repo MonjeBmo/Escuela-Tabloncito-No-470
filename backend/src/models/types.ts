@@ -138,8 +138,10 @@ export interface Alumno {
   nombre_encargado: string | null;
   telefono_encargado: string | null;
   registrado_por: number | null;
+  is_active: boolean;
   created_at: Date;
   updated_at: Date;
+  deleted_at?: Date | null;
 }
 
 export interface OcrJob {

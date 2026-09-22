@@ -80,6 +80,47 @@ export async function show(req: Request, res: Response): Promise<void> {
   res.render('alumnos/detalle', { titulo: 'Detalle de alumno', alumno });
 }
 
+export async function showEdit(req: Request, res: Response): Promise<void> {
+  const id = parseInt(req.params.id);
+  const alumno = await service.obtener(id);
+  if (!alumno) { res.redirect('/alumnos'); return; }
+  const { grades, sections } = await service.obtenerGradesYSecciones();
+  res.render('alumnos/editar', { titulo: 'Editar alumno', alumno, grades, sections });
+}
+
+export async function doEditar(req: Request, res: Response): Promise<void> {
+  const id = parseInt(req.params.id);
+  const b = req.body as Record<string, string>;
+  try {
+    await service.editar(id, {
+      primer_nombre: b.primer_nombre.trim(),
+      segundo_nombre: b.segundo_nombre?.trim() || null,
+      primer_apellido: b.primer_apellido.trim(),
+      segundo_apellido: b.segundo_apellido?.trim() || null,
+      cui: b.cui?.trim() || null,
+      fecha_nacimiento: b.fecha_nacimiento ? new Date(b.fecha_nacimiento) : null,
+      genero: (b.genero as 'M' | 'F') || null,
+      section_id: b.section_id ? parseInt(b.section_id) : null,
+      anio_ingreso: parseInt(b.anio_ingreso) || new Date().getFullYear(),
+      municipio: b.municipio?.trim() || null,
+      departamento: b.departamento?.trim() || null,
+      nombre_encargado: b.nombre_encargado?.trim() || null,
+      telefono_encargado: b.telefono_encargado?.trim() || null,
+    });
+    req.session.flash = { tipo: 'success', mensaje: 'Datos del alumno actualizados.' };
+    res.redirect('/alumnos');
+  } catch (err) {
+    console.error('[Alumnos] Error al editar:', err);
+    req.session.flash = { tipo: 'danger', mensaje: 'Error al actualizar el alumno.' };
+    res.redirect(`/alumnos/${id}/editar`);
+  }
+}
+
+export async function doToggle(req: Request, res: Response): Promise<void> {
+  await service.toggleActivo(parseInt(req.params.id));
+  res.redirect('/alumnos');
+}
+
 export async function doEliminar(req: Request, res: Response): Promise<void> {
   await service.eliminar(parseInt(req.params.id));
   req.session.flash = { tipo: 'success', mensaje: 'Alumno eliminado.' };

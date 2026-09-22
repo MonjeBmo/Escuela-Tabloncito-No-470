@@ -5,7 +5,8 @@ const COLS = `
   a.id, a.primer_nombre, a.segundo_nombre, a.primer_apellido, a.segundo_apellido,
   a.cui, a.fecha_nacimiento, a.genero, a.section_id, s.display_name AS grado_nombre,
   a.anio_ingreso, a.municipio, a.departamento,
-  a.nombre_encargado, a.telefono_encargado, a.registrado_por, a.created_at, a.updated_at, a.deleted_at
+  a.nombre_encargado, a.telefono_encargado, a.registrado_por, a.is_active,
+  a.created_at, a.updated_at, a.deleted_at
 `;
 const FROM = `
   FROM alumnos a
@@ -65,7 +66,7 @@ export async function search(params: AlumnoSearch, limit = 20, offset = 0): Prom
   return rows;
 }
 
-export async function create(data: Omit<Alumno, 'id' | 'created_at' | 'updated_at' | 'deleted_at' | 'grado_nombre'>): Promise<Alumno> {
+export async function create(data: Omit<Alumno, 'id' | 'created_at' | 'updated_at' | 'deleted_at' | 'grado_nombre' | 'is_active'>): Promise<Alumno> {
   const { rows } = await pool.query(
     `INSERT INTO alumnos
        (primer_nombre, segundo_nombre, primer_apellido, segundo_apellido,
@@ -85,4 +86,32 @@ export async function create(data: Omit<Alumno, 'id' | 'created_at' | 'updated_a
 
 export async function remove(id: number): Promise<void> {
   await pool.query('UPDATE alumnos SET deleted_at = NOW() WHERE id = $1', [id]);
+}
+
+export async function toggle(id: number): Promise<void> {
+  await pool.query('UPDATE alumnos SET is_active = NOT is_active WHERE id = $1', [id]);
+}
+
+export async function update(id: number, data: {
+  primer_nombre: string; segundo_nombre: string | null;
+  primer_apellido: string; segundo_apellido: string | null;
+  cui: string | null; fecha_nacimiento: Date | null; genero: 'M' | 'F' | null;
+  section_id: number | null; anio_ingreso: number;
+  municipio: string | null; departamento: string | null;
+  nombre_encargado: string | null; telefono_encargado: string | null;
+}): Promise<void> {
+  await pool.query(
+    `UPDATE alumnos SET
+       primer_nombre=$1, segundo_nombre=$2, primer_apellido=$3, segundo_apellido=$4,
+       cui=$5, fecha_nacimiento=$6, genero=$7, section_id=$8, anio_ingreso=$9,
+       municipio=$10, departamento=$11, nombre_encargado=$12, telefono_encargado=$13,
+       updated_at=NOW()
+     WHERE id=$14`,
+    [
+      data.primer_nombre, data.segundo_nombre, data.primer_apellido, data.segundo_apellido,
+      data.cui, data.fecha_nacimiento, data.genero, data.section_id, data.anio_ingreso,
+      data.municipio, data.departamento, data.nombre_encargado, data.telefono_encargado,
+      id,
+    ]
+  );
 }

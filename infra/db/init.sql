@@ -182,6 +182,7 @@ CREATE TABLE IF NOT EXISTS alumnos (
   nombre_encargado   VARCHAR(120),
   telefono_encargado VARCHAR(20),
   registrado_por     INTEGER      REFERENCES usuarios(id) ON DELETE SET NULL,
+  is_active          BOOLEAN      NOT NULL DEFAULT TRUE,
   created_at         TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
   updated_at         TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
   deleted_at         TIMESTAMPTZ  DEFAULT NULL,

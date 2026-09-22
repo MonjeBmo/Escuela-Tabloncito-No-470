@@ -374,7 +374,7 @@ export async function previewRollover(): Promise<RolloverPreview> {
     JOIN sections s ON s.id = a.section_id
     JOIN grades   g ON g.id = s.grade_id
     WHERE a.deleted_at IS NULL
-    GROUP BY s.id, g.nombre, s.nombre
+    GROUP BY s.id, g.sort_order, g.nombre, s.nombre
     ORDER BY g.sort_order, s.nombre
   `);
 

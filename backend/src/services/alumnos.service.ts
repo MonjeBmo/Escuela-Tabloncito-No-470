@@ -19,12 +19,20 @@ export async function obtener(id: number): Promise<Alumno | null> {
   return repo.findById(id);
 }
 
-export async function crear(data: Omit<Alumno, 'id' | 'created_at' | 'updated_at' | 'grado_nombre'>): Promise<Alumno> {
+export async function crear(data: Omit<Alumno, 'id' | 'created_at' | 'updated_at' | 'grado_nombre' | 'is_active' | 'deleted_at'>): Promise<Alumno> {
   return repo.create(data);
 }
 
 export async function eliminar(id: number): Promise<void> {
   return repo.remove(id);
+}
+
+export async function toggleActivo(id: number): Promise<void> {
+  return repo.toggle(id);
+}
+
+export async function editar(id: number, data: Parameters<typeof repo.update>[1]): Promise<void> {
+  return repo.update(id, data);
 }
 
 // Para selectores planos (filtros de listado)
