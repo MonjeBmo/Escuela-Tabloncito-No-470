@@ -1,28 +1,29 @@
 import { Request, Response } from 'express';
 import * as service from '../services/alumnos.service';
 
-const POR_PAGINA = 20;
+const LIMITES_VALIDOS = [10, 20];
 
 export async function index(req: Request, res: Response): Promise<void> {
-  const pagina = parseInt(String(req.query.pagina ?? 1));
-  const offset = (pagina - 1) * POR_PAGINA;
-  const { q, grado_id, anio_ingreso } = req.query as Record<string, string>;
-  const grados = await service.obtenerGrados();
+  const limit = LIMITES_VALIDOS.includes(parseInt(String(req.query.limit))) ? parseInt(String(req.query.limit)) : 20;
+  const pagina = Math.max(1, parseInt(String(req.query.pagina ?? 1)));
+  const offset = (pagina - 1) * limit;
+  const { q, section_id, anio_ingreso } = req.query as Record<string, string>;
+  const secciones = await service.obtenerSecciones();
 
-  const hayFiltros = q || grado_id || anio_ingreso;
+  const hayFiltros = q || section_id || anio_ingreso;
   let alumnos;
   let total;
 
   if (hayFiltros) {
     alumnos = await service.buscar({
       q: q || undefined,
-      grado_id: grado_id ? parseInt(grado_id) : undefined,
+      section_id: section_id ? parseInt(section_id) : undefined,
       anio_ingreso: anio_ingreso ? parseInt(anio_ingreso) : undefined,
-    }, POR_PAGINA, offset);
+    }, limit, offset);
     total = alumnos.length;
   } else {
     [alumnos, total] = await Promise.all([
-      service.listar(POR_PAGINA, offset),
+      service.listar(limit, offset),
       service.contar(),
     ]);
   }
@@ -30,17 +31,18 @@ export async function index(req: Request, res: Response): Promise<void> {
   res.render('alumnos/index', {
     titulo: 'Registro de alumnos',
     alumnos,
-    grados,
+    secciones,
     total,
     pagina,
-    totalPaginas: Math.ceil(total / POR_PAGINA),
-    filtros: { q, grado_id, anio_ingreso },
+    limit,
+    totalPaginas: Math.ceil(total / limit),
+    filtros: { q, section_id, anio_ingreso },
   });
 }
 
 export async function showCreate(req: Request, res: Response): Promise<void> {
-  const grados = await service.obtenerGrados();
-  res.render('alumnos/crear', { titulo: 'Registrar alumno', grados });
+  const { grades, sections } = await service.obtenerGradesYSecciones();
+  res.render('alumnos/crear', { titulo: 'Registrar alumno', grades, sections });
 }
 
 export async function doCreate(req: Request, res: Response): Promise<void> {
@@ -54,7 +56,7 @@ export async function doCreate(req: Request, res: Response): Promise<void> {
       cui: b.cui?.trim() || null,
       fecha_nacimiento: b.fecha_nacimiento ? new Date(b.fecha_nacimiento) : null,
       genero: (b.genero as 'M' | 'F') || null,
-      grado_id: b.grado_id ? parseInt(b.grado_id) : null,
+      section_id: b.section_id ? parseInt(b.section_id) : null,
       anio_ingreso: parseInt(b.anio_ingreso) || new Date().getFullYear(),
       municipio: b.municipio?.trim() || null,
       departamento: b.departamento?.trim() || null,

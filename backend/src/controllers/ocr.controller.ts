@@ -3,12 +3,26 @@ import { UploadedFile } from 'express-fileupload';
 import * as service from '../services/ocr.service';
 import * as gradosRepo from '../repositories/grados.repository';
 
+const LIMITES_VALIDOS = [10, 20];
+
 export async function index(req: Request, res: Response): Promise<void> {
-  const [jobs, conteo] = await Promise.all([
-    service.listar(50, 0),
+  const limit = LIMITES_VALIDOS.includes(parseInt(String(req.query.limit))) ? parseInt(String(req.query.limit)) : 20;
+  const pagina = Math.max(1, parseInt(String(req.query.pagina ?? 1)));
+  const offset = (pagina - 1) * limit;
+  const [jobs, total, conteo] = await Promise.all([
+    service.listar(limit, offset),
+    service.contar(),
     service.conteoEstados(),
   ]);
-  res.render('ocr/index', { titulo: 'Digitalización OCR', jobs, conteo });
+  res.render('ocr/index', {
+    titulo: 'Digitalización OCR',
+    jobs,
+    conteo,
+    total,
+    pagina,
+    limit,
+    totalPaginas: Math.ceil(total / limit),
+  });
 }
 
 export async function showUpload(req: Request, res: Response): Promise<void> {
@@ -57,7 +71,7 @@ export async function doValidar(req: Request, res: Response): Promise<void> {
       {
         codigo: b.codigo,
         anio: parseInt(b.anio),
-        grado_id: b.grado_id ? parseInt(b.grado_id) : null,
+        section_id: b.section_id ? parseInt(b.section_id) : null,
         docente: b.docente,
         total_alumnos: b.total_alumnos ? parseInt(b.total_alumnos) : null,
         datos_extra: {},

@@ -2,7 +2,7 @@ import { pool } from '../shared/db';
 import { Cuadro } from '../models/types';
 
 const COLS = `
-  c.id, c.codigo, c.anio, c.grado_id, g.nombre AS grado_nombre,
+  c.id, c.codigo, c.anio, c.section_id, s.display_name AS grado_nombre,
   c.docente, c.total_alumnos,
   c.documento_key, c.documento_nombre, c.documento_mime,
   c.datos_extra, c.subido_por, u.nombre AS subido_por_nombre,
@@ -11,11 +11,12 @@ const COLS = `
 
 const FROM = `
   FROM cuadros c
-  LEFT JOIN grados g ON g.id = c.grado_id
-  LEFT JOIN usuarios u ON u.id = c.subido_por
+  LEFT JOIN sections s  ON s.id = c.section_id
+  LEFT JOIN grades  gr  ON gr.id = s.grade_id
+  LEFT JOIN usuarios u  ON u.id = c.subido_por
 `;
 
-export async function findAll(limit = 50, offset = 0): Promise<Cuadro[]> {
+export async function findAll(limit = 20, offset = 0): Promise<Cuadro[]> {
   const { rows } = await pool.query(
     `SELECT ${COLS} ${FROM} ORDER BY c.anio DESC, c.created_at DESC LIMIT $1 OFFSET $2`,
     [limit, offset]
@@ -29,21 +30,18 @@ export async function count(): Promise<number> {
 }
 
 export async function findById(id: number): Promise<Cuadro | null> {
-  const { rows } = await pool.query(
-    `SELECT ${COLS} ${FROM} WHERE c.id = $1`,
-    [id]
-  );
+  const { rows } = await pool.query(`SELECT ${COLS} ${FROM} WHERE c.id = $1`, [id]);
   return rows[0] ?? null;
 }
 
 export interface SearchParams {
   q?: string;
   anio?: number;
-  grado_id?: number;
+  section_id?: number;
   origen?: string;
 }
 
-export async function search(params: SearchParams, limit = 50, offset = 0): Promise<Cuadro[]> {
+export async function search(params: SearchParams, limit = 20, offset = 0): Promise<Cuadro[]> {
   const conditions: string[] = [];
   const values: unknown[] = [];
   let idx = 1;
@@ -56,9 +54,9 @@ export async function search(params: SearchParams, limit = 50, offset = 0): Prom
     conditions.push(`c.anio = $${idx}`);
     values.push(params.anio); idx++;
   }
-  if (params.grado_id) {
-    conditions.push(`c.grado_id = $${idx}`);
-    values.push(params.grado_id); idx++;
+  if (params.section_id) {
+    conditions.push(`c.section_id = $${idx}`);
+    values.push(params.section_id); idx++;
   }
   if (params.origen) {
     conditions.push(`c.origen = $${idx}`);
@@ -78,7 +76,7 @@ export async function search(params: SearchParams, limit = 50, offset = 0): Prom
 export async function create(data: {
   codigo: string;
   anio: number;
-  grado_id: number | null;
+  section_id: number | null;
   docente: string | null;
   total_alumnos: number | null;
   documento_key: string | null;
@@ -90,12 +88,12 @@ export async function create(data: {
 }): Promise<Cuadro> {
   const { rows } = await pool.query(
     `INSERT INTO cuadros
-       (codigo, anio, grado_id, docente, total_alumnos, documento_key,
+       (codigo, anio, section_id, docente, total_alumnos, documento_key,
         documento_nombre, documento_mime, datos_extra, subido_por, origen)
      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
      RETURNING id`,
     [
-      data.codigo, data.anio, data.grado_id, data.docente,
+      data.codigo, data.anio, data.section_id, data.docente,
       data.total_alumnos, data.documento_key, data.documento_nombre,
       data.documento_mime, JSON.stringify(data.datos_extra),
       data.subido_por, data.origen,

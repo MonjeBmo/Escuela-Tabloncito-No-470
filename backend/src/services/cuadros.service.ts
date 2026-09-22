@@ -3,10 +3,11 @@ import { UploadedFile } from 'express-fileupload';
 import { minioClient, BUCKET } from '../shared/minio';
 import * as repo from '../repositories/cuadros.repository';
 import * as gradosRepo from '../repositories/grados.repository';
-import { Cuadro, Grado } from '../models/types';
+import * as gradesRepo from '../repositories/grades.repository';
+import { Cuadro, Section, Grade } from '../models/types';
 import { Readable } from 'stream';
 
-export async function listar(limit = 50, offset = 0) {
+export async function listar(limit = 20, offset = 0) {
   return repo.findAll(limit, offset);
 }
 
@@ -14,7 +15,7 @@ export async function contar() {
   return repo.count();
 }
 
-export async function buscar(params: repo.SearchParams, limit = 50, offset = 0) {
+export async function buscar(params: repo.SearchParams, limit = 20, offset = 0) {
   return repo.search(params, limit, offset);
 }
 
@@ -25,7 +26,7 @@ export async function obtener(id: number): Promise<Cuadro | null> {
 export async function crearConDocumento(data: {
   codigo: string;
   anio: number;
-  grado_id: number | null;
+  section_id: number | null;
   docente: string;
   total_alumnos: number | null;
   datos_extra: Record<string, unknown>;
@@ -51,7 +52,7 @@ export async function crearConDocumento(data: {
   return repo.create({
     codigo: data.codigo,
     anio: data.anio,
-    grado_id: data.grado_id,
+    section_id: data.section_id,
     docente: data.docente || null,
     total_alumnos: data.total_alumnos,
     documento_key,
@@ -79,11 +80,21 @@ export async function aniosDisponibles(): Promise<number[]> {
   return repo.recentYears();
 }
 
-export async function obtenerGrados(): Promise<Grado[]> {
+// Para selectores planos (busqueda, filtros) — retorna secciones activas
+export async function obtenerSecciones(): Promise<Section[]> {
   return gradosRepo.findAll();
+}
+
+// Para formulario de creación — grados + secciones separados para select dependiente
+export async function obtenerGradesYSecciones(): Promise<{ grades: Grade[]; sections: Section[] }> {
+  const [grades, sections] = await Promise.all([
+    gradesRepo.findAllGrades(true),
+    gradesRepo.findAllSections(true),
+  ]);
+  return { grades, sections };
 }
 
 export async function urlDescarga(key: string): Promise<string> {
   const { getPresignedUrl } = await import('../shared/minio');
-  return getPresignedUrl(key, 1800); // 30 min
+  return getPresignedUrl(key, 1800);
 }

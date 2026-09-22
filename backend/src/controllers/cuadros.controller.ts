@@ -2,38 +2,42 @@ import { Request, Response } from 'express';
 import { UploadedFile } from 'express-fileupload';
 import * as service from '../services/cuadros.service';
 
-const POR_PAGINA = 20;
+const LIMITES_VALIDOS = [10, 20];
 
 export async function index(req: Request, res: Response): Promise<void> {
-  const pagina = parseInt(String(req.query.pagina ?? 1));
-  const offset = (pagina - 1) * POR_PAGINA;
-  const [cuadros, total, grados] = await Promise.all([
-    service.listar(POR_PAGINA, offset),
+  const limit = LIMITES_VALIDOS.includes(parseInt(String(req.query.limit))) ? parseInt(String(req.query.limit)) : 20;
+  const pagina = Math.max(1, parseInt(String(req.query.pagina ?? 1)));
+  const offset = (pagina - 1) * limit;
+  const [cuadros, total, secciones] = await Promise.all([
+    service.listar(limit, offset),
     service.contar(),
-    service.obtenerGrados(),
+    service.obtenerSecciones(),
   ]);
   res.render('cuadros/index', {
     titulo: 'Cuadros PRIM',
     cuadros,
-    grados,
+    secciones,
     total,
     pagina,
-    totalPaginas: Math.ceil(total / POR_PAGINA),
+    limit,
+    totalPaginas: Math.ceil(total / limit),
   });
 }
 
 export async function showBusqueda(req: Request, res: Response): Promise<void> {
-  const { q, anio, grado_id, origen } = req.query as Record<string, string>;
-  const grados = await service.obtenerGrados();
-  const anios = await service.aniosDisponibles();
+  const { q, anio, section_id, origen } = req.query as Record<string, string>;
+  const [secciones, anios] = await Promise.all([
+    service.obtenerSecciones(),
+    service.aniosDisponibles(),
+  ]);
 
-  let cuadros = [];
-  const hayFiltros = q || anio || grado_id || origen;
+  let cuadros: Awaited<ReturnType<typeof service.buscar>> = [];
+  const hayFiltros = q || anio || section_id || origen;
   if (hayFiltros) {
     cuadros = await service.buscar({
       q: q || undefined,
       anio: anio ? parseInt(anio) : undefined,
-      grado_id: grado_id ? parseInt(grado_id) : undefined,
+      section_id: section_id ? parseInt(section_id) : undefined,
       origen: origen || undefined,
     });
   }
@@ -41,27 +45,27 @@ export async function showBusqueda(req: Request, res: Response): Promise<void> {
   res.render('cuadros/busqueda', {
     titulo: 'Buscar cuadros',
     cuadros,
-    grados,
+    secciones,
     anios,
-    filtros: { q, anio, grado_id, origen },
+    filtros: { q, anio, section_id, origen },
     hayFiltros: !!hayFiltros,
   });
 }
 
 export async function showCreate(req: Request, res: Response): Promise<void> {
-  const grados = await service.obtenerGrados();
-  res.render('cuadros/crear', { titulo: 'Registrar cuadro', grados });
+  const { grades, sections } = await service.obtenerGradesYSecciones();
+  res.render('cuadros/crear', { titulo: 'Registrar cuadro', grades, sections });
 }
 
 export async function doCreate(req: Request, res: Response): Promise<void> {
-  const { codigo, anio, grado_id, docente, total_alumnos } = req.body as Record<string, string>;
+  const { codigo, anio, section_id, docente, total_alumnos } = req.body as Record<string, string>;
   const archivo = req.files?.documento as UploadedFile | undefined;
 
   try {
     const cuadro = await service.crearConDocumento({
       codigo: codigo.trim(),
       anio: parseInt(anio),
-      grado_id: grado_id ? parseInt(grado_id) : null,
+      section_id: section_id ? parseInt(section_id) : null,
       docente: docente?.trim() ?? '',
       total_alumnos: total_alumnos ? parseInt(total_alumnos) : null,
       datos_extra: {},

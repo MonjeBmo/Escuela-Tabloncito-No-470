@@ -63,6 +63,11 @@ export async function reject(id: number, usuarioId: number, notas: string): Prom
   );
 }
 
+export async function count(): Promise<number> {
+  const { rows } = await pool.query(`SELECT COUNT(*)::int AS n FROM ocr_jobs`);
+  return rows[0].n;
+}
+
 export async function countByEstado(): Promise<Record<string, number>> {
   const { rows } = await pool.query(
     `SELECT estado, COUNT(*)::int AS n FROM ocr_jobs GROUP BY estado`

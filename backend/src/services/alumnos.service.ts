@@ -1,8 +1,9 @@
 import * as repo from '../repositories/alumnos.repository';
 import * as gradosRepo from '../repositories/grados.repository';
-import { Alumno, Grado } from '../models/types';
+import * as gradesRepo from '../repositories/grades.repository';
+import { Alumno, Section, Grade } from '../models/types';
 
-export async function listar(limit = 50, offset = 0) {
+export async function listar(limit = 20, offset = 0) {
   return repo.findAll(limit, offset);
 }
 
@@ -10,7 +11,7 @@ export async function contar() {
   return repo.count();
 }
 
-export async function buscar(params: repo.AlumnoSearch, limit = 50, offset = 0) {
+export async function buscar(params: repo.AlumnoSearch, limit = 20, offset = 0) {
   return repo.search(params, limit, offset);
 }
 
@@ -26,6 +27,16 @@ export async function eliminar(id: number): Promise<void> {
   return repo.remove(id);
 }
 
-export async function obtenerGrados(): Promise<Grado[]> {
+// Para selectores planos (filtros de listado)
+export async function obtenerSecciones(): Promise<Section[]> {
   return gradosRepo.findAll();
+}
+
+// Para formulario de creación con select dependiente
+export async function obtenerGradesYSecciones(): Promise<{ grades: Grade[]; sections: Section[] }> {
+  const [grades, sections] = await Promise.all([
+    gradesRepo.findAllGrades(true),
+    gradesRepo.findAllSections(true),
+  ]);
+  return { grades, sections };
 }

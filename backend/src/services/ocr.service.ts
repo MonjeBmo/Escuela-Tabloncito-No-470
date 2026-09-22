@@ -7,8 +7,12 @@ import * as cuadrosRepo from '../repositories/cuadros.repository';
 import { minioClient, BUCKET } from '../shared/minio';
 import { OcrJob } from '../models/types';
 
-export async function listar(limit = 50, offset = 0) {
+export async function listar(limit = 20, offset = 0) {
   return repo.findAll(limit, offset);
+}
+
+export async function contar(): Promise<number> {
+  return repo.count();
 }
 
 export async function pendientesRevision(): Promise<OcrJob[]> {
@@ -70,7 +74,7 @@ export async function validarJob(
   jobId: number,
   usuarioId: number,
   datosCuadro: {
-    codigo: string; anio: number; grado_id: number | null;
+    codigo: string; anio: number; section_id: number | null;
     docente: string; total_alumnos: number | null;
     datos_extra: Record<string, unknown>;
   },
