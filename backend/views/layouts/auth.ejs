@@ -1,38 +1,51 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="h-full">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Iniciar sesión — Tabloncito 470</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <title>Ingresar — Tabloncito 470</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/><text y='.9em' font-size='68' x='14'>🎓</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { theme: { fontFamily: { sans: ['Inter','system-ui','sans-serif'] } } }</script>
   <link rel="stylesheet" href="/css/app.css">
-  <style>
-    body { background: var(--body-bg); display:flex; align-items:center; justify-content:center; min-height:100vh; }
-    .login-box {
-      width: 100%; max-width: 400px;
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 40px 36px;
-      box-shadow: 0 8px 32px rgba(0,0,0,.08);
-    }
-    .login-logo {
-      width: 52px; height: 52px;
-      background: var(--sidebar-bg);
-      border-radius: 14px;
-      display: flex; align-items:center; justify-content:center;
-      font-size: 26px; color:#fff;
-      margin: 0 auto 20px;
-    }
-    .login-title { text-align:center; font-size:20px; font-weight:700; color:#0f172a; margin-bottom:4px; }
-    .login-sub   { text-align:center; font-size:13px; color:var(--text-muted); margin-bottom:28px; }
-  </style>
 </head>
-<body>
+<body class="min-h-screen bg-[#F7F5EF] font-sans antialiased flex items-center justify-center p-4 py-10 relative overflow-hidden">
+
+  <!-- Background blobs -->
+  <div class="absolute -top-32 -left-32 w-80 h-80 bg-blue-100/50 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+  <div class="absolute -bottom-32 -right-32 w-80 h-80 bg-amber-100/60 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+
+  <!-- Dot grid — top right -->
+  <div class="hidden lg:block absolute top-10 right-10 opacity-[0.18] pointer-events-none" aria-hidden="true">
+    <svg width="128" height="128" viewBox="0 0 128 128">
+      <defs>
+        <pattern id="dot-tr" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
+          <circle cx="2" cy="2" r="1.5" fill="#64748b"/>
+        </pattern>
+      </defs>
+      <rect width="128" height="128" fill="url(#dot-tr)"/>
+    </svg>
+  </div>
+
+  <!-- Dot grid — bottom left -->
+  <div class="hidden lg:block absolute bottom-10 left-10 opacity-[0.18] pointer-events-none" aria-hidden="true">
+    <svg width="128" height="128" viewBox="0 0 128 128">
+      <defs>
+        <pattern id="dot-bl" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
+          <circle cx="2" cy="2" r="1.5" fill="#64748b"/>
+        </pattern>
+      </defs>
+      <rect width="128" height="128" fill="url(#dot-bl)"/>
+    </svg>
+  </div>
+
   <%- body %>
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
-<script src="/js/app.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+  <script src="/js/app.js"></script>
 </body>
 </html>

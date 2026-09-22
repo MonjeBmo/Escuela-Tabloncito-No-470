@@ -1,0 +1,47 @@
+<svg viewBox="0 0 200 170" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Soft background circle -->
+  <ellipse cx="100" cy="95" rx="78" ry="62" fill="#EFF6FF"/>
+
+  <!-- Desk surface -->
+  <rect x="28" y="118" width="144" height="8" rx="4" fill="#BFDBFE"/>
+
+  <!-- Stack: bottom book -->
+  <rect x="36" y="107" width="128" height="13" rx="3" fill="#93C5FD" stroke="#2563EB" stroke-width="1.2"/>
+
+  <!-- Open book (top) -->
+  <!-- Left page -->
+  <path d="M44 62 L100 66 L100 107 L44 103 Z" fill="white" stroke="#2563EB" stroke-width="1.4" stroke-linejoin="round"/>
+  <!-- Right page -->
+  <path d="M100 66 L156 62 L156 103 L100 107 Z" fill="#F0F9FF" stroke="#2563EB" stroke-width="1.4" stroke-linejoin="round"/>
+  <!-- Spine -->
+  <line x1="100" y1="66" x2="100" y2="107" stroke="#2563EB" stroke-width="2"/>
+
+  <!-- Lines on left page -->
+  <line x1="56" y1="76" x2="90" y2="77" stroke="#93C5FD" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="56" y1="83" x2="90" y2="84" stroke="#93C5FD" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="56" y1="90" x2="82" y2="91" stroke="#93C5FD" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="56" y1="97" x2="88" y2="98" stroke="#BFDBFE" stroke-width="1.2" stroke-linecap="round"/>
+
+  <!-- Lines on right page -->
+  <line x1="110" y1="77" x2="144" y2="76" stroke="#BFDBFE" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="110" y1="84" x2="144" y2="83" stroke="#BFDBFE" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="110" y1="91" x2="136" y2="90" stroke="#BFDBFE" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="110" y1="98" x2="142" y2="97" stroke="#DBEAFE" stroke-width="1.2" stroke-linecap="round"/>
+
+  <!-- Person reading (abstract silhouette) -->
+  <!-- Head -->
+  <circle cx="100" cy="38" r="15" fill="#BFDBFE" stroke="#2563EB" stroke-width="1.5"/>
+  <!-- Hair detail -->
+  <path d="M86 34 Q100 26 114 34" fill="#2563EB" stroke="none"/>
+  <!-- Neck + shoulders implied by arms -->
+  <!-- Left arm reaching down to book -->
+  <path d="M90 52 Q78 62 72 78" stroke="#2563EB" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <!-- Right arm reaching down to book -->
+  <path d="M110 52 Q122 62 128 78" stroke="#2563EB" stroke-width="2" stroke-linecap="round" fill="none"/>
+
+  <!-- Floating sparkles / small decor -->
+  <circle cx="32" cy="48" r="3" fill="#BFDBFE"/>
+  <circle cx="168" cy="42" r="4" fill="#DBEAFE"/>
+  <circle cx="22" cy="82" r="2" fill="#93C5FD"/>
+  <path d="M162 72 L164 68 L166 72 L170 74 L166 76 L164 80 L162 76 L158 74 Z" fill="#BFDBFE"/>
+</svg>

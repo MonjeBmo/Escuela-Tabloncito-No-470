@@ -1,87 +1,131 @@
-<nav class="sidebar">
-  <!-- Brand -->
-  <a href="/dashboard" class="sidebar-brand">
-    <div class="sidebar-brand-icon">
-      <i class="bi bi-mortarboard-fill"></i>
-    </div>
-    <div class="sidebar-brand-text">
-      Tabloncito 470
-      <span class="sidebar-brand-sub">Escuela No. 470</span>
-    </div>
-  </a>
+<aside id="sidebar" class="w-56 bg-white border-r border-slate-200/70 flex flex-col flex-shrink-0 sticky top-14 h-[calc(100vh-56px)] sidebar-scroll overflow-y-auto">
 
-  <!-- Principal -->
-  <div class="sidebar-section">
-    <div class="sidebar-section-label">Principal</div>
-    <a href="/dashboard" class="nav-item-sidebar">
-      <i class="bi bi-grid-fill"></i>
+  <!-- Mobile header: brand + close (lg: hidden) -->
+  <div class="flex items-center justify-between px-4 py-3 border-b border-slate-200/70 lg:hidden flex-shrink-0">
+    <div class="flex items-center gap-2.5 min-w-0">
+      <div class="w-6 h-6 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+        <i class="bi bi-mortarboard-fill text-white text-xs"></i>
+      </div>
+      <span class="text-sm font-semibold text-slate-800 truncate">Tabloncito 470</span>
+    </div>
+    <button id="sidebar-close"
+      class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 transition-colors flex-shrink-0"
+      aria-label="Cerrar menú">
+      <i class="bi bi-x-lg text-sm"></i>
+    </button>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="flex-1 p-2 pt-3 space-y-0.5 overflow-y-auto">
+
+    <div class="px-3 pb-1 pt-0.5">
+      <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Principal</span>
+    </div>
+    <a href="/dashboard" class="js-nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
+      <i class="bi bi-grid-1x2 w-4 text-center flex-shrink-0"></i>
       <span>Panel</span>
     </a>
-  </div>
 
-  <!-- Documentos -->
-  <div class="sidebar-section">
-    <div class="sidebar-section-label">Documentos</div>
-    <a href="/cuadros" class="nav-item-sidebar">
-      <i class="bi bi-folder2-open"></i>
-      <span>Cuadros PRIM</span>
+    <% if (can('documents.view')) { %>
+    <div class="px-3 pb-1 pt-3">
+      <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Cuadros</span>
+    </div>
+    <a href="/cuadros" class="js-nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
+      <i class="bi bi-folder2 w-4 text-center flex-shrink-0"></i>
+      <span>Todos los cuadros</span>
     </a>
-    <a href="/cuadros/busqueda" class="nav-item-sidebar">
-      <i class="bi bi-search"></i>
-      <span>Buscar cuadros</span>
+    <a href="/cuadros/busqueda" class="js-nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
+      <i class="bi bi-search w-4 text-center flex-shrink-0"></i>
+      <span>Buscar</span>
     </a>
-    <a href="/cuadros/crear" class="nav-item-sidebar">
-      <i class="bi bi-file-earmark-plus"></i>
+    <% if (can('documents.create')) { %>
+    <a href="/cuadros/crear" class="js-nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
+      <i class="bi bi-file-earmark-plus w-4 text-center flex-shrink-0"></i>
       <span>Registrar cuadro</span>
     </a>
-  </div>
+    <% } %>
+    <% } %>
 
-  <!-- Alumnos -->
-  <div class="sidebar-section">
-    <div class="sidebar-section-label">Alumnos</div>
-    <a href="/alumnos" class="nav-item-sidebar">
-      <i class="bi bi-people-fill"></i>
-      <span>Registro de alumnos</span>
+    <% if (can('students.view')) { %>
+    <div class="px-3 pb-1 pt-3">
+      <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Alumnos</span>
+    </div>
+    <a href="/alumnos" class="js-nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
+      <i class="bi bi-people w-4 text-center flex-shrink-0"></i>
+      <span>Registro</span>
     </a>
-    <a href="/alumnos/crear" class="nav-item-sidebar">
-      <i class="bi bi-person-plus-fill"></i>
+    <% if (can('students.create')) { %>
+    <a href="/alumnos/crear" class="js-nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
+      <i class="bi bi-person-plus w-4 text-center flex-shrink-0"></i>
       <span>Nuevo alumno</span>
     </a>
-  </div>
+    <% } %>
+    <% } %>
 
-  <!-- OCR -->
-  <div class="sidebar-section">
-    <div class="sidebar-section-label">Digitalización</div>
-    <a href="/ocr" class="nav-item-sidebar">
-      <i class="bi bi-cpu-fill"></i>
-      <span>OCR — Trabajos</span>
+    <% if (can('ocr.view')) { %>
+    <div class="px-3 pb-1 pt-3">
+      <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Digitalización</span>
+    </div>
+    <a href="/ocr" class="js-nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
+      <i class="bi bi-cpu w-4 text-center flex-shrink-0"></i>
+      <span>Trabajos OCR</span>
     </a>
-    <a href="/ocr/subir" class="nav-item-sidebar">
-      <i class="bi bi-cloud-upload-fill"></i>
+    <% if (can('ocr.run')) { %>
+    <a href="/ocr/subir" class="js-nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
+      <i class="bi bi-cloud-upload w-4 text-center flex-shrink-0"></i>
       <span>Subir documento</span>
     </a>
-  </div>
+    <% } %>
+    <% } %>
 
-  <!-- Admin -->
-  <% if (usuario && usuario.rol === 'director') { %>
-  <div class="sidebar-section">
-    <div class="sidebar-section-label">Administración</div>
-    <a href="/auth/usuarios" class="nav-item-sidebar">
-      <i class="bi bi-person-badge-fill"></i>
+    <% if (can('admin.users') || can('admin.roles') || can('admin.grades') || can('admin.courses') || can('admin.teachers')) { %>
+    <div class="px-3 pb-1 pt-3">
+      <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Admin</span>
+    </div>
+    <% if (can('admin.users')) { %>
+    <a href="/admin/usuarios" class="js-nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
+      <i class="bi bi-person-badge w-4 text-center flex-shrink-0"></i>
       <span>Usuarios</span>
     </a>
-  </div>
-  <% } %>
-
-  <!-- Bottom -->
-  <div class="sidebar-bottom">
-    <a href="/auth/perfil" class="nav-item-sidebar">
-      <i class="bi bi-gear-fill"></i>
-      <span>Mi perfil</span>
+    <% } %>
+    <% if (can('admin.teachers')) { %>
+    <a href="/admin/maestros" class="js-nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
+      <i class="bi bi-person-workspace w-4 text-center flex-shrink-0"></i>
+      <span>Maestros</span>
     </a>
-    <a href="/auth/logout" class="nav-item-sidebar" style="color:#f87171;">
-      <i class="bi bi-box-arrow-right"></i>
+    <% } %>
+    <% if (can('admin.roles')) { %>
+    <a href="/admin/roles" class="js-nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
+      <i class="bi bi-shield-check w-4 text-center flex-shrink-0"></i>
+      <span>Roles y permisos</span>
+    </a>
+    <% } %>
+    <% if (can('admin.grades')) { %>
+    <a href="/admin/grados" class="js-nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
+      <i class="bi bi-mortarboard w-4 text-center flex-shrink-0"></i>
+      <span>Grados y secciones</span>
+    </a>
+    <% } %>
+    <% if (can('admin.courses')) { %>
+    <a href="/admin/cursos" class="js-nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
+      <i class="bi bi-journal-bookmark w-4 text-center flex-shrink-0"></i>
+      <span>Cursos</span>
+    </a>
+    <% } %>
+    <% } %>
+
+  </nav>
+
+  <!-- Bottom actions -->
+  <div class="p-2 border-t border-slate-200/70 pb-safe flex-shrink-0">
+    <a href="/auth/perfil" class="js-nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors">
+      <i class="bi bi-gear w-4 text-center flex-shrink-0"></i>
+      <span>Configuración</span>
+    </a>
+    <a href="/auth/logout" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-red-400 hover:bg-red-50 hover:text-red-600 transition-colors">
+      <i class="bi bi-box-arrow-right w-4 text-center flex-shrink-0"></i>
       <span>Cerrar sesión</span>
     </a>
   </div>
-</nav>
+
+</aside>

@@ -1,121 +1,150 @@
-<div class="page-title">Panel principal</div>
-<div class="page-subtitle">Bienvenido, <%= usuario.nombre.split(' ')[0] %>. Aquí está el resumen del sistema.</div>
+<!-- Page header -->
+<div class="mb-6">
+  <h1 class="text-xl font-semibold text-slate-900">Panel principal</h1>
+  <p class="text-sm text-slate-500 mt-0.5">Bienvenido, <span class="font-medium text-slate-700"><%= usuario.nombre.split(' ')[0] %></span>. Aquí está el resumen del sistema.</p>
+</div>
 
-<!-- Tarjetas de estadísticas -->
-<div class="row g-3 mb-4">
-  <div class="col-sm-6 col-xl-3">
-    <div class="stat-card">
-      <div class="stat-icon blue"><i class="bi bi-folder2-open"></i></div>
-      <div>
-        <div class="stat-value"><%= totalCuadros %></div>
-        <div class="stat-label">Cuadros PRIM registrados</div>
-      </div>
+<!-- Stats -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+  <div class="bg-white rounded-xl border border-slate-200/70 p-4 flex items-center gap-3">
+    <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0">
+      <i class="bi bi-folder2 text-lg"></i>
+    </div>
+    <div>
+      <div class="text-2xl font-bold text-slate-900 leading-none"><%= totalCuadros %></div>
+      <div class="text-xs text-slate-500 mt-1">Cuadros PRIM</div>
     </div>
   </div>
-  <div class="col-sm-6 col-xl-3">
-    <div class="stat-card">
-      <div class="stat-icon green"><i class="bi bi-people-fill"></i></div>
-      <div>
-        <div class="stat-value"><%= totalAlumnos %></div>
-        <div class="stat-label">Alumnos registrados</div>
-      </div>
+  <div class="bg-white rounded-xl border border-slate-200/70 p-4 flex items-center gap-3">
+    <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0">
+      <i class="bi bi-people text-lg"></i>
+    </div>
+    <div>
+      <div class="text-2xl font-bold text-slate-900 leading-none"><%= totalAlumnos %></div>
+      <div class="text-xs text-slate-500 mt-1">Alumnos</div>
     </div>
   </div>
-  <div class="col-sm-6 col-xl-3">
-    <div class="stat-card">
-      <div class="stat-icon amber"><i class="bi bi-hourglass-split"></i></div>
-      <div>
-        <div class="stat-value"><%= ocrEstados.revision || 0 %></div>
-        <div class="stat-label">Pendientes de revisión OCR</div>
-      </div>
+  <div class="bg-white rounded-xl border border-slate-200/70 p-4 flex items-center gap-3">
+    <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center flex-shrink-0">
+      <i class="bi bi-hourglass-split text-lg"></i>
+    </div>
+    <div>
+      <div class="text-2xl font-bold text-slate-900 leading-none"><%= ocrEstados.revision || 0 %></div>
+      <div class="text-xs text-slate-500 mt-1">Pendientes OCR</div>
     </div>
   </div>
-  <div class="col-sm-6 col-xl-3">
-    <div class="stat-card">
-      <div class="stat-icon purple"><i class="bi bi-cpu-fill"></i></div>
-      <div>
-        <div class="stat-value"><%= (ocrEstados.validado || 0) + (ocrEstados.rechazado || 0) + (ocrEstados.revision || 0) + (ocrEstados.pendiente || 0) %></div>
-        <div class="stat-label">Total trabajos OCR</div>
-      </div>
+  <div class="bg-white rounded-xl border border-slate-200/70 p-4 flex items-center gap-3">
+    <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center flex-shrink-0">
+      <i class="bi bi-cpu text-lg"></i>
+    </div>
+    <div>
+      <div class="text-2xl font-bold text-slate-900 leading-none"><%= Object.values(ocrEstados).reduce((a,b)=>a+b,0) %></div>
+      <div class="text-xs text-slate-500 mt-1">Trabajos OCR</div>
     </div>
   </div>
 </div>
 
-<div class="row g-4">
-  <!-- Acceso rápido -->
-  <div class="col-lg-4">
-    <div class="card-panel h-100">
-      <div class="card-panel-header">
-        <h2 class="card-panel-title"><i class="bi bi-lightning-fill me-2 text-warning"></i>Acceso rápido</h2>
+<!-- Quick access -->
+<div class="mb-6">
+  <div class="flex items-center justify-between mb-3">
+    <h2 class="text-sm font-semibold text-slate-800">Acceso rápido</h2>
+  </div>
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <a href="/cuadros/crear" class="bg-white border border-slate-200/70 rounded-xl p-4 flex items-center gap-3 hover:border-blue-200 hover:shadow-sm hover:-translate-y-px transition-all duration-150 group">
+      <div class="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0 group-hover:bg-blue-100 transition-colors">
+        <i class="bi bi-file-earmark-plus text-base"></i>
       </div>
-      <div class="p-4 d-flex flex-column gap-2">
-        <a href="/cuadros/crear" class="btn-primary-app justify-content-start">
-          <i class="bi bi-file-earmark-plus"></i> Registrar cuadro
-        </a>
-        <a href="/alumnos/crear" class="btn-secondary-app justify-content-start">
-          <i class="bi bi-person-plus-fill"></i> Nuevo alumno
-        </a>
-        <a href="/ocr/subir" class="btn-secondary-app justify-content-start">
-          <i class="bi bi-cloud-upload-fill"></i> Subir documento para OCR
-        </a>
-        <a href="/cuadros/busqueda" class="btn-secondary-app justify-content-start">
-          <i class="bi bi-search"></i> Buscar cuadros
-        </a>
-        <% if (ocrEstados.revision > 0) { %>
-        <a href="/ocr" class="d-flex align-items-center gap-2 justify-content-start btn-secondary-app" style="background:#fff7ed;border-color:#fed7aa;color:#c2410c;">
-          <i class="bi bi-exclamation-triangle-fill"></i>
-          Revisar <%= ocrEstados.revision %> documento(s) OCR
-        </a>
-        <% } %>
+      <div><div class="text-sm font-medium text-slate-800">Registrar</div><div class="text-xs text-slate-500">Cuadro PRIM</div></div>
+    </a>
+    <a href="/alumnos/crear" class="bg-white border border-slate-200/70 rounded-xl p-4 flex items-center gap-3 hover:border-emerald-200 hover:shadow-sm hover:-translate-y-px transition-all duration-150 group">
+      <div class="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0 group-hover:bg-emerald-100 transition-colors">
+        <i class="bi bi-person-plus text-base"></i>
       </div>
-    </div>
+      <div><div class="text-sm font-medium text-slate-800">Nuevo</div><div class="text-xs text-slate-500">Alumno</div></div>
+    </a>
+    <a href="/ocr/subir" class="bg-white border border-slate-200/70 rounded-xl p-4 flex items-center gap-3 hover:border-purple-200 hover:shadow-sm hover:-translate-y-px transition-all duration-150 group">
+      <div class="w-9 h-9 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center flex-shrink-0 group-hover:bg-purple-100 transition-colors">
+        <i class="bi bi-cloud-upload text-base"></i>
+      </div>
+      <div><div class="text-sm font-medium text-slate-800">Subir</div><div class="text-xs text-slate-500">Digitalizar OCR</div></div>
+    </a>
+    <a href="/cuadros/busqueda" class="bg-white border border-slate-200/70 rounded-xl p-4 flex items-center gap-3 hover:border-slate-300 hover:shadow-sm hover:-translate-y-px transition-all duration-150 group">
+      <div class="w-9 h-9 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0 group-hover:bg-slate-200 transition-colors">
+        <i class="bi bi-search text-base"></i>
+      </div>
+      <div><div class="text-sm font-medium text-slate-800">Buscar</div><div class="text-xs text-slate-500">Cuadros</div></div>
+    </a>
+  </div>
+</div>
+
+<% if (ocrEstados.revision > 0) { %>
+<div class="flex items-center gap-3 px-4 py-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 text-sm mb-6">
+  <i class="bi bi-exclamation-triangle flex-shrink-0"></i>
+  <span>Hay <strong><%= ocrEstados.revision %></strong> documento(s) esperando revisión OCR.</span>
+  <a href="/ocr" class="ml-auto text-amber-700 font-medium underline underline-offset-2 hover:no-underline flex-shrink-0">Revisar</a>
+</div>
+<% } %>
+
+<!-- Cuadros recientes -->
+<div class="bg-white rounded-xl border border-slate-200/70 overflow-hidden">
+  <div class="flex items-center justify-between px-5 py-3.5 border-b border-slate-100">
+    <h2 class="text-sm font-semibold text-slate-800">Cuadros recientes</h2>
+    <a href="/cuadros" class="text-xs text-blue-600 hover:text-blue-700 font-medium">Ver todos <i class="bi bi-arrow-right"></i></a>
   </div>
 
-  <!-- Últimos cuadros -->
-  <div class="col-lg-8">
-    <div class="card-panel">
-      <div class="card-panel-header">
-        <h2 class="card-panel-title"><i class="bi bi-clock-history me-2"></i>Cuadros recientes</h2>
-        <a href="/cuadros" class="btn-secondary-app" style="padding:5px 12px;font-size:12.5px;">
-          Ver todos <i class="bi bi-arrow-right"></i>
-        </a>
-      </div>
-      <% if (ultimosCuadros.length === 0) { %>
-        <div class="empty-state">
-          <i class="bi bi-folder2-open"></i>
-          <p>No hay cuadros registrados aún.</p>
-        </div>
-      <% } else { %>
-      <table class="table-app">
-        <thead>
-          <tr>
-            <th>Código</th>
-            <th>Grado</th>
-            <th>Año</th>
-            <th>Origen</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <% ultimosCuadros.forEach(c => { %>
-          <tr>
-            <td>
-              <div class="d-flex align-items-center gap-2">
-                <div style="width:32px;height:32px;border-radius:8px;background:#dbeafe;display:flex;align-items:center;justify-content:center;">
-                  <i class="bi bi-file-earmark-text" style="color:#1d4ed8;font-size:15px;"></i>
-                </div>
-                <span class="fw-semibold"><%= c.codigo %></span>
-              </div>
-            </td>
-            <td class="text-muted"><%= c.grado_nombre || '—' %></td>
-            <td><%= c.anio %></td>
-            <td><span class="badge-app badge-<%= c.origen %>"><%= c.origen %></span></td>
-            <td><a href="/cuadros/<%= c.id %>" class="btn-secondary-app" style="padding:4px 10px;font-size:12px;">Ver</a></td>
-          </tr>
-          <% }) %>
-        </tbody>
-      </table>
-      <% } %>
-    </div>
+  <% if (ultimosCuadros.length === 0) { %>
+  <div class="py-14 text-center">
+    <i class="bi bi-folder2-open text-4xl text-slate-200 block mb-3"></i>
+    <p class="text-sm text-slate-400">No hay cuadros registrados aún.</p>
+    <a href="/cuadros/crear" class="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
+      <i class="bi bi-plus-lg"></i> Registrar el primero
+    </a>
   </div>
+  <% } else { %>
+  <div class="table-wrap">
+    <table class="w-full text-sm min-w-[520px]">
+      <thead class="bg-slate-50/80">
+        <tr>
+          <th class="px-5 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Código</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Grado</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Año</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Origen</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Validado</th>
+          <th class="px-4 py-3"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% ultimosCuadros.forEach(c => { %>
+        <tr class="border-t border-slate-100 hover:bg-slate-50/60 transition-colors">
+          <td class="px-5 py-3">
+            <div class="flex items-center gap-2.5">
+              <div class="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
+                <i class="bi bi-file-earmark-text text-blue-500 text-xs"></i>
+              </div>
+              <span class="font-medium text-slate-800"><%= c.codigo %></span>
+            </div>
+          </td>
+          <td class="px-4 py-3 text-slate-500"><%= c.grado_nombre || '—' %></td>
+          <td class="px-4 py-3 text-slate-600 font-medium"><%= c.anio %></td>
+          <td class="px-4 py-3">
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium <%= c.origen === 'ocr' ? 'bg-purple-50 text-purple-700' : 'bg-blue-50 text-blue-700' %>">
+              <%= c.origen %>
+            </span>
+          </td>
+          <td class="px-4 py-3">
+            <% if (c.validado_por) { %>
+              <span class="text-emerald-600 text-xs font-medium"><i class="bi bi-check-circle-fill mr-1"></i>Validado</span>
+            <% } else { %>
+              <span class="text-slate-400 text-xs">Pendiente</span>
+            <% } %>
+          </td>
+          <td class="px-4 py-3 text-right">
+            <a href="/cuadros/<%= c.id %>" class="text-xs text-blue-600 hover:text-blue-700 font-medium">Ver</a>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+  <% } %>
 </div>

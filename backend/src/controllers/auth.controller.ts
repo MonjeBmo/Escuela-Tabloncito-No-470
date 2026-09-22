@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import * as authService from '../services/auth.service';
 import * as userRepo from '../repositories/user.repository';
+import * as rolesRepo from '../repositories/roles.repository';
 
 export function showLogin(req: Request, res: Response): void {
   if (req.session.usuario) { res.redirect('/dashboard'); return; }
@@ -30,22 +31,6 @@ export function doLogout(req: Request, res: Response): void {
   });
 }
 
-export async function showUsuarios(req: Request, res: Response): Promise<void> {
-  const usuarios = await userRepo.listAll();
-  res.render('auth/usuarios', { titulo: 'Gestión de usuarios', usuarios });
-}
-
-export async function crearUsuario(req: Request, res: Response): Promise<void> {
-  const { nombre, username, password, rol } = req.body as Record<string, string>;
-  try {
-    await authService.createUser({ nombre, username, password, rol });
-    req.session.flash = { tipo: 'success', mensaje: 'Usuario creado exitosamente.' };
-  } catch {
-    req.session.flash = { tipo: 'danger', mensaje: 'Error al crear el usuario. Verifique que el nombre de usuario no exista.' };
-  }
-  res.redirect('/auth/usuarios');
-}
-
 export function showPerfil(req: Request, res: Response): void {
   res.render('auth/perfil', { titulo: 'Mi perfil' });
 }
@@ -60,4 +45,9 @@ export async function cambiarPassword(req: Request, res: Response): Promise<void
     req.session.flash = { tipo: 'danger', mensaje: 'La contraseña actual no es correcta.' };
   }
   res.redirect('/auth/perfil');
+}
+
+// Redirige al módulo admin de usuarios
+export function showUsuarios(req: Request, res: Response): void {
+  res.redirect('/admin/usuarios');
 }
