@@ -61,8 +61,16 @@ async function enviarAOcr(jobId: number, documentoKey: string): Promise<void> {
       { hostname: url.hostname, port: url.port || 8000, path: url.pathname, method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) } },
       (res) => {
-        res.resume();
-        res.on('end', () => resolve());
+        const chunks: Buffer[] = [];
+        res.on('data', (chunk) => chunks.push(chunk));
+        res.on('end', () => {
+          if ((res.statusCode ?? 500) >= 400) {
+            const detalle = Buffer.concat(chunks).toString('utf8');
+            reject(new Error(`OCR respondió ${res.statusCode}: ${detalle}`));
+          } else {
+            resolve();
+          }
+        });
       }
     );
     req.on('error', reject);
