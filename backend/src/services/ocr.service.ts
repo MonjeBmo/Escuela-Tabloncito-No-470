@@ -108,6 +108,16 @@ export async function rechazarJob(jobId: number, usuarioId: number, notas: strin
   await repo.reject(jobId, usuarioId, notas);
 }
 
+export async function reprocesar(jobId: number): Promise<void> {
+  const job = await repo.findById(jobId);
+  if (!job) throw new Error('Job no encontrado');
+  await repo.resetToPendiente(jobId);
+  enviarAOcr(jobId, job.documento_key).catch(async (err) => {
+    console.error(`[OCR] Error reprocesando job ${jobId}:`, err.message);
+    await repo.markError(jobId, err.message).catch(() => {});
+  });
+}
+
 // Callback que llama el servicio OCR cuando termina
 export async function recibirResultadoOcr(
   jobId: number,

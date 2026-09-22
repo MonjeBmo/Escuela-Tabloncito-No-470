@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { UploadedFile } from 'express-fileupload';
 import * as service from '../services/ocr.service';
 import * as gradosRepo from '../repositories/grados.repository';
+import { getPresignedUrl } from '../shared/minio';
 
 const LIMITES_VALIDOS = [10, 20];
 
@@ -58,7 +59,20 @@ export async function showRevision(req: Request, res: Response): Promise<void> {
     res.redirect('/ocr');
     return;
   }
-  res.render('ocr/revision', { titulo: 'Revisar extracción OCR', job, grados });
+  const docUrl = await getPresignedUrl(job.documento_key, 3600).catch(() => null);
+  res.render('ocr/revision', { titulo: 'Revisar extracción OCR', job, grados, docUrl });
+}
+
+export async function doReprocesar(req: Request, res: Response): Promise<void> {
+  const id = parseInt(req.params.id);
+  try {
+    await service.reprocesar(id);
+    req.session.flash = { tipo: 'info', mensaje: `Job #${id} enviado a reprocesar. Recargue en unos momentos.` };
+  } catch (err) {
+    console.error('[OCR] Error al reprocesar:', err);
+    req.session.flash = { tipo: 'danger', mensaje: 'Error al reprocesar el documento.' };
+  }
+  res.redirect(`/ocr/revision/${id}`);
 }
 
 export async function doValidar(req: Request, res: Response): Promise<void> {

@@ -70,6 +70,13 @@ export async function markError(id: number, mensaje: string): Promise<void> {
   );
 }
 
+export async function resetToPendiente(id: number): Promise<void> {
+  await pool.query(
+    `UPDATE ocr_jobs SET estado='pendiente', campos_extraidos=NULL, confianza=NULL WHERE id=$1`,
+    [id]
+  );
+}
+
 export async function count(): Promise<number> {
   const { rows } = await pool.query(`SELECT COUNT(*)::int AS n FROM ocr_jobs`);
   return rows[0].n;

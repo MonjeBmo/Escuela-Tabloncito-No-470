@@ -12,8 +12,9 @@ router.use(requireAuth);
 router.get('/',              ctrl.index);
 router.get('/subir',         requireRol('director', 'administrativo', 'validador_ocr'), ctrl.showUpload);
 router.post('/subir',        requireRol('director', 'administrativo', 'validador_ocr'), ctrl.doUpload);
-router.get('/revision/:id',  requireRol('director', 'administrativo', 'validador_ocr'), ctrl.showRevision);
-router.post('/revision/:id/validar',  requireRol('director', 'administrativo', 'validador_ocr'), ctrl.doValidar);
-router.post('/revision/:id/rechazar', requireRol('director', 'administrativo', 'validador_ocr'), ctrl.doRechazar);
+router.get('/revision/:id',             requireRol('director', 'administrativo', 'validador_ocr'), ctrl.showRevision);
+router.post('/revision/:id/validar',   requireRol('director', 'administrativo', 'validador_ocr'), ctrl.doValidar);
+router.post('/revision/:id/rechazar',  requireRol('director', 'administrativo', 'validador_ocr'), ctrl.doRechazar);
+router.post('/revision/:id/reprocesar',requireRol('director', 'administrativo', 'validador_ocr'), ctrl.doReprocesar);
 
 export default router;
