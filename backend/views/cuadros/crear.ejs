@@ -9,7 +9,8 @@
   </div>
 </div>
 
-<script id="sections-data" type="application/json"><%- JSON.stringify(sections) %></script>
+<script id="sections-data"  type="application/json"><%- JSON.stringify(sections) %></script>
+<script id="teachers-data" type="application/json"><%- JSON.stringify(teachers) %></script>
 
 <form method="POST" action="/cuadros/crear" enctype="multipart/form-data">
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
@@ -57,8 +58,21 @@
           </div>
           <div class="sm:col-span-2">
             <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Docente</label>
-            <input type="text" name="docente" placeholder="Nombre completo del docente"
-              class="w-full h-9 px-3 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 placeholder-slate-400 focus:bg-white focus:border-blue-400 transition-colors">
+            <div class="relative">
+              <i class="bi bi-person absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm pointer-events-none"></i>
+              <input type="text" id="docente-input" name="docente"
+                placeholder="Buscar maestro o escribir nombre..."
+                autocomplete="off"
+                class="w-full h-9 pl-8 pr-8 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 placeholder-slate-400 focus:bg-white focus:border-blue-400 transition-colors">
+              <button type="button" id="docente-clear" class="hidden absolute right-2 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500 transition-colors">
+                <i class="bi bi-x-circle-fill text-sm"></i>
+              </button>
+              <div id="docente-dropdown"
+                class="hidden absolute z-30 top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg overflow-hidden">
+                <div id="docente-list" class="max-h-52 overflow-y-auto"></div>
+                <div id="docente-empty" class="hidden px-4 py-3 text-xs text-slate-400 text-center">Sin coincidencias — se guardará el texto ingresado</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -118,5 +132,74 @@
   document.getElementById('doc-file').addEventListener('change', function () {
     document.getElementById('file-preview').textContent = this.files[0]?.name ?? '';
   });
+
+  // ── Combobox docente ────────────────────────────────────────
+  (function () {
+    const teachers = JSON.parse(document.getElementById('teachers-data').textContent);
+    const input    = document.getElementById('docente-input');
+    const dropdown = document.getElementById('docente-dropdown');
+    const list     = document.getElementById('docente-list');
+    const empty    = document.getElementById('docente-empty');
+    const clearBtn = document.getElementById('docente-clear');
+    let open = false;
+
+    function render(q) {
+      const lq = q.toLowerCase();
+      const filtered = teachers.filter(t =>
+        t.full_name.toLowerCase().includes(lq) ||
+        (t.email || '').toLowerCase().includes(lq)
+      );
+      list.innerHTML = '';
+      if (filtered.length === 0) {
+        empty.classList.remove('hidden');
+      } else {
+        empty.classList.add('hidden');
+        filtered.slice(0, 8).forEach(t => {
+          const div = document.createElement('div');
+          div.className = 'flex items-center gap-3 px-4 py-2.5 cursor-pointer hover:bg-blue-50 transition-colors';
+          div.innerHTML =
+            '<div class="w-7 h-7 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold flex-shrink-0">' +
+              t.full_name.charAt(0).toUpperCase() +
+            '</div>' +
+            '<div class="min-w-0">' +
+              '<div class="text-sm font-medium text-slate-800 truncate">' + t.full_name + '</div>' +
+              (t.email ? '<div class="text-xs text-slate-400 truncate">' + t.email + '</div>' : '') +
+            '</div>';
+          div.addEventListener('mousedown', function (e) {
+            e.preventDefault();
+            input.value = t.full_name;
+            clearBtn.classList.remove('hidden');
+            closeDropdown();
+          });
+          list.appendChild(div);
+        });
+      }
+    }
+
+    function openDropdown() {
+      render(input.value);
+      dropdown.classList.remove('hidden');
+      open = true;
+    }
+
+    function closeDropdown() {
+      dropdown.classList.add('hidden');
+      open = false;
+    }
+
+    input.addEventListener('focus', () => openDropdown());
+    input.addEventListener('input', function () {
+      clearBtn.classList.toggle('hidden', !this.value);
+      render(this.value);
+      if (!open) openDropdown();
+    });
+    input.addEventListener('blur', () => setTimeout(closeDropdown, 150));
+
+    clearBtn.addEventListener('click', function () {
+      input.value = '';
+      this.classList.add('hidden');
+      input.focus();
+    });
+  })();
 })();
 </script>

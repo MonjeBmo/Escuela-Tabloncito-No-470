@@ -2,41 +2,81 @@
   <a href="/admin/roles" class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 transition-colors">
     <i class="bi bi-arrow-left text-sm"></i>
   </a>
-  <div>
+  <div class="flex-1 min-w-0">
     <h1 class="text-xl font-semibold text-slate-900">Editar rol: <span class="text-blue-600"><%= role.nombre %></span></h1>
-    <p class="text-sm text-slate-500 mt-0.5">Seleccione los permisos y alcance (scope) para este rol</p>
+    <p class="text-sm text-slate-500 mt-0.5">Seleccione los permisos y su alcance para este rol</p>
+  </div>
+  <div id="perm-counter" class="text-right">
+    <span id="perm-count" class="text-2xl font-bold text-blue-600">0</span>
+    <div class="text-xs text-slate-400">permisos activos</div>
   </div>
 </div>
 
-<form method="POST" action="/admin/roles/<%= role.id %>/permisos">
-  <div class="bg-white rounded-xl border border-slate-200/70 overflow-hidden mb-5">
-    <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between">
-      <h2 class="text-sm font-semibold text-slate-800">Permisos del rol</h2>
-      <span class="text-xs text-slate-400">scope: none | own | assigned | all</span>
-    </div>
+<form method="POST" action="/admin/roles/<%= role.id %>/permisos" id="perms-form">
 
-    <% const modulos = [...new Set(permisos.map(p => p.modulo))]; %>
+  <%
+    const scopeLabels = { none: 'Sin acceso', own: 'Propios', assigned: 'Asignados', all: 'Todos' };
+    const scopeColors = { none: 'text-slate-400', own: 'text-amber-600', assigned: 'text-blue-600', all: 'text-emerald-600' };
+    const modulos = [...new Set(permisos.map(p => p.modulo))];
+  %>
+
+  <div class="space-y-4 mb-6">
     <% modulos.forEach(modulo => { %>
-    <div class="px-5 py-4 border-b border-slate-50 last:border-0">
-      <div class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3"><%= modulo %></div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <% permisos.filter(p => p.modulo === modulo).forEach(p => { %>
-        <div class="flex items-center justify-between gap-3 p-3 rounded-lg border border-slate-100 hover:border-slate-200 transition-colors">
-          <label class="flex items-center gap-2.5 cursor-pointer min-w-0">
-            <input type="checkbox" name="perms" value="<%= p.id %>"
-              <%= p.scope ? 'checked' : '' %>
-              class="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 flex-shrink-0">
+    <%
+      const modPerms = permisos.filter(p => p.modulo === modulo);
+      const activeCount = modPerms.filter(p => p.scope && p.scope !== 'none').length;
+    %>
+    <div class="bg-white rounded-xl border border-slate-200/70 overflow-hidden" data-module-block>
+      <!-- Module header -->
+      <div class="px-5 py-3 bg-slate-50/80 border-b border-slate-100 flex items-center gap-3">
+        <span class="text-xs font-semibold text-slate-700 uppercase tracking-wide flex-1"><%= modulo %></span>
+        <span class="module-counter inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+          <%= activeCount %> / <%= modPerms.length %>
+        </span>
+        <button type="button" class="text-xs text-blue-600 hover:text-blue-700 font-medium module-check-all" data-action="all">
+          Todos
+        </button>
+        <span class="text-slate-200">|</span>
+        <button type="button" class="text-xs text-slate-400 hover:text-slate-600 font-medium module-check-all" data-action="none">
+          Ninguno
+        </button>
+      </div>
+
+      <!-- Permissions grid -->
+      <div class="divide-y divide-slate-50">
+        <% modPerms.forEach(p => { %>
+        <%
+          const isChecked = !!(p.scope && p.scope !== 'none');
+          const currentScope = p.scope || 'all';
+        %>
+        <div class="perm-row flex items-center gap-4 px-5 py-3 transition-colors <%= isChecked ? 'bg-white' : 'bg-slate-50/30' %>"
+             data-module="<%= modulo %>">
+          <!-- Checkbox + label -->
+          <label class="flex items-center gap-3 cursor-pointer flex-1 min-w-0">
+            <div class="relative flex-shrink-0">
+              <input type="checkbox" name="perms" value="<%= p.id %>"
+                <%= isChecked ? 'checked' : '' %>
+                class="perm-checkbox w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer">
+            </div>
             <div class="min-w-0">
-              <div class="text-sm font-medium text-slate-700 truncate"><%= p.label || p.codigo %></div>
-              <div class="text-xs text-slate-400 font-mono"><%= p.codigo %></div>
+              <div class="text-sm font-medium text-slate-800 leading-tight"><%= p.label || p.codigo %></div>
+              <div class="text-xs text-slate-400 font-mono mt-0.5"><%= p.codigo %></div>
             </div>
           </label>
-          <select name="scopes[<%= p.id %>]"
-            class="flex-shrink-0 h-8 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 px-2 focus:border-blue-400 transition-colors">
-            <% ['none','own','assigned','all'].forEach(s => { %>
-            <option value="<%= s %>" <%= (p.scope || 'all') === s ? 'selected' : '' %>><%= s %></option>
-            <% }) %>
-          </select>
+
+          <!-- Scope selector -->
+          <div class="flex-shrink-0">
+            <select name="scopes[<%= p.id %>]"
+              class="perm-scope h-8 text-xs rounded-lg border px-2 focus:ring-2 focus:ring-blue-300 focus:border-blue-400 transition-colors cursor-pointer
+                <%= isChecked ? 'border-slate-200 bg-white text-slate-700' : 'border-transparent bg-slate-100 text-slate-400' %>">
+              <% ['none','own','assigned','all'].forEach(s => { %>
+              <option value="<%= s %>" <%= currentScope === s ? 'selected' : '' %>
+                class="<%= scopeColors[s] %>">
+                <%= scopeLabels[s] %>
+              </option>
+              <% }) %>
+            </select>
+          </div>
         </div>
         <% }) %>
       </div>
@@ -44,12 +84,89 @@
     <% }) %>
   </div>
 
-  <div class="flex items-center gap-3">
-    <button type="submit" class="px-5 h-10 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+  <!-- Sticky save bar -->
+  <div class="sticky bottom-4 flex items-center gap-3">
+    <button type="submit" class="px-6 h-10 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 shadow-lg shadow-blue-600/30">
       <i class="bi bi-floppy"></i> Guardar permisos
     </button>
-    <a href="/admin/roles" class="px-5 h-10 flex items-center bg-white border border-slate-200 text-slate-600 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors">
+    <a href="/admin/roles" class="px-5 h-10 flex items-center bg-white border border-slate-200 text-slate-600 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors shadow">
       Cancelar
     </a>
+    <span class="ml-auto text-xs text-slate-400 hidden sm:block">Los cambios no se guardan automáticamente</span>
   </div>
 </form>
+
+<script>
+(function () {
+  // Counter update
+  function updateCounter() {
+    const total = document.querySelectorAll('.perm-checkbox:checked').length;
+    document.getElementById('perm-count').textContent = total;
+
+    // Update per-module counters
+    document.querySelectorAll('[data-module-block]').forEach(block => {
+      const all   = block.querySelectorAll('.perm-checkbox').length;
+      const active = block.querySelectorAll('.perm-checkbox:checked').length;
+      block.querySelector('.module-counter').textContent = active + ' / ' + all;
+    });
+  }
+
+  // Checkbox ↔ scope row styling
+  function syncRow(checkbox) {
+    const row   = checkbox.closest('.perm-row');
+    const scope = row.querySelector('.perm-scope');
+    if (checkbox.checked) {
+      row.classList.remove('bg-slate-50/30');
+      row.classList.add('bg-white');
+      scope.classList.remove('border-transparent', 'bg-slate-100', 'text-slate-400');
+      scope.classList.add('border-slate-200', 'bg-white', 'text-slate-700');
+      if (scope.value === 'none') scope.value = 'all';
+    } else {
+      row.classList.add('bg-slate-50/30');
+      row.classList.remove('bg-white');
+      scope.classList.add('border-transparent', 'bg-slate-100', 'text-slate-400');
+      scope.classList.remove('border-slate-200', 'bg-white', 'text-slate-700');
+      scope.value = 'none';
+    }
+  }
+
+  // Scope change → auto-check if was unchecked
+  document.querySelectorAll('.perm-scope').forEach(sel => {
+    sel.addEventListener('change', function () {
+      const row = this.closest('.perm-row');
+      const cb  = row.querySelector('.perm-checkbox');
+      if (this.value !== 'none' && !cb.checked) {
+        cb.checked = true;
+      } else if (this.value === 'none') {
+        cb.checked = false;
+      }
+      syncRow(cb);
+      updateCounter();
+    });
+  });
+
+  document.querySelectorAll('.perm-checkbox').forEach(cb => {
+    cb.addEventListener('change', function () {
+      syncRow(this);
+      updateCounter();
+    });
+  });
+
+  // "Todos / Ninguno" per module
+  document.querySelectorAll('.module-check-all').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const action = this.dataset.action;
+      const block  = this.closest('[data-module-block]');
+      block.querySelectorAll('.perm-checkbox').forEach(cb => {
+        cb.checked = (action === 'all');
+        syncRow(cb);
+      });
+      updateCounter();
+    });
+  });
+
+  // Init
+  document.querySelectorAll('.perm-checkbox').forEach(cb => syncRow(cb));
+  updateCounter();
+})();
+</script>

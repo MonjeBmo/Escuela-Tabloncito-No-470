@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { UploadedFile } from 'express-fileupload';
 import * as service from '../services/cuadros.service';
+import * as teachersRepo from '../repositories/teachers.repository';
 
 const LIMITES_VALIDOS = [10, 20];
 
@@ -53,8 +54,11 @@ export async function showBusqueda(req: Request, res: Response): Promise<void> {
 }
 
 export async function showCreate(req: Request, res: Response): Promise<void> {
-  const { grades, sections } = await service.obtenerGradesYSecciones();
-  res.render('cuadros/crear', { titulo: 'Registrar cuadro', grades, sections });
+  const [{ grades, sections }, teachers] = await Promise.all([
+    service.obtenerGradesYSecciones(),
+    teachersRepo.findAll(true),
+  ]);
+  res.render('cuadros/crear', { titulo: 'Registrar cuadro', grades, sections, teachers });
 }
 
 export async function doCreate(req: Request, res: Response): Promise<void> {

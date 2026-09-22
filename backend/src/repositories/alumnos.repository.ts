@@ -5,7 +5,7 @@ const COLS = `
   a.id, a.primer_nombre, a.segundo_nombre, a.primer_apellido, a.segundo_apellido,
   a.cui, a.fecha_nacimiento, a.genero, a.section_id, s.display_name AS grado_nombre,
   a.anio_ingreso, a.municipio, a.departamento,
-  a.nombre_encargado, a.telefono_encargado, a.registrado_por, a.created_at, a.updated_at
+  a.nombre_encargado, a.telefono_encargado, a.registrado_por, a.created_at, a.updated_at, a.deleted_at
 `;
 const FROM = `
   FROM alumnos a
@@ -15,19 +15,19 @@ const FROM = `
 
 export async function findAll(limit = 20, offset = 0): Promise<Alumno[]> {
   const { rows } = await pool.query(
-    `SELECT ${COLS} ${FROM} ORDER BY a.primer_apellido, a.primer_nombre LIMIT $1 OFFSET $2`,
+    `SELECT ${COLS} ${FROM} WHERE a.deleted_at IS NULL ORDER BY a.primer_apellido, a.primer_nombre LIMIT $1 OFFSET $2`,
     [limit, offset]
   );
   return rows;
 }
 
 export async function count(): Promise<number> {
-  const { rows } = await pool.query('SELECT COUNT(*)::int AS n FROM alumnos');
+  const { rows } = await pool.query('SELECT COUNT(*)::int AS n FROM alumnos WHERE deleted_at IS NULL');
   return rows[0].n;
 }
 
 export async function findById(id: number): Promise<Alumno | null> {
-  const { rows } = await pool.query(`SELECT ${COLS} ${FROM} WHERE a.id = $1`, [id]);
+  const { rows } = await pool.query(`SELECT ${COLS} ${FROM} WHERE a.id = $1 AND a.deleted_at IS NULL`, [id]);
   return rows[0] ?? null;
 }
 
@@ -38,7 +38,7 @@ export interface AlumnoSearch {
 }
 
 export async function search(params: AlumnoSearch, limit = 20, offset = 0): Promise<Alumno[]> {
-  const conds: string[] = [];
+  const conds: string[] = ['a.deleted_at IS NULL'];
   const vals: unknown[] = [];
   let idx = 1;
 
@@ -55,7 +55,7 @@ export async function search(params: AlumnoSearch, limit = 20, offset = 0): Prom
     vals.push(params.anio_ingreso); idx++;
   }
 
-  const where = conds.length ? `WHERE ${conds.join(' AND ')}` : '';
+  const where = `WHERE ${conds.join(' AND ')}`;
   vals.push(limit, offset);
 
   const { rows } = await pool.query(
@@ -65,7 +65,7 @@ export async function search(params: AlumnoSearch, limit = 20, offset = 0): Prom
   return rows;
 }
 
-export async function create(data: Omit<Alumno, 'id' | 'created_at' | 'updated_at' | 'grado_nombre'>): Promise<Alumno> {
+export async function create(data: Omit<Alumno, 'id' | 'created_at' | 'updated_at' | 'deleted_at' | 'grado_nombre'>): Promise<Alumno> {
   const { rows } = await pool.query(
     `INSERT INTO alumnos
        (primer_nombre, segundo_nombre, primer_apellido, segundo_apellido,
@@ -84,5 +84,5 @@ export async function create(data: Omit<Alumno, 'id' | 'created_at' | 'updated_a
 }
 
 export async function remove(id: number): Promise<void> {
-  await pool.query('DELETE FROM alumnos WHERE id = $1', [id]);
+  await pool.query('UPDATE alumnos SET deleted_at = NOW() WHERE id = $1', [id]);
 }

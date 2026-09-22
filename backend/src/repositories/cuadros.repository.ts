@@ -6,7 +6,7 @@ const COLS = `
   c.docente, c.total_alumnos,
   c.documento_key, c.documento_nombre, c.documento_mime,
   c.datos_extra, c.subido_por, u.nombre AS subido_por_nombre,
-  c.validado_por, c.validado_en, c.origen, c.created_at, c.updated_at
+  c.validado_por, c.validado_en, c.origen, c.created_at, c.updated_at, c.deleted_at
 `;
 
 const FROM = `
@@ -18,19 +18,19 @@ const FROM = `
 
 export async function findAll(limit = 20, offset = 0): Promise<Cuadro[]> {
   const { rows } = await pool.query(
-    `SELECT ${COLS} ${FROM} ORDER BY c.anio DESC, c.created_at DESC LIMIT $1 OFFSET $2`,
+    `SELECT ${COLS} ${FROM} WHERE c.deleted_at IS NULL ORDER BY c.anio DESC, c.created_at DESC LIMIT $1 OFFSET $2`,
     [limit, offset]
   );
   return rows;
 }
 
 export async function count(): Promise<number> {
-  const { rows } = await pool.query('SELECT COUNT(*)::int AS n FROM cuadros');
+  const { rows } = await pool.query('SELECT COUNT(*)::int AS n FROM cuadros WHERE deleted_at IS NULL');
   return rows[0].n;
 }
 
 export async function findById(id: number): Promise<Cuadro | null> {
-  const { rows } = await pool.query(`SELECT ${COLS} ${FROM} WHERE c.id = $1`, [id]);
+  const { rows } = await pool.query(`SELECT ${COLS} ${FROM} WHERE c.id = $1 AND c.deleted_at IS NULL`, [id]);
   return rows[0] ?? null;
 }
 
@@ -42,7 +42,7 @@ export interface SearchParams {
 }
 
 export async function search(params: SearchParams, limit = 20, offset = 0): Promise<Cuadro[]> {
-  const conditions: string[] = [];
+  const conditions: string[] = ['c.deleted_at IS NULL'];
   const values: unknown[] = [];
   let idx = 1;
 
@@ -63,7 +63,7 @@ export async function search(params: SearchParams, limit = 20, offset = 0): Prom
     values.push(params.origen); idx++;
   }
 
-  const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+  const where = `WHERE ${conditions.join(' AND ')}`;
   values.push(limit, offset);
 
   const { rows } = await pool.query(
@@ -104,18 +104,18 @@ export async function create(data: {
 
 export async function validate(id: number, usuarioId: number): Promise<void> {
   await pool.query(
-    'UPDATE cuadros SET validado_por=$1, validado_en=NOW() WHERE id=$2',
+    'UPDATE cuadros SET validado_por=$1, validado_en=NOW() WHERE id=$2 AND deleted_at IS NULL',
     [usuarioId, id]
   );
 }
 
 export async function remove(id: number): Promise<void> {
-  await pool.query('DELETE FROM cuadros WHERE id = $1', [id]);
+  await pool.query('UPDATE cuadros SET deleted_at = NOW() WHERE id = $1', [id]);
 }
 
 export async function recentYears(): Promise<number[]> {
   const { rows } = await pool.query(
-    'SELECT DISTINCT anio FROM cuadros ORDER BY anio DESC LIMIT 10'
+    'SELECT DISTINCT anio FROM cuadros WHERE deleted_at IS NULL ORDER BY anio DESC LIMIT 10'
   );
   return rows.map((r: { anio: number }) => r.anio);
 }

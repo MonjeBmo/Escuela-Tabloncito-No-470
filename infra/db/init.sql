@@ -137,6 +137,7 @@ CREATE TABLE IF NOT EXISTS cuadros (
   origen           VARCHAR(20)   NOT NULL DEFAULT 'manual',
   created_at       TIMESTAMPTZ   NOT NULL DEFAULT NOW(),
   updated_at       TIMESTAMPTZ   NOT NULL DEFAULT NOW(),
+  deleted_at       TIMESTAMPTZ   DEFAULT NULL,
   tsv              TSVECTOR
 );
 
@@ -183,6 +184,7 @@ CREATE TABLE IF NOT EXISTS alumnos (
   registrado_por     INTEGER      REFERENCES usuarios(id) ON DELETE SET NULL,
   created_at         TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
   updated_at         TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+  deleted_at         TIMESTAMPTZ  DEFAULT NULL,
   tsv                TSVECTOR
 );
 
