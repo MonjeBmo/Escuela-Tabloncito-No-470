@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import * as ctrl from '../controllers/admin.controller';
+import * as importCtrl from '../controllers/importar.controller';
 import { requireAuth, requirePermission } from '../shared/auth.middleware';
 
 const router = Router();
@@ -39,5 +40,13 @@ router.post('/maestros/asignacion', requirePermission('admin.teachers'), ctrl.cr
 router.post('/maestros',            requirePermission('admin.teachers'), ctrl.crearMaestro);
 router.post('/maestros/:id',        requirePermission('admin.teachers'), ctrl.editarMaestro);
 router.post('/maestros/:id/toggle', requirePermission('admin.teachers'), ctrl.toggleMaestro);
+
+// Importación masiva (Excel)
+router.get('/importar/plantilla/:modulo', requirePermission('admin.users'), importCtrl.descargarPlantilla);
+router.post('/importar/:modulo',          requirePermission('admin.users'), importCtrl.procesarImport);
+
+// Ciclo escolar
+router.get('/ciclo',           requirePermission('admin.users'), importCtrl.showCiclo);
+router.post('/ciclo/promover', requirePermission('admin.users'), importCtrl.ejecutarPromocion);
 
 export default router;
