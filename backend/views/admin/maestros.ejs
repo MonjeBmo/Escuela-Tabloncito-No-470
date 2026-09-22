@@ -1,0 +1,198 @@
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-xl font-semibold text-slate-900">Maestros</h1>
+    <p class="text-sm text-slate-500 mt-0.5">Registro de docentes y asignaciones por sección</p>
+  </div>
+</div>
+
+<!-- Tabs -->
+<div class="flex border-b border-slate-200 mb-5">
+  <button type="button" data-tab="lista"
+    class="tab-btn px-4 py-2.5 text-sm font-medium text-blue-600 border-b-2 border-blue-600 -mb-px">
+    Maestros
+  </button>
+  <button type="button" data-tab="asignacion"
+    class="tab-btn px-4 py-2.5 text-sm font-medium text-slate-500 hover:text-slate-700 border-b-2 border-transparent -mb-px transition-colors">
+    Nueva asignación
+  </button>
+</div>
+
+<!-- Lista de maestros -->
+<div id="tab-lista" class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+  <div class="lg:col-span-2">
+    <div class="bg-white rounded-xl border border-slate-200/70 overflow-hidden">
+      <% if (teachers.length === 0) { %>
+      <div class="py-14 text-center px-4">
+        <i class="bi bi-person-workspace text-4xl text-slate-200 block mb-3"></i>
+        <p class="text-sm text-slate-400">No hay maestros registrados.</p>
+      </div>
+      <% } else { %>
+      <div class="table-wrap">
+        <table class="w-full text-sm min-w-[440px]">
+          <thead class="bg-slate-50/80">
+            <tr>
+              <th class="px-5 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Nombre</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Contacto</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Estado</th>
+              <th class="px-4 py-3 w-12"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% teachers.forEach(t => { %>
+            <tr class="border-t border-slate-100 hover:bg-slate-50/60 transition-colors">
+              <td class="px-5 py-3.5">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold flex-shrink-0">
+                    <%= t.full_name.charAt(0).toUpperCase() %>
+                  </div>
+                  <div class="min-w-0">
+                    <div class="font-medium text-slate-800 truncate"><%= t.full_name %></div>
+                    <% if (t.username) { %><div class="text-xs text-slate-400">@<%= t.username %></div><% } %>
+                  </div>
+                </div>
+              </td>
+              <td class="px-4 py-3.5">
+                <% if (t.email) { %><div class="text-xs text-slate-600 truncate max-w-[140px]"><%= t.email %></div><% } %>
+                <% if (t.phone) { %><div class="text-xs text-slate-400"><%= t.phone %></div><% } %>
+                <% if (!t.email && !t.phone) { %><span class="text-slate-300 text-xs">—</span><% } %>
+              </td>
+              <td class="px-4 py-3.5">
+                <% if (t.is_active) { %>
+                <span class="inline-flex items-center gap-1 text-xs text-emerald-700"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Activo</span>
+                <% } else { %>
+                <span class="inline-flex items-center gap-1 text-xs text-slate-400"><span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>Inactivo</span>
+                <% } %>
+              </td>
+              <td class="px-4 py-3.5 text-right">
+                <form method="POST" action="/admin/maestros/<%= t.id %>/toggle">
+                  <button type="submit" class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 transition-colors">
+                    <i class="bi bi-toggle-<%= t.is_active ? 'on text-emerald-600' : 'off' %> text-base"></i>
+                  </button>
+                </form>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+      <% } %>
+    </div>
+  </div>
+  <div>
+    <div class="bg-white rounded-xl border border-slate-200/70 p-5">
+      <h2 class="text-sm font-semibold text-slate-800 mb-4">Registrar maestro</h2>
+      <form method="POST" action="/admin/maestros" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Nombre completo <span class="text-red-400">*</span></label>
+          <input type="text" name="full_name" required
+            class="w-full h-9 px-3 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 focus:bg-white focus:border-blue-400 transition-colors">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Correo electrónico</label>
+          <input type="email" name="email"
+            class="w-full h-9 px-3 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 focus:bg-white focus:border-blue-400 transition-colors">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Teléfono</label>
+          <input type="tel" name="phone" placeholder="####-####"
+            class="w-full h-9 px-3 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 focus:bg-white focus:border-blue-400 transition-colors">
+        </div>
+        <button type="submit" class="w-full h-10 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+          <i class="bi bi-person-plus"></i> Registrar maestro
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Asignación tab -->
+<div id="tab-asignacion" class="hidden">
+  <% if (teachers.length === 0) { %>
+  <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-700">
+    <i class="bi bi-exclamation-triangle mr-2"></i>Debe registrar maestros primero.
+  </div>
+  <% } else { %>
+  <script id="sections-data" type="application/json"><%- JSON.stringify(sections) %></script>
+  <div class="max-w-lg">
+    <div class="bg-white rounded-xl border border-slate-200/70 p-5">
+      <h2 class="text-sm font-semibold text-slate-800 mb-4">Nueva asignación docente</h2>
+      <form method="POST" action="/admin/maestros/asignacion" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Maestro <span class="text-red-400">*</span></label>
+          <select name="teacher_id" required class="w-full h-9 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-700 px-3 focus:bg-white focus:border-blue-400 transition-colors">
+            <option value="">Seleccione...</option>
+            <% teachers.filter(t => t.is_active).forEach(t => { %><option value="<%= t.id %>"><%= t.full_name %></option><% }) %>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Curso <span class="text-red-400">*</span></label>
+          <select name="course_id" required class="w-full h-9 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-700 px-3 focus:bg-white focus:border-blue-400 transition-colors">
+            <option value="">Seleccione...</option>
+            <% courses.forEach(c => { %><option value="<%= c.id %>"><%= c.nombre %></option><% }) %>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Grado <span class="text-red-400">*</span></label>
+          <select name="grade_id" id="asig-grade" required class="w-full h-9 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-700 px-3 focus:bg-white focus:border-blue-400 transition-colors">
+            <option value="">Seleccione...</option>
+            <% grades.forEach(g => { %><option value="<%= g.id %>"><%= g.nombre %></option><% }) %>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Sección <span class="text-red-400">*</span></label>
+          <select name="section_id" id="asig-section" required class="w-full h-9 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-700 px-3 focus:bg-white focus:border-blue-400 transition-colors">
+            <option value="">Seleccione...</option>
+            <% sections.forEach(s => { %><option value="<%= s.id %>" data-grade="<%= s.grade_id %>"><%= s.display_name %></option><% }) %>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Año escolar <span class="text-red-400">*</span></label>
+          <input type="number" name="school_year" required value="<%= new Date().getFullYear() %>"
+            min="2000" max="<%= new Date().getFullYear() + 1 %>"
+            class="w-full h-9 px-3 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 focus:bg-white focus:border-blue-400 transition-colors">
+        </div>
+        <button type="submit" class="w-full h-10 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+          <i class="bi bi-person-plus"></i> Crear asignación
+        </button>
+      </form>
+    </div>
+  </div>
+  <% } %>
+</div>
+
+<script>
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', function () {
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      b.classList.remove('text-blue-600','border-blue-600');
+      b.classList.add('text-slate-500','border-transparent');
+    });
+    this.classList.add('text-blue-600','border-blue-600');
+    this.classList.remove('text-slate-500','border-transparent');
+    document.getElementById('tab-lista').classList.toggle('hidden', this.dataset.tab !== 'lista');
+    document.getElementById('tab-asignacion').classList.toggle('hidden', this.dataset.tab !== 'asignacion');
+  });
+});
+
+(function () {
+  const sdEl = document.getElementById('sections-data');
+  if (!sdEl) return;
+  const allSections = JSON.parse(sdEl.textContent);
+  const gradeSel = document.getElementById('asig-grade');
+  const secSel   = document.getElementById('asig-section');
+  if (!gradeSel || !secSel) return;
+
+  gradeSel.addEventListener('change', function () {
+    const gradeId = parseInt(this.value) || 0;
+    secSel.innerHTML = '<option value="">Seleccione...</option>';
+    allSections
+      .filter(s => s.is_active && (!gradeId || s.grade_id === gradeId))
+      .forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.id;
+        opt.textContent = s.display_name || s.nombre;
+        secSel.appendChild(opt);
+      });
+  });
+})();
+</script>
