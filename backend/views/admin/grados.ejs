@@ -3,6 +3,18 @@
     <h1 class="text-xl font-semibold text-slate-900">Grados y secciones</h1>
     <p class="text-sm text-slate-500 mt-0.5">Administre la estructura académica del establecimiento</p>
   </div>
+  <div class="flex gap-2">
+    <button type="button" onclick="document.getElementById('import-modal-grados').showModal()"
+      class="inline-flex items-center gap-1.5 px-3 py-2 bg-green-600 text-white text-xs font-medium rounded-lg hover:bg-green-700 transition-colors">
+      <i class="bi bi-file-earmark-excel"></i>
+      <span class="hidden sm:inline">Importar grados</span>
+    </button>
+    <button type="button" onclick="document.getElementById('import-modal-secciones').showModal()"
+      class="inline-flex items-center gap-1.5 px-3 py-2 bg-green-600 text-white text-xs font-medium rounded-lg hover:bg-green-700 transition-colors">
+      <i class="bi bi-file-earmark-excel"></i>
+      <span class="hidden sm:inline">Importar secciones</span>
+    </button>
+  </div>
 </div>
 
 <!-- Tabs -->
@@ -221,3 +233,6 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
   });
 });
 </script>
+
+<%- include('../partials/import-modal', { modulo: 'grados', moduloLabel: 'Grados' }) %>
+<%- include('../partials/import-modal', { modulo: 'secciones', moduloLabel: 'Secciones' }) %>

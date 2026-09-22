@@ -1,0 +1,69 @@
+<%#
+  Params:
+    modulo     - string: 'alumnos' | 'maestros' | 'usuarios' | 'grados' | 'secciones' | 'cursos' | 'asignaciones'
+    moduloLabel - string: etiqueta legible, ej: 'Alumnos'
+%>
+<dialog id="import-modal-<%= modulo %>"
+  class="w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 p-0 backdrop:bg-black/50 backdrop:backdrop-blur-sm">
+
+  <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 rounded-lg bg-green-100 text-green-700 flex items-center justify-center">
+        <i class="bi bi-file-earmark-excel text-sm"></i>
+      </div>
+      <h3 class="text-sm font-semibold text-slate-900">Importar <%= moduloLabel %></h3>
+    </div>
+    <button type="button" onclick="document.getElementById('import-modal-<%= modulo %>').close()"
+      class="w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 transition-colors">
+      <i class="bi bi-x-lg text-xs"></i>
+    </button>
+  </div>
+
+  <div class="p-5 space-y-5">
+    <!-- Step 1 -->
+    <div>
+      <div class="flex items-center gap-2 mb-2">
+        <span class="w-5 h-5 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">1</span>
+        <span class="text-sm font-medium text-slate-700">Descargue la plantilla Excel</span>
+      </div>
+      <a href="/admin/importar/plantilla/<%= modulo %>"
+        class="flex items-center gap-2 w-full h-10 px-4 rounded-lg border-2 border-dashed border-green-200 bg-green-50 text-green-700 text-sm font-medium hover:bg-green-100 hover:border-green-300 transition-colors">
+        <i class="bi bi-download"></i>
+        Descargar plantilla_<%= modulo %>.xlsx
+      </a>
+      <p class="text-xs text-slate-400 mt-1.5">Llene los datos en el archivo y guárdelo. El archivo incluye una hoja de instrucciones.</p>
+    </div>
+
+    <!-- Step 2 -->
+    <div>
+      <div class="flex items-center gap-2 mb-2">
+        <span class="w-5 h-5 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">2</span>
+        <span class="text-sm font-medium text-slate-700">Suba el archivo completado</span>
+      </div>
+      <form method="POST" action="/admin/importar/<%= modulo %>" enctype="multipart/form-data" class="space-y-3">
+        <label id="drop-<%= modulo %>"
+          class="flex flex-col items-center justify-center h-28 border-2 border-dashed border-slate-200 rounded-xl cursor-pointer hover:border-blue-300 hover:bg-blue-50/30 transition-all group">
+          <i class="bi bi-cloud-upload text-2xl text-slate-300 group-hover:text-blue-400 transition-colors mb-1.5"></i>
+          <span id="drop-label-<%= modulo %>" class="text-xs text-slate-400 group-hover:text-blue-500 transition-colors">
+            Clic para seleccionar archivo
+          </span>
+          <span class="text-[11px] text-slate-300 mt-0.5">.xlsx, .xls, .csv — máx. 5 MB</span>
+          <input type="file" name="archivo" accept=".xlsx,.xls,.csv" required
+            class="sr-only"
+            onchange="document.getElementById('drop-label-<%= modulo %>').textContent = this.files[0]?.name ?? 'Clic para seleccionar'">
+        </label>
+        <button type="submit"
+          class="w-full h-10 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+          <i class="bi bi-upload"></i> Importar <%= moduloLabel %>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="px-5 pb-4">
+    <p class="text-xs text-slate-400 text-center">
+      <i class="bi bi-info-circle mr-1"></i>
+      Los registros con errores se omiten; los válidos se insertan de todas formas.
+    </p>
+  </div>
+</dialog>

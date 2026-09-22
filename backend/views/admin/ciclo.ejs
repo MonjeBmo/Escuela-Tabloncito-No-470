@@ -1,0 +1,137 @@
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-xl font-semibold text-slate-900">Ciclo escolar</h1>
+    <p class="text-sm text-slate-500 mt-0.5">Promueva a los alumnos al siguiente grado al iniciar un nuevo ciclo</p>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+  <!-- Preview table (2/3) -->
+  <div class="lg:col-span-2 space-y-4">
+    <div class="bg-white rounded-xl border border-slate-200/70 overflow-hidden">
+      <div class="px-5 py-3.5 bg-slate-50/80 border-b border-slate-100 flex items-center gap-3">
+        <i class="bi bi-arrow-up-circle text-blue-500"></i>
+        <span class="text-sm font-semibold text-slate-800 flex-1">Vista previa de la promoción</span>
+        <span class="text-xs text-slate-400"><%= preview.total %> alumnos en total</span>
+      </div>
+      <% if (preview.porGrado.length === 0) { %>
+      <div class="py-14 text-center">
+        <i class="bi bi-people text-4xl text-slate-200 block mb-3"></i>
+        <p class="text-sm text-slate-400">No hay alumnos con sección asignada.</p>
+      </div>
+      <% } else { %>
+      <table class="w-full text-sm">
+        <thead class="bg-slate-50/50">
+          <tr>
+            <th class="px-5 py-2.5 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Actualmente en</th>
+            <th class="px-4 py-2.5 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Alumnos</th>
+            <th class="px-4 py-2.5 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Pasarán a</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% preview.porGrado.forEach(row => { %>
+          <tr class="border-t border-slate-100 hover:bg-slate-50/40 transition-colors">
+            <td class="px-5 py-3">
+              <span class="font-medium text-slate-800"><%= row.grade_nombre %></span>
+              <span class="ml-1.5 inline-flex items-center px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-xs font-medium"><%= row.section_nombre %></span>
+            </td>
+            <td class="px-4 py-3 text-slate-700 font-medium"><%= row.count %></td>
+            <td class="px-4 py-3">
+              <% if (row.siguiente === 'Egresado') { %>
+              <span class="inline-flex items-center gap-1 text-xs font-medium text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full">
+                <i class="bi bi-mortarboard"></i> Egresado
+              </span>
+              <% } else if (row.siguiente) { %>
+              <span class="inline-flex items-center gap-1 text-xs text-emerald-700">
+                <i class="bi bi-arrow-right text-xs"></i> <%= row.siguiente %>
+              </span>
+              <% } else { %>
+              <span class="text-xs text-slate-400">Sin sección destino</span>
+              <% } %>
+            </td>
+          </tr>
+          <% }) %>
+          <% if (preview.sinSeccion > 0) { %>
+          <tr class="border-t border-slate-100 bg-amber-50/30">
+            <td class="px-5 py-3 text-slate-500 italic text-sm">Sin sección asignada</td>
+            <td class="px-4 py-3 text-slate-600 font-medium"><%= preview.sinSeccion %></td>
+            <td class="px-4 py-3 text-xs text-slate-400">No se modificarán</td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Action panel (1/3) -->
+  <div class="space-y-4">
+    <div class="bg-white rounded-xl border border-slate-200/70 p-5">
+      <h2 class="text-sm font-semibold text-slate-800 mb-1">Iniciar nuevo ciclo</h2>
+      <p class="text-xs text-slate-500 mb-4 leading-relaxed">
+        Esta acción promueve a <strong class="text-slate-700"><%= preview.total - preview.sinSeccion %> alumnos</strong>
+        al siguiente grado. Los alumnos del último grado quedan marcados como egresados (sin sección).
+        Esta operación <strong class="text-slate-700">no se puede deshacer</strong>.
+      </p>
+
+      <% if (preview.porGrado.length === 0) { %>
+      <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-400 text-center">
+        No hay alumnos para promover.
+      </div>
+      <% } else { %>
+      <button type="button" onclick="document.getElementById('confirm-rollover').showModal()"
+        class="w-full h-10 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+        <i class="bi bi-arrow-up-circle"></i> Ejecutar promoción
+      </button>
+      <% } %>
+    </div>
+
+    <div class="bg-amber-50 border border-amber-200 rounded-xl p-4">
+      <div class="flex items-start gap-2">
+        <i class="bi bi-exclamation-triangle text-amber-600 flex-shrink-0 mt-0.5"></i>
+        <div class="text-xs text-amber-700 leading-relaxed space-y-1">
+          <p><strong>Antes de ejecutar asegúrese de:</strong></p>
+          <ul class="list-disc list-inside space-y-0.5 ml-1">
+            <li>Tener respaldo de la base de datos</li>
+            <li>Que los grados y secciones del siguiente ciclo ya existan</li>
+            <li>Que las asignaciones docentes del nuevo ciclo estén listas</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Confirm dialog -->
+<dialog id="confirm-rollover"
+  class="w-full max-w-sm rounded-2xl shadow-2xl border border-slate-200 p-0 backdrop:bg-black/50 backdrop:backdrop-blur-sm">
+  <div class="p-5">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center flex-shrink-0">
+        <i class="bi bi-exclamation-triangle text-lg"></i>
+      </div>
+      <div>
+        <h3 class="text-sm font-semibold text-slate-900">Confirmar promoción</h3>
+        <p class="text-xs text-slate-500">Esta acción no se puede deshacer</p>
+      </div>
+    </div>
+    <p class="text-sm text-slate-600 mb-5">
+      ¿Está seguro de promover a <strong><%= preview.total - preview.sinSeccion %> alumnos</strong> al siguiente grado?
+      Los del último grado quedarán sin sección (egresados).
+    </p>
+    <div class="flex gap-2">
+      <form method="POST" action="/admin/ciclo/promover" class="flex-1">
+        <button type="submit"
+          class="w-full h-10 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+          Sí, promover
+        </button>
+      </form>
+      <button type="button" onclick="document.getElementById('confirm-rollover').close()"
+        class="flex-1 h-10 bg-white border border-slate-200 text-slate-600 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors">
+        Cancelar
+      </button>
+    </div>
+  </div>
+</dialog>

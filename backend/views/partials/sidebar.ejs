@@ -112,6 +112,12 @@
       <span>Cursos</span>
     </a>
     <% } %>
+    <% if (can('admin.users')) { %>
+    <a href="/admin/ciclo" class="js-nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
+      <i class="bi bi-arrow-up-circle w-4 text-center flex-shrink-0"></i>
+      <span>Ciclo escolar</span>
+    </a>
+    <% } %>
     <% } %>
 
   </nav>

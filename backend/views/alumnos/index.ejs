@@ -4,11 +4,18 @@
     <h1 class="text-xl font-semibold text-slate-900 truncate">Registro de alumnos</h1>
     <p class="text-sm text-slate-500 mt-0.5"><%= total %> alumno(s)</p>
   </div>
-  <a href="/alumnos/crear" aria-label="Nuevo alumno"
-    class="inline-flex items-center gap-2 px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors flex-shrink-0">
-    <i class="bi bi-person-plus"></i>
-    <span class="hidden sm:inline">Nuevo alumno</span>
-  </a>
+  <div class="flex gap-2 flex-shrink-0">
+    <button type="button" onclick="document.getElementById('import-modal-alumnos').showModal()"
+      class="inline-flex items-center gap-2 px-3 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors">
+      <i class="bi bi-file-earmark-excel"></i>
+      <span class="hidden sm:inline">Importar</span>
+    </button>
+    <a href="/alumnos/crear" aria-label="Nuevo alumno"
+      class="inline-flex items-center gap-2 px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
+      <i class="bi bi-person-plus"></i>
+      <span class="hidden sm:inline">Nuevo alumno</span>
+    </a>
+  </div>
 </div>
 
 <!-- Filters -->
@@ -203,3 +210,5 @@
 
   <% } %>
 </div>
+
+<%- include('../partials/import-modal', { modulo: 'alumnos', moduloLabel: 'Alumnos' }) %>
