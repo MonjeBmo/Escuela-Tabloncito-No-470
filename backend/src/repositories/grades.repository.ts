@@ -22,8 +22,15 @@ export async function createGrade(data: { nombre: string; nombre_corto: string; 
   return rows[0];
 }
 
+export async function updateGrade(id: number, data: { nombre: string; nombre_corto: string; sort_order: number }): Promise<void> {
+  await pool.query(
+    'UPDATE grades SET nombre = $1, nombre_corto = $2, sort_order = $3 WHERE id = $4',
+    [data.nombre, data.nombre_corto, data.sort_order, id]
+  );
+}
+
 export async function toggleGrade(id: number): Promise<void> {
-  await pool.query('UPDATE grades SET is_active = NOT is_active WHERE id = $1 AND is_system IS DISTINCT FROM TRUE', [id]);
+  await pool.query('UPDATE grades SET is_active = NOT is_active WHERE id = $1', [id]);
 }
 
 // ── Sections ─────────────────────────────────────────────────
@@ -62,6 +69,13 @@ export async function createSection(data: { grade_id: number; nombre: string; di
     [data.grade_id, data.nombre, data.display_name]
   );
   return rows[0];
+}
+
+export async function updateSection(id: number, data: { nombre: string; display_name: string }): Promise<void> {
+  await pool.query(
+    'UPDATE sections SET nombre = $1, display_name = $2 WHERE id = $3',
+    [data.nombre, data.display_name, id]
+  );
 }
 
 export async function toggleSection(id: number): Promise<void> {

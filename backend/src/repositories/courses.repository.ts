@@ -20,6 +20,13 @@ export async function create(data: { nombre: string; nombre_corto: string; sort_
   return rows[0];
 }
 
+export async function update(id: number, data: { nombre: string; nombre_corto: string; sort_order: number }): Promise<void> {
+  await pool.query(
+    'UPDATE courses SET nombre = $1, nombre_corto = $2, sort_order = $3 WHERE id = $4',
+    [data.nombre, data.nombre_corto, data.sort_order, id]
+  );
+}
+
 export async function toggle(id: number): Promise<void> {
   await pool.query('UPDATE courses SET is_active = NOT is_active WHERE id = $1', [id]);
 }

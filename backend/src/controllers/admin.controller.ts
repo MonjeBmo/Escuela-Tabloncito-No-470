@@ -25,6 +25,21 @@ export async function crearUsuario(req: Request, res: Response): Promise<void> {
   res.redirect('/admin/usuarios');
 }
 
+export async function editarUsuario(req: Request, res: Response): Promise<void> {
+  const { nombre, role_id, password } = req.body as Record<string, string>;
+  try {
+    await userRepo.update(parseInt(req.params.id), {
+      nombre: nombre.trim(),
+      role_id: parseInt(role_id),
+      passwordHash: password?.trim() ? await bcrypt.hash(password.trim(), 12) : undefined,
+    });
+    req.session.flash = { tipo: 'success', mensaje: 'Usuario actualizado.' };
+  } catch {
+    req.session.flash = { tipo: 'danger', mensaje: 'Error al actualizar el usuario.' };
+  }
+  res.redirect('/admin/usuarios');
+}
+
 export async function toggleUsuario(req: Request, res: Response): Promise<void> {
   await userRepo.toggleActive(parseInt(req.params.id));
   res.redirect('/admin/usuarios');
@@ -96,6 +111,17 @@ export async function crearGrado(req: Request, res: Response): Promise<void> {
   res.redirect('/admin/grados');
 }
 
+export async function editarGrado(req: Request, res: Response): Promise<void> {
+  const { nombre, nombre_corto, sort_order } = req.body as Record<string, string>;
+  try {
+    await gradesRepo.updateGrade(parseInt(req.params.id), { nombre: nombre.trim(), nombre_corto: nombre_corto?.trim() ?? '', sort_order: parseInt(sort_order) || 0 });
+    req.session.flash = { tipo: 'success', mensaje: 'Grado actualizado.' };
+  } catch {
+    req.session.flash = { tipo: 'danger', mensaje: 'Error al actualizar el grado.' };
+  }
+  res.redirect('/admin/grados');
+}
+
 export async function toggleGrado(req: Request, res: Response): Promise<void> {
   await gradesRepo.toggleGrade(parseInt(req.params.id));
   res.redirect('/admin/grados');
@@ -114,6 +140,17 @@ export async function crearSeccion(req: Request, res: Response): Promise<void> {
   res.redirect('/admin/grados');
 }
 
+export async function editarSeccion(req: Request, res: Response): Promise<void> {
+  const { nombre, display_name } = req.body as Record<string, string>;
+  try {
+    await gradesRepo.updateSection(parseInt(req.params.id), { nombre: nombre.trim(), display_name: display_name?.trim() ?? nombre.trim() });
+    req.session.flash = { tipo: 'success', mensaje: 'Sección actualizada.' };
+  } catch {
+    req.session.flash = { tipo: 'danger', mensaje: 'Error al actualizar la sección.' };
+  }
+  res.redirect('/admin/grados');
+}
+
 export async function toggleSeccion(req: Request, res: Response): Promise<void> {
   await gradesRepo.toggleSection(parseInt(req.params.id));
   res.redirect('/admin/grados');
@@ -122,8 +159,10 @@ export async function toggleSeccion(req: Request, res: Response): Promise<void> 
 // ── Cursos ──────────────────────────────────────────────────
 
 export async function showCursos(req: Request, res: Response): Promise<void> {
-  const courses = await coursesRepo.findAll();
-  res.render('admin/cursos', { titulo: 'Cursos', courses });
+  const q = String(req.query.q ?? '').trim().toLowerCase();
+  const all = await coursesRepo.findAll();
+  const courses = q ? all.filter(c => c.nombre.toLowerCase().includes(q) || (c.nombre_corto ?? '').toLowerCase().includes(q)) : all;
+  res.render('admin/cursos', { titulo: 'Cursos', courses, q });
 }
 
 export async function crearCurso(req: Request, res: Response): Promise<void> {
@@ -137,6 +176,17 @@ export async function crearCurso(req: Request, res: Response): Promise<void> {
   res.redirect('/admin/cursos');
 }
 
+export async function editarCurso(req: Request, res: Response): Promise<void> {
+  const { nombre, nombre_corto, sort_order } = req.body as Record<string, string>;
+  try {
+    await coursesRepo.update(parseInt(req.params.id), { nombre: nombre.trim(), nombre_corto: nombre_corto?.trim() ?? '', sort_order: parseInt(sort_order) || 0 });
+    req.session.flash = { tipo: 'success', mensaje: 'Curso actualizado.' };
+  } catch {
+    req.session.flash = { tipo: 'danger', mensaje: 'Error al actualizar el curso.' };
+  }
+  res.redirect('/admin/cursos');
+}
+
 export async function toggleCurso(req: Request, res: Response): Promise<void> {
   await coursesRepo.toggle(parseInt(req.params.id));
   res.redirect('/admin/cursos');
@@ -145,13 +195,22 @@ export async function toggleCurso(req: Request, res: Response): Promise<void> {
 // ── Maestros ────────────────────────────────────────────────
 
 export async function showMaestros(req: Request, res: Response): Promise<void> {
-  const [teachers, grades, sections, courses] = await Promise.all([
+  const q = String(req.query.q ?? '').trim().toLowerCase();
+  const [allTeachers, grades, sections, courses, assignments] = await Promise.all([
     teachersRepo.findAll(),
     gradesRepo.findAllGrades(true),
     gradesRepo.findAllSections(true),
     coursesRepo.findAll(true),
+    teachersRepo.findAllAssignments(),
   ]);
-  res.render('admin/maestros', { titulo: 'Maestros', teachers, grades, sections, courses });
+  const teachers = q
+    ? allTeachers.filter(t =>
+        t.full_name.toLowerCase().includes(q) ||
+        (t.email ?? '').toLowerCase().includes(q) ||
+        (t.phone ?? '').includes(q)
+      )
+    : allTeachers;
+  res.render('admin/maestros', { titulo: 'Maestros', teachers, grades, sections, courses, assignments, q });
 }
 
 export async function crearMaestro(req: Request, res: Response): Promise<void> {
@@ -166,6 +225,21 @@ export async function crearMaestro(req: Request, res: Response): Promise<void> {
     req.session.flash = { tipo: 'success', mensaje: 'Maestro registrado.' };
   } catch {
     req.session.flash = { tipo: 'danger', mensaje: 'Error al registrar el maestro.' };
+  }
+  res.redirect('/admin/maestros');
+}
+
+export async function editarMaestro(req: Request, res: Response): Promise<void> {
+  const { full_name, email, phone } = req.body as Record<string, string>;
+  try {
+    await teachersRepo.update(parseInt(req.params.id), {
+      full_name: full_name.trim(),
+      email: email?.trim() || null,
+      phone: phone?.trim() || null,
+    });
+    req.session.flash = { tipo: 'success', mensaje: 'Maestro actualizado.' };
+  } catch {
+    req.session.flash = { tipo: 'danger', mensaje: 'Error al actualizar el maestro.' };
   }
   res.redirect('/admin/maestros');
 }

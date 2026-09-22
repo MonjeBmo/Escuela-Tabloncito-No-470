@@ -29,8 +29,29 @@ export async function create(data: { full_name: string; email: string | null; ph
   return findById(rows[0].id) as Promise<Teacher>;
 }
 
+export async function update(id: number, data: { full_name: string; email: string | null; phone: string | null }): Promise<void> {
+  await pool.query(
+    'UPDATE teachers SET full_name = $1, email = $2, phone = $3 WHERE id = $4',
+    [data.full_name, data.email, data.phone, id]
+  );
+}
+
 export async function toggle(id: number): Promise<void> {
   await pool.query('UPDATE teachers SET is_active = NOT is_active WHERE id = $1', [id]);
+}
+
+export async function findAllAssignments(): Promise<TeacherAssignment[]> {
+  const { rows } = await pool.query(
+    `SELECT ta.*, t.full_name AS teacher_name, c.nombre AS course_nombre,
+            g.nombre AS grade_nombre, s.display_name AS section_display
+     FROM teacher_assignments ta
+     JOIN teachers t ON t.id = ta.teacher_id
+     JOIN courses c  ON c.id = ta.course_id
+     JOIN grades g   ON g.id = ta.grade_id
+     JOIN sections s ON s.id = ta.section_id
+     ORDER BY g.sort_order, s.nombre, t.full_name, c.nombre`
+  );
+  return rows;
 }
 
 export async function findAssignments(teacherId: number): Promise<TeacherAssignment[]> {

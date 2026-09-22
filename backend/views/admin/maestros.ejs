@@ -11,35 +11,55 @@
     class="tab-btn px-4 py-2.5 text-sm font-medium text-blue-600 border-b-2 border-blue-600 -mb-px">
     Maestros
   </button>
-  <button type="button" data-tab="asignacion"
+  <button type="button" data-tab="asignaciones"
+    class="tab-btn px-4 py-2.5 text-sm font-medium text-slate-500 hover:text-slate-700 border-b-2 border-transparent -mb-px transition-colors">
+    Asignaciones
+  </button>
+  <button type="button" data-tab="nueva-asignacion"
     class="tab-btn px-4 py-2.5 text-sm font-medium text-slate-500 hover:text-slate-700 border-b-2 border-transparent -mb-px transition-colors">
     Nueva asignación
   </button>
 </div>
 
-<!-- Lista de maestros -->
+<!-- ── Lista de maestros ─────────────────────────────────────── -->
 <div id="tab-lista" class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-  <div class="lg:col-span-2">
+  <div class="lg:col-span-2 space-y-4">
+    <!-- Buscador -->
+    <form method="GET" action="/admin/maestros" class="flex gap-2">
+      <div class="relative flex-1">
+        <i class="bi bi-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm pointer-events-none"></i>
+        <input type="text" name="q" value="<%= q %>" placeholder="Buscar por nombre, correo o teléfono..."
+          class="w-full h-9 pl-9 pr-3 text-sm rounded-lg border border-slate-200 bg-white text-slate-800 focus:border-blue-400 transition-colors">
+      </div>
+      <button type="submit" class="h-9 px-4 bg-slate-100 text-slate-600 text-sm font-medium rounded-lg hover:bg-slate-200 transition-colors">
+        Buscar
+      </button>
+      <% if (q) { %>
+      <a href="/admin/maestros" class="h-9 px-3 flex items-center text-sm text-slate-400 rounded-lg hover:bg-slate-100 transition-colors">
+        <i class="bi bi-x-lg"></i>
+      </a>
+      <% } %>
+    </form>
+
     <div class="bg-white rounded-xl border border-slate-200/70 overflow-hidden">
       <% if (teachers.length === 0) { %>
       <div class="py-14 text-center px-4">
         <i class="bi bi-person-workspace text-4xl text-slate-200 block mb-3"></i>
-        <p class="text-sm text-slate-400">No hay maestros registrados.</p>
+        <p class="text-sm text-slate-400"><%= q ? 'Sin resultados para "' + q + '".' : 'No hay maestros registrados.' %></p>
       </div>
       <% } else { %>
       <div class="table-wrap">
-        <table class="w-full text-sm min-w-[440px]">
+        <table class="w-full text-sm min-w-[520px]">
           <thead class="bg-slate-50/80">
             <tr>
               <th class="px-5 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Nombre</th>
               <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Contacto</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Estado</th>
-              <th class="px-4 py-3 w-12"></th>
+              <th class="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wide">Acciones</th>
             </tr>
           </thead>
           <tbody>
             <% teachers.forEach(t => { %>
-            <tr class="border-t border-slate-100 hover:bg-slate-50/60 transition-colors">
+            <tr class="border-t border-slate-100 hover:bg-slate-50/40 transition-colors">
               <td class="px-5 py-3.5">
                 <div class="flex items-center gap-3">
                   <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold flex-shrink-0">
@@ -52,22 +72,49 @@
                 </div>
               </td>
               <td class="px-4 py-3.5">
-                <% if (t.email) { %><div class="text-xs text-slate-600 truncate max-w-[140px]"><%= t.email %></div><% } %>
-                <% if (t.phone) { %><div class="text-xs text-slate-400"><%= t.phone %></div><% } %>
+                <% if (t.email) { %><div class="text-xs text-slate-600 truncate max-w-[150px]"><i class="bi bi-envelope mr-1 text-slate-300"></i><%= t.email %></div><% } %>
+                <% if (t.phone) { %><div class="text-xs text-slate-400"><i class="bi bi-telephone mr-1 text-slate-300"></i><%= t.phone %></div><% } %>
                 <% if (!t.email && !t.phone) { %><span class="text-slate-300 text-xs">—</span><% } %>
               </td>
               <td class="px-4 py-3.5">
-                <% if (t.is_active) { %>
-                <span class="inline-flex items-center gap-1 text-xs text-emerald-700"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Activo</span>
-                <% } else { %>
-                <span class="inline-flex items-center gap-1 text-xs text-slate-400"><span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>Inactivo</span>
-                <% } %>
-              </td>
-              <td class="px-4 py-3.5 text-right">
-                <form method="POST" action="/admin/maestros/<%= t.id %>/toggle">
-                  <button type="submit" class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 transition-colors">
-                    <i class="bi bi-toggle-<%= t.is_active ? 'on text-emerald-600' : 'off' %> text-base"></i>
+                <div class="flex items-center justify-end gap-2">
+                  <button type="button" onclick="toggleEdit('maestro-<%= t.id %>')"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition-colors">
+                    <i class="bi bi-pencil"></i> Editar
                   </button>
+                  <form method="POST" action="/admin/maestros/<%= t.id %>/toggle">
+                    <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors
+                      <%= t.is_active ? 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100' : 'border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100' %>">
+                      <i class="bi bi-toggle-<%= t.is_active ? 'on' : 'off' %>"></i>
+                      <%= t.is_active ? 'Activo' : 'Inactivo' %>
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            <tr id="edit-row-maestro-<%= t.id %>" class="hidden bg-blue-50/40 border-t border-blue-100">
+              <td colspan="3" class="px-5 py-4">
+                <form method="POST" action="/admin/maestros/<%= t.id %>" class="flex flex-wrap items-end gap-3">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Nombre completo</label>
+                    <input type="text" name="full_name" value="<%= t.full_name %>" required
+                      class="h-9 px-3 text-sm rounded-lg border border-slate-200 bg-white text-slate-800 focus:border-blue-400 w-48">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Correo</label>
+                    <input type="email" name="email" value="<%= t.email || '' %>"
+                      class="h-9 px-3 text-sm rounded-lg border border-slate-200 bg-white text-slate-800 focus:border-blue-400 w-44">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Teléfono</label>
+                    <input type="tel" name="phone" value="<%= t.phone || '' %>" placeholder="####-####"
+                      class="h-9 px-3 text-sm rounded-lg border border-slate-200 bg-white text-slate-800 focus:border-blue-400 w-32">
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <button type="submit" class="h-9 px-4 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">Guardar</button>
+                    <button type="button" onclick="toggleEdit('maestro-<%= t.id %>')"
+                      class="h-9 px-3 text-sm text-slate-500 rounded-lg hover:bg-slate-100 transition-colors">Cancelar</button>
+                  </div>
                 </form>
               </td>
             </tr>
@@ -78,6 +125,7 @@
       <% } %>
     </div>
   </div>
+
   <div>
     <div class="bg-white rounded-xl border border-slate-200/70 p-5">
       <h2 class="text-sm font-semibold text-slate-800 mb-4">Registrar maestro</h2>
@@ -105,11 +153,68 @@
   </div>
 </div>
 
-<!-- Asignación tab -->
-<div id="tab-asignacion" class="hidden">
-  <% if (teachers.length === 0) { %>
+<!-- ── Asignaciones ──────────────────────────────────────────── -->
+<div id="tab-asignaciones" class="hidden">
+  <% if (assignments.length === 0) { %>
+  <div class="bg-white rounded-xl border border-slate-200/70 py-16 text-center">
+    <i class="bi bi-calendar2-check text-4xl text-slate-200 block mb-3"></i>
+    <p class="text-sm text-slate-400">No hay asignaciones registradas.</p>
+  </div>
+  <% } else { %>
+  <%
+    // Agrupar por grado/sección
+    const porSeccion = {};
+    assignments.forEach(a => {
+      const key = (a.grade_nombre || '') + ' ' + (a.section_display || '');
+      if (!porSeccion[key]) porSeccion[key] = [];
+      porSeccion[key].push(a);
+    });
+  %>
+  <div class="space-y-4">
+    <% Object.keys(porSeccion).sort().forEach(secKey => { %>
+    <div class="bg-white rounded-xl border border-slate-200/70 overflow-hidden">
+      <div class="px-5 py-3 bg-slate-50/80 border-b border-slate-100 flex items-center gap-2">
+        <i class="bi bi-people text-slate-400 text-sm"></i>
+        <span class="text-sm font-semibold text-slate-700"><%= secKey %></span>
+        <span class="ml-auto inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700"><%= porSeccion[secKey].length %> asignación<%= porSeccion[secKey].length !== 1 ? 'es' : '' %></span>
+      </div>
+      <table class="w-full text-sm">
+        <thead class="bg-slate-50/50">
+          <tr>
+            <th class="px-5 py-2.5 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Maestro</th>
+            <th class="px-4 py-2.5 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Curso</th>
+            <th class="px-4 py-2.5 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Año</th>
+            <th class="px-4 py-2.5 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% porSeccion[secKey].forEach(a => { %>
+          <tr class="border-t border-slate-100 hover:bg-slate-50/40 transition-colors">
+            <td class="px-5 py-3 font-medium text-slate-800"><%= a.teacher_name %></td>
+            <td class="px-4 py-3 text-slate-600 text-sm"><%= a.course_nombre %></td>
+            <td class="px-4 py-3 text-slate-500 text-xs"><%= a.school_year %></td>
+            <td class="px-4 py-3">
+              <% if (a.is_active) { %>
+              <span class="inline-flex items-center gap-1 text-xs text-emerald-700"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Activa</span>
+              <% } else { %>
+              <span class="inline-flex items-center gap-1 text-xs text-slate-400"><span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>Inactiva</span>
+              <% } %>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+    <% }) %>
+  </div>
+  <% } %>
+</div>
+
+<!-- ── Nueva asignación ─────────────────────────────────────── -->
+<div id="tab-nueva-asignacion" class="hidden">
+  <% if (teachers.filter(t => t.is_active).length === 0) { %>
   <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-700">
-    <i class="bi bi-exclamation-triangle mr-2"></i>Debe registrar maestros primero.
+    <i class="bi bi-exclamation-triangle mr-2"></i>Debe registrar maestros activos primero.
   </div>
   <% } else { %>
   <script id="sections-data" type="application/json"><%- JSON.stringify(sections) %></script>
@@ -161,6 +266,11 @@
 </div>
 
 <script>
+function toggleEdit(key) {
+  const row = document.getElementById('edit-row-' + key);
+  if (row) row.classList.toggle('hidden');
+}
+
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', function () {
     document.querySelectorAll('.tab-btn').forEach(b => {
@@ -170,7 +280,8 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     this.classList.add('text-blue-600','border-blue-600');
     this.classList.remove('text-slate-500','border-transparent');
     document.getElementById('tab-lista').classList.toggle('hidden', this.dataset.tab !== 'lista');
-    document.getElementById('tab-asignacion').classList.toggle('hidden', this.dataset.tab !== 'asignacion');
+    document.getElementById('tab-asignaciones').classList.toggle('hidden', this.dataset.tab !== 'asignaciones');
+    document.getElementById('tab-nueva-asignacion').classList.toggle('hidden', this.dataset.tab !== 'nueva-asignacion');
   });
 });
 

@@ -48,6 +48,20 @@ export async function updateRole(id: number, roleId: number): Promise<void> {
   await pool.query('UPDATE usuarios SET role_id = $1 WHERE id = $2', [roleId, id]);
 }
 
+export async function update(id: number, data: { nombre: string; role_id: number; passwordHash?: string }): Promise<void> {
+  if (data.passwordHash) {
+    await pool.query(
+      'UPDATE usuarios SET nombre = $1, role_id = $2, password = $3 WHERE id = $4',
+      [data.nombre, data.role_id, data.passwordHash, id]
+    );
+  } else {
+    await pool.query(
+      'UPDATE usuarios SET nombre = $1, role_id = $2 WHERE id = $3',
+      [data.nombre, data.role_id, id]
+    );
+  }
+}
+
 export async function toggleActive(id: number): Promise<void> {
   await pool.query('UPDATE usuarios SET activo = NOT activo WHERE id = $1', [id]);
 }
