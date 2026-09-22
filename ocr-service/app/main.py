@@ -25,7 +25,7 @@ MINIO_PORT      = int(os.getenv("MINIO_PORT", "9000"))
 MINIO_USE_SSL   = os.getenv("MINIO_USE_SSL", "false").lower() == "true"
 MINIO_USER      = os.getenv("MINIO_ROOT_USER", "minioadmin")
 MINIO_PASSWORD  = os.getenv("MINIO_ROOT_PASSWORD", "minioadmin")
-BACKEND_URL     = os.getenv("APP_URL", "http://backend:3000")
+BACKEND_URL     = os.getenv("BACKEND_INTERNAL_URL", "http://backend:3000")
 
 minio_client = Minio(
     f"{MINIO_ENDPOINT}:{MINIO_PORT}",

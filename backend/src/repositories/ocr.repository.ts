@@ -63,6 +63,13 @@ export async function reject(id: number, usuarioId: number, notas: string): Prom
   );
 }
 
+export async function markError(id: number, mensaje: string): Promise<void> {
+  await pool.query(
+    `UPDATE ocr_jobs SET estado='rechazado', notas_revision=$1 WHERE id=$2`,
+    [`Error de procesamiento: ${mensaje}`, id]
+  );
+}
+
 export async function count(): Promise<number> {
   const { rows } = await pool.query(`SELECT COUNT(*)::int AS n FROM ocr_jobs`);
   return rows[0].n;

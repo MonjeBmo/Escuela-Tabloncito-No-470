@@ -34,6 +34,8 @@ services:
       context: ./ocr-service
       dockerfile: Dockerfile
     env_file: .env
+    environment:
+      - BACKEND_INTERNAL_URL=http://backend:3000
     networks:
       - tabloncito
     restart: unless-stopped

@@ -43,8 +43,9 @@ export async function subirYProcesar(archivo: UploadedFile, usuarioId: number): 
   });
 
   // Llamar al servicio OCR de forma asíncrona
-  enviarAOcr(job.id, key).catch((err) => {
+  enviarAOcr(job.id, key).catch(async (err) => {
     console.error(`[OCR] Error enviando job ${job.id}:`, err.message);
+    await repo.markError(job.id, err.message).catch(() => {});
   });
 
   return job;
