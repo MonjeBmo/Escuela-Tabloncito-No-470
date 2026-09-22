@@ -1,119 +1,164 @@
-<div class="d-flex align-items-center gap-3 mb-1">
-  <a href="/ocr" class="btn-secondary-app" style="padding:6px 12px;font-size:12.5px;">
-    <i class="bi bi-arrow-left"></i>
+<div class="flex items-center gap-3 mb-6">
+  <a href="/ocr" class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 transition-colors flex-shrink-0">
+    <i class="bi bi-arrow-left text-sm"></i>
   </a>
-  <div>
-    <div class="page-title">Revisión humana — Job #<%= job.id %></div>
-    <div class="page-subtitle">Verifique y corrija los campos extraídos por el OCR antes de guardar</div>
+  <div class="flex-1 min-w-0">
+    <h1 class="text-xl font-semibold text-slate-900">Revisión humana — Job #<%= job.id %></h1>
+    <p class="text-sm text-slate-500 mt-0.5">Verifique y corrija los campos extraídos por el OCR antes de guardar</p>
   </div>
 </div>
 
-<div class="row g-4">
-  <!-- Campos extraídos por OCR -->
-  <div class="col-lg-7">
-    <div class="form-panel">
-      <div class="form-section-title">
-        <i class="bi bi-cpu-fill text-purple me-1"></i>
-        Datos extraídos — revisión y corrección
-      </div>
-      <p class="text-muted mb-4" style="font-size:12.5px;">
-        Las barras de color indican la confianza del OCR por campo.
-        <span style="color:#ef4444;">Rojo</span> = baja confianza. Revise con cuidado esos campos.
-      </p>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
-      <form method="POST" action="/ocr/revision/<%= job.id %>/validar">
-        <div class="row g-3">
-          <div class="col-md-6">
-            <label class="form-label fw-semibold" style="font-size:13px;">Código de cuadro <span class="text-danger">*</span></label>
-            <input type="text" name="codigo" class="form-control" required
-              value="<%= job.campos_extraidos.codigo || '' %>">
+  <!-- Campos extraídos (2/3) -->
+  <div class="lg:col-span-2">
+    <div class="bg-white rounded-xl border border-slate-200/70 overflow-hidden">
+      <div class="px-5 py-3.5 border-b border-slate-100 flex items-center gap-2">
+        <div class="w-7 h-7 rounded-lg bg-violet-50 text-violet-600 flex items-center justify-center flex-shrink-0">
+          <i class="bi bi-cpu text-xs"></i>
+        </div>
+        <h2 class="text-sm font-semibold text-slate-800">Datos extraídos — revisión y corrección</h2>
+      </div>
+      <div class="px-5 pt-4 pb-2">
+        <p class="text-xs text-slate-500">
+          Las barras de color indican la confianza del OCR por campo.
+          <span class="text-red-500 font-medium">Rojo</span> = baja confianza. Revise con cuidado esos campos.
+        </p>
+      </div>
+
+      <form method="POST" action="/ocr/revision/<%= job.id %>/validar" class="p-5 pt-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+          <!-- Código -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">
+              Código de cuadro <span class="text-red-400">*</span>
+            </label>
+            <input type="text" name="codigo" required
+              value="<%= job.campos_extraidos.codigo || '' %>"
+              class="w-full h-9 px-3 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 focus:bg-white focus:border-blue-400 transition-colors">
             <% const confCodigo = (job.confianza.codigo || 0) * 100; %>
-            <div class="confidence-bar"><div class="confidence-fill" data-pct="<%= confCodigo.toFixed(0) %>"></div></div>
-            <div class="form-text">Confianza: <%= confCodigo.toFixed(0) %>%</div>
+            <div class="confidence-bar mt-1.5"><div class="conf-fill" data-pct="<%= confCodigo.toFixed(0) %>"></div></div>
+            <p class="text-xs text-slate-400 mt-1">Confianza: <%= confCodigo.toFixed(0) %>%</p>
           </div>
-          <div class="col-md-6">
-            <label class="form-label fw-semibold" style="font-size:13px;">Año <span class="text-danger">*</span></label>
-            <input type="number" name="anio" class="form-control" required
-              value="<%= job.campos_extraidos.anio || new Date().getFullYear() %>" min="1990">
+
+          <!-- Año -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">
+              Año <span class="text-red-400">*</span>
+            </label>
+            <input type="number" name="anio" required min="1990"
+              value="<%= job.campos_extraidos.anio || new Date().getFullYear() %>"
+              class="w-full h-9 px-3 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 focus:bg-white focus:border-blue-400 transition-colors">
             <% const confAnio = (job.confianza.anio || 0) * 100; %>
-            <div class="confidence-bar"><div class="confidence-fill" data-pct="<%= confAnio.toFixed(0) %>"></div></div>
-            <div class="form-text">Confianza: <%= confAnio.toFixed(0) %>%</div>
+            <div class="confidence-bar mt-1.5"><div class="conf-fill" data-pct="<%= confAnio.toFixed(0) %>"></div></div>
+            <p class="text-xs text-slate-400 mt-1">Confianza: <%= confAnio.toFixed(0) %>%</p>
           </div>
-          <div class="col-md-6">
-            <label class="form-label fw-semibold" style="font-size:13px;">Grado</label>
-            <select name="grado_id" class="form-select" data-select2 data-placeholder="Seleccione">
+
+          <!-- Grado -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Grado</label>
+            <select name="grado_id"
+              class="w-full h-9 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-700 px-3 focus:bg-white focus:border-blue-400 transition-colors">
               <option value="">Sin especificar</option>
               <% grados.forEach(g => { %>
-                <option value="<%= g.id %>"
-                  <%= job.campos_extraidos.grado && job.campos_extraidos.grado.toLowerCase().includes(g.nombre.toLowerCase()) ? 'selected' : '' %>>
-                  <%= g.nombre %>
-                </option>
+              <option value="<%= g.id %>"
+                <%= job.campos_extraidos.grado && job.campos_extraidos.grado.toLowerCase().includes(g.nombre.toLowerCase()) ? 'selected' : '' %>>
+                <%= g.nombre %>
+              </option>
               <% }) %>
             </select>
             <% const confGrado = (job.confianza.grado || 0) * 100; %>
-            <div class="confidence-bar mt-1"><div class="confidence-fill" data-pct="<%= confGrado.toFixed(0) %>"></div></div>
-            <div class="form-text">Confianza: <%= confGrado.toFixed(0) %>%</div>
+            <div class="confidence-bar mt-1.5"><div class="conf-fill" data-pct="<%= confGrado.toFixed(0) %>"></div></div>
+            <p class="text-xs text-slate-400 mt-1">Confianza: <%= confGrado.toFixed(0) %>%</p>
           </div>
-          <div class="col-md-6">
-            <label class="form-label fw-semibold" style="font-size:13px;">Total alumnos</label>
-            <input type="number" name="total_alumnos" class="form-control" min="0"
-              value="<%= job.campos_extraidos.total_alumnos || '' %>">
+
+          <!-- Total alumnos -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Total alumnos</label>
+            <input type="number" name="total_alumnos" min="0"
+              value="<%= job.campos_extraidos.total_alumnos || '' %>"
+              class="w-full h-9 px-3 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 focus:bg-white focus:border-blue-400 transition-colors">
           </div>
-          <div class="col-12">
-            <label class="form-label fw-semibold" style="font-size:13px;">Docente</label>
-            <input type="text" name="docente" class="form-control"
-              value="<%= job.campos_extraidos.docente || '' %>">
+
+          <!-- Docente -->
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Docente</label>
+            <input type="text" name="docente"
+              value="<%= job.campos_extraidos.docente || '' %>"
+              class="w-full h-9 px-3 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 focus:bg-white focus:border-blue-400 transition-colors">
             <% const confDocente = (job.confianza.docente || 0) * 100; %>
-            <div class="confidence-bar"><div class="confidence-fill" data-pct="<%= confDocente.toFixed(0) %>"></div></div>
-            <div class="form-text">Confianza: <%= confDocente.toFixed(0) %>%</div>
+            <div class="confidence-bar mt-1.5"><div class="conf-fill" data-pct="<%= confDocente.toFixed(0) %>"></div></div>
+            <p class="text-xs text-slate-400 mt-1">Confianza: <%= confDocente.toFixed(0) %>%</p>
           </div>
-          <div class="col-12">
-            <label class="form-label fw-semibold" style="font-size:13px;">Notas de revisión</label>
-            <textarea name="notas" class="form-control" rows="2"
-              placeholder="Observaciones sobre la revisión (opcional)"></textarea>
+
+          <!-- Notas -->
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Notas de revisión</label>
+            <textarea name="notas" rows="2"
+              placeholder="Observaciones sobre la revisión (opcional)"
+              class="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 placeholder-slate-400 focus:bg-white focus:border-blue-400 transition-colors resize-none"></textarea>
           </div>
         </div>
 
-        <div class="d-flex gap-2 mt-4">
-          <button type="button" class="btn-primary-app flex-grow-1 justify-content-center"
+        <div class="mt-5">
+          <button type="button"
+            class="w-full h-10 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2"
             data-confirm="¿Confirmar los datos revisados y crear el cuadro en el repositorio?">
-            <i class="bi bi-check-circle-fill"></i> Validar y guardar cuadro
+            <i class="bi bi-check-circle"></i> Validar y guardar cuadro
           </button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Panel derecho: info del job y rechazo -->
-  <div class="col-lg-5">
-    <div class="card-panel mb-4">
-      <div class="card-panel-header">
-        <h2 class="card-panel-title"><i class="bi bi-info-circle me-2"></i>Información del trabajo</h2>
+  <!-- Panel derecho -->
+  <div class="space-y-4">
+    <!-- Info del job -->
+    <div class="bg-white rounded-xl border border-slate-200/70 overflow-hidden">
+      <div class="px-5 py-3.5 border-b border-slate-100">
+        <h2 class="text-sm font-semibold text-slate-800">Información del trabajo</h2>
       </div>
-      <div class="p-4">
-        <div class="detail-row"><div class="detail-label">Documento</div><div class="detail-value" style="font-size:12.5px;word-break:break-all;"><%= job.documento_nombre || job.documento_key %></div></div>
-        <div class="detail-row"><div class="detail-label">Estado</div><div class="detail-value"><span class="badge-app badge-<%= job.estado %>"><%= job.estado %></span></div></div>
-        <div class="detail-row"><div class="detail-label">Enviado</div><div class="detail-value"><%= new Date(job.created_at).toLocaleDateString('es-GT', {day:'2-digit',month:'long',year:'numeric'}) %></div></div>
-      </div>
+      <dl class="divide-y divide-slate-100">
+        <div class="flex items-start px-5 py-3">
+          <dt class="text-xs font-semibold text-slate-500 uppercase tracking-wide w-28 flex-shrink-0 pt-0.5">Documento</dt>
+          <dd class="text-xs text-slate-700 break-all"><%= job.documento_nombre || job.documento_key %></dd>
+        </div>
+        <div class="flex items-center px-5 py-3">
+          <dt class="text-xs font-semibold text-slate-500 uppercase tracking-wide w-28 flex-shrink-0">Estado</dt>
+          <dd>
+            <% const estadoBadge = {pendiente:'bg-blue-50 text-blue-700',procesando:'bg-violet-50 text-violet-700',revision:'bg-amber-50 text-amber-700',validado:'bg-emerald-50 text-emerald-700',rechazado:'bg-red-50 text-red-600'}; %>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= estadoBadge[job.estado] || 'bg-slate-100 text-slate-600' %>">
+              <%= job.estado %>
+            </span>
+          </dd>
+        </div>
+        <div class="flex items-center px-5 py-3">
+          <dt class="text-xs font-semibold text-slate-500 uppercase tracking-wide w-28 flex-shrink-0">Enviado</dt>
+          <dd class="text-xs text-slate-700"><%= new Date(job.created_at).toLocaleDateString('es-GT', {day:'2-digit',month:'long',year:'numeric'}) %></dd>
+        </div>
+      </dl>
     </div>
 
     <!-- Rechazar -->
-    <div class="card-panel" style="border-color:#fecaca;">
-      <div class="card-panel-header" style="background:#fff5f5;">
-        <h2 class="card-panel-title" style="color:#b91c1c;"><i class="bi bi-x-circle-fill me-2"></i>Rechazar documento</h2>
+    <div class="bg-white rounded-xl border border-red-100 overflow-hidden">
+      <div class="px-5 py-3.5 border-b border-red-100 bg-red-50/50">
+        <h2 class="text-sm font-semibold text-red-700">Rechazar documento</h2>
       </div>
-      <form method="POST" action="/ocr/revision/<%= job.id %>/rechazar" class="p-4">
-        <div class="mb-3">
-          <label class="form-label fw-semibold" style="font-size:13px;">Motivo del rechazo</label>
-          <textarea name="notas" class="form-control" rows="3"
-            placeholder="Indique por qué se rechaza este documento..."></textarea>
+      <form method="POST" action="/ocr/revision/<%= job.id %>/rechazar" class="p-5 space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Motivo del rechazo</label>
+          <textarea name="notas" rows="3"
+            placeholder="Indique por qué se rechaza este documento..."
+            class="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 placeholder-slate-400 focus:bg-white focus:border-red-300 transition-colors resize-none"></textarea>
         </div>
-        <button type="button" class="btn-secondary-app w-100 justify-content-center"
-          style="color:#b91c1c;border-color:#fecaca;background:#fff5f5;"
+        <button type="button"
+          class="w-full h-10 bg-white border border-red-200 text-red-600 text-sm font-medium rounded-lg hover:bg-red-50 transition-colors flex items-center justify-center gap-2"
           data-confirm="¿Rechazar este documento OCR? No se creará ningún cuadro.">
-          <i class="bi bi-x-circle-fill"></i> Rechazar documento
+          <i class="bi bi-x-circle"></i> Rechazar documento
         </button>
       </form>
     </div>
   </div>
+
 </div>

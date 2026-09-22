@@ -1,76 +1,122 @@
-<div class="d-flex align-items-center gap-3 mb-1">
-  <a href="/cuadros" class="btn-secondary-app" style="padding:6px 12px;font-size:12.5px;">
-    <i class="bi bi-arrow-left"></i>
+<!-- Header -->
+<div class="flex items-center gap-3 mb-6">
+  <a href="/cuadros" class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 transition-colors">
+    <i class="bi bi-arrow-left text-sm"></i>
   </a>
   <div>
-    <div class="page-title">Registrar cuadro PRIM</div>
-    <div class="page-subtitle">Ingrese los datos del cuadro y adjunte el documento escaneado (Capa 1)</div>
+    <h1 class="text-xl font-semibold text-slate-900">Registrar cuadro PRIM</h1>
+    <p class="text-sm text-slate-500 mt-0.5">Ingrese los metadatos y adjunte el documento escaneado original</p>
   </div>
 </div>
 
+<script id="sections-data" type="application/json"><%- JSON.stringify(sections) %></script>
+
 <form method="POST" action="/cuadros/crear" enctype="multipart/form-data">
-  <div class="row g-4">
-    <!-- Datos del cuadro -->
-    <div class="col-lg-7">
-      <div class="form-panel">
-        <div class="form-section-title">Datos del cuadro</div>
-        <div class="row g-3">
-          <div class="col-md-6">
-            <label class="form-label fw-semibold" style="font-size:13px;">Código de cuadro <span class="text-danger">*</span></label>
-            <input type="text" name="codigo" class="form-control" placeholder="ej. PRIM-2024-001" required>
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+    <!-- Datos del cuadro (2/3) -->
+    <div class="lg:col-span-2 space-y-5">
+      <div class="bg-white rounded-xl border border-slate-200/70 p-5">
+        <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-4">Datos del cuadro</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">
+              Código <span class="text-red-400">*</span>
+            </label>
+            <input type="text" name="codigo" required placeholder="ej. PRIM-2024-001"
+              class="w-full h-9 px-3 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 placeholder-slate-400 focus:bg-white focus:border-blue-400 transition-colors">
           </div>
-          <div class="col-md-6">
-            <label class="form-label fw-semibold" style="font-size:13px;">Año <span class="text-danger">*</span></label>
-            <input type="number" name="anio" class="form-control"
-              min="1990" max="<%= new Date().getFullYear() %>"
-              value="<%= new Date().getFullYear() %>" required>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">
+              Año <span class="text-red-400">*</span>
+            </label>
+            <input type="number" name="anio" required
+              min="1990" max="<%= new Date().getFullYear() %>" value="<%= new Date().getFullYear() %>"
+              class="w-full h-9 px-3 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 focus:bg-white focus:border-blue-400 transition-colors">
           </div>
-          <div class="col-md-6">
-            <label class="form-label fw-semibold" style="font-size:13px;">Grado / sección</label>
-            <select name="grado_id" class="form-select" data-select2 data-placeholder="Seleccione grado">
+          <!-- Grado (selector dependiente) -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Grado</label>
+            <select id="grade-sel" class="w-full h-9 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-700 px-3 focus:bg-white focus:border-blue-400 transition-colors">
               <option value="">Sin especificar</option>
-              <% grados.forEach(g => { %>
-                <option value="<%= g.id %>"><%= g.nombre %></option>
-              <% }) %>
+              <% grades.forEach(g => { %><option value="<%= g.id %>"><%= g.nombre %></option><% }) %>
             </select>
           </div>
-          <div class="col-md-6">
-            <label class="form-label fw-semibold" style="font-size:13px;">Total de alumnos</label>
-            <input type="number" name="total_alumnos" class="form-control" min="0" max="100" placeholder="ej. 30">
+          <!-- Sección (filtrada por grado) -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Sección</label>
+            <select name="section_id" id="section-sel" class="w-full h-9 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-700 px-3 focus:bg-white focus:border-blue-400 transition-colors">
+              <option value="">Sin especificar</option>
+              <% sections.forEach(s => { %><option value="<%= s.id %>" data-grade="<%= s.grade_id %>"><%= s.nombre %></option><% }) %>
+            </select>
           </div>
-          <div class="col-12">
-            <label class="form-label fw-semibold" style="font-size:13px;">Docente</label>
-            <input type="text" name="docente" class="form-control" placeholder="Nombre completo del docente">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Total alumnos</label>
+            <input type="number" name="total_alumnos" min="0" max="100" placeholder="ej. 35"
+              class="w-full h-9 px-3 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 placeholder-slate-400 focus:bg-white focus:border-blue-400 transition-colors">
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Docente</label>
+            <input type="text" name="docente" placeholder="Nombre completo del docente"
+              class="w-full h-9 px-3 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 placeholder-slate-400 focus:bg-white focus:border-blue-400 transition-colors">
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Documento fuente -->
-    <div class="col-lg-5">
-      <div class="form-panel">
-        <div class="form-section-title">Documento fuente — Capa 1</div>
-        <p class="text-muted" style="font-size:12.5px;">
-          Adjunte el escaneo original del cuadro (PDF o imagen). Este archivo es el documento con valor legal y no puede ser reemplazado.
-        </p>
-        <div class="mb-3">
-          <label class="form-label fw-semibold" style="font-size:13px;">Archivo (PDF, JPG, PNG)</label>
-          <input type="file" name="documento" id="doc-file" class="form-control"
-            accept=".pdf,.jpg,.jpeg,.png,.tiff">
-          <div id="file-preview" class="form-text mt-1" style="color:#1d6fc4;"></div>
-        </div>
-        <div class="alert alert-light border" style="font-size:12px;">
-          <i class="bi bi-info-circle text-primary"></i>
-          El archivo se almacenará de forma segura en MinIO y solo se entregará el original al solicitante.
+    <!-- Documento fuente (1/3) -->
+    <div class="space-y-4">
+      <div class="bg-white rounded-xl border border-slate-200/70 p-5">
+        <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Documento fuente</h2>
+        <p class="text-xs text-slate-400 mb-4">Capa 1 — Original con validez legal</p>
+
+        <label for="doc-file" class="flex flex-col items-center justify-center h-32 border-2 border-dashed border-slate-200 rounded-xl cursor-pointer hover:border-blue-300 hover:bg-blue-50/30 transition-all group">
+          <i class="bi bi-cloud-upload text-2xl text-slate-300 group-hover:text-blue-400 transition-colors mb-2"></i>
+          <span class="text-xs text-slate-400 group-hover:text-blue-500 transition-colors">Clic para seleccionar archivo</span>
+          <span class="text-[11px] text-slate-300 mt-0.5">PDF, JPG, PNG, TIFF — máx. 20 MB</span>
+        </label>
+        <input type="file" id="doc-file" name="documento" accept=".pdf,.jpg,.jpeg,.png,.tiff" class="sr-only">
+        <p id="file-preview" class="text-xs text-blue-600 mt-2 min-h-[16px]"></p>
+
+        <div class="mt-4 flex items-start gap-2 p-3 rounded-lg bg-slate-50 border border-slate-100">
+          <i class="bi bi-info-circle text-slate-400 flex-shrink-0 mt-0.5"></i>
+          <p class="text-xs text-slate-500">El archivo se almacena en MinIO y solo se entrega el original al solicitante.</p>
         </div>
       </div>
 
-      <div class="d-flex gap-2 mt-3">
-        <button type="submit" class="btn-primary-app flex-grow-1 justify-content-center">
-          <i class="bi bi-floppy-fill"></i> Registrar cuadro
-        </button>
-        <a href="/cuadros" class="btn-secondary-app">Cancelar</a>
-      </div>
+      <button type="submit" class="w-full h-10 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+        <i class="bi bi-floppy"></i> Registrar cuadro
+      </button>
+      <a href="/cuadros" class="w-full h-10 bg-white border border-slate-200 text-slate-600 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors flex items-center justify-center">
+        Cancelar
+      </a>
     </div>
   </div>
 </form>
+
+<script>
+(function () {
+  const allSections = JSON.parse(document.getElementById('sections-data').textContent);
+  const gradeSel   = document.getElementById('grade-sel');
+  const sectionSel = document.getElementById('section-sel');
+
+  gradeSel.addEventListener('change', function () {
+    const gradeId = parseInt(this.value) || 0;
+    const prev = sectionSel.value;
+    sectionSel.innerHTML = '<option value="">Sin especificar</option>';
+    allSections
+      .filter(s => s.is_active && (!gradeId || s.grade_id === gradeId))
+      .forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.id;
+        opt.textContent = s.nombre;
+        if (String(s.id) === prev) opt.selected = true;
+        sectionSel.appendChild(opt);
+      });
+  });
+
+  document.getElementById('doc-file').addEventListener('change', function () {
+    document.getElementById('file-preview').textContent = this.files[0]?.name ?? '';
+  });
+})();
+</script>
