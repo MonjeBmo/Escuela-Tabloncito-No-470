@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import * as ctrl from '../controllers/auth.controller';
-import { requireAuth, requireRol } from '../shared/auth.middleware';
+import { requireAuth } from '../shared/auth.middleware';
 
 const router = Router();
 
@@ -11,7 +11,7 @@ router.get('/logout', ctrl.doLogout);
 router.get('/perfil',  requireAuth, ctrl.showPerfil);
 router.post('/perfil', requireAuth, ctrl.cambiarPassword);
 
-router.get('/usuarios',  requireAuth, requireRol('director'), ctrl.showUsuarios);
-router.post('/usuarios', requireAuth, requireRol('director'), ctrl.crearUsuario);
+// Compat: redirige al módulo admin
+router.get('/usuarios', requireAuth, ctrl.showUsuarios);
 
 export default router;
