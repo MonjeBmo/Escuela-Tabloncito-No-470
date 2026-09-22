@@ -6,11 +6,26 @@ import * as gradesRepo from '../repositories/grades.repository';
 import * as coursesRepo from '../repositories/courses.repository';
 import * as teachersRepo from '../repositories/teachers.repository';
 
+const LIMITES_ADMIN = [5, 10];
+function getPage(req: Request): { pagina: number; limit: number } {
+  const limit = LIMITES_ADMIN.includes(parseInt(String(req.query.limit))) ? parseInt(String(req.query.limit)) : 10;
+  const pagina = Math.max(1, parseInt(String(req.query.pagina ?? 1)) || 1);
+  return { pagina, limit };
+}
+function paginar<T>(arr: T[], pagina: number, limit: number) {
+  const total = arr.length;
+  const totalPaginas = Math.max(1, Math.ceil(total / limit));
+  const p = Math.min(pagina, totalPaginas);
+  return { items: arr.slice((p - 1) * limit, p * limit), total, totalPaginas, pagina: p };
+}
+
 // ── Usuarios ────────────────────────────────────────────────
 
 export async function showUsuarios(req: Request, res: Response): Promise<void> {
-  const [usuarios, roles] = await Promise.all([userRepo.listAll(), rolesRepo.findAll()]);
-  res.render('admin/usuarios', { titulo: 'Gestión de usuarios', usuarios, roles });
+  const { pagina, limit } = getPage(req);
+  const [all, roles] = await Promise.all([userRepo.listAll(), rolesRepo.findAll()]);
+  const { items: usuarios, total, totalPaginas } = paginar(all, pagina, limit);
+  res.render('admin/usuarios', { titulo: 'Gestión de usuarios', usuarios, roles, pagina, limit, total, totalPaginas });
 }
 
 export async function crearUsuario(req: Request, res: Response): Promise<void> {
@@ -93,11 +108,13 @@ export async function crearRol(req: Request, res: Response): Promise<void> {
 // ── Grados y secciones ──────────────────────────────────────
 
 export async function showGrados(req: Request, res: Response): Promise<void> {
-  const [grades, sections] = await Promise.all([
-    gradesRepo.findAllGrades(),
-    gradesRepo.findAllSections(),
-  ]);
-  res.render('admin/grados', { titulo: 'Grados y secciones', grades, sections });
+  const { limit } = getPage(req);
+  const pg = Math.max(1, parseInt(String(req.query.pg ?? 1)) || 1);
+  const ps = Math.max(1, parseInt(String(req.query.ps ?? 1)) || 1);
+  const [allGrades, allSections] = await Promise.all([gradesRepo.findAllGrades(), gradesRepo.findAllSections()]);
+  const { items: grades, total: totalGrades, totalPaginas: totalPaginasG, pagina: paginaG } = paginar(allGrades, pg, limit);
+  const { items: sections, total: totalSections, totalPaginas: totalPaginasS, pagina: paginaS } = paginar(allSections, ps, limit);
+  res.render('admin/grados', { titulo: 'Grados y secciones', grades, sections, limit, paginaG, paginaS, totalGrades, totalSections, totalPaginasG, totalPaginasS });
 }
 
 export async function crearGrado(req: Request, res: Response): Promise<void> {
@@ -160,9 +177,11 @@ export async function toggleSeccion(req: Request, res: Response): Promise<void> 
 
 export async function showCursos(req: Request, res: Response): Promise<void> {
   const q = String(req.query.q ?? '').trim().toLowerCase();
+  const { pagina, limit } = getPage(req);
   const all = await coursesRepo.findAll();
-  const courses = q ? all.filter(c => c.nombre.toLowerCase().includes(q) || (c.nombre_corto ?? '').toLowerCase().includes(q)) : all;
-  res.render('admin/cursos', { titulo: 'Cursos', courses, q });
+  const filtered = q ? all.filter(c => c.nombre.toLowerCase().includes(q) || (c.nombre_corto ?? '').toLowerCase().includes(q)) : all;
+  const { items: courses, total, totalPaginas } = paginar(filtered, pagina, limit);
+  res.render('admin/cursos', { titulo: 'Cursos', courses, q, pagina, limit, total, totalPaginas, allCount: all.length });
 }
 
 export async function crearCurso(req: Request, res: Response): Promise<void> {
@@ -196,21 +215,26 @@ export async function toggleCurso(req: Request, res: Response): Promise<void> {
 
 export async function showMaestros(req: Request, res: Response): Promise<void> {
   const q = String(req.query.q ?? '').trim().toLowerCase();
-  const [allTeachers, grades, sections, courses, assignments] = await Promise.all([
+  const { limit } = getPage(req);
+  const pt = Math.max(1, parseInt(String(req.query.pt ?? 1)) || 1);
+  const pa = Math.max(1, parseInt(String(req.query.pa ?? 1)) || 1);
+  const [allTeachers, grades, sections, courses, allAssignments] = await Promise.all([
     teachersRepo.findAll(),
     gradesRepo.findAllGrades(true),
     gradesRepo.findAllSections(true),
     coursesRepo.findAll(true),
     teachersRepo.findAllAssignments(),
   ]);
-  const teachers = q
+  const filtered = q
     ? allTeachers.filter(t =>
         t.full_name.toLowerCase().includes(q) ||
         (t.email ?? '').toLowerCase().includes(q) ||
         (t.phone ?? '').includes(q)
       )
     : allTeachers;
-  res.render('admin/maestros', { titulo: 'Maestros', teachers, grades, sections, courses, assignments, q });
+  const { items: teachers, total: totalTeachers, totalPaginas: totalPaginasT, pagina: paginaT } = paginar(filtered, pt, limit);
+  const { items: assignments, total: totalAssignments, totalPaginas: totalPaginasA, pagina: paginaA } = paginar(allAssignments, pa, limit);
+  res.render('admin/maestros', { titulo: 'Maestros', teachers, grades, sections, courses, assignments, q, limit, paginaT, paginaA, totalTeachers, totalAssignments, totalPaginasT, totalPaginasA });
 }
 
 export async function crearMaestro(req: Request, res: Response): Promise<void> {

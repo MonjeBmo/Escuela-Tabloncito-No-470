@@ -122,6 +122,7 @@
           </tbody>
         </table>
       </div>
+      <%- include('../partials/admin-pagination', { pagina: paginaT, totalPaginas: totalPaginasT, total: totalTeachers, limit, baseUrl: '/admin/maestros' + (q ? '?q=' + encodeURIComponent(q) : ''), pageParam: 'pt' }) %>
       <% } %>
     </div>
   </div>
@@ -155,43 +156,38 @@
 
 <!-- ── Asignaciones ──────────────────────────────────────────── -->
 <div id="tab-asignaciones" class="hidden">
-  <% if (assignments.length === 0) { %>
+  <% if (totalAssignments === 0) { %>
   <div class="bg-white rounded-xl border border-slate-200/70 py-16 text-center">
     <i class="bi bi-calendar2-check text-4xl text-slate-200 block mb-3"></i>
     <p class="text-sm text-slate-400">No hay asignaciones registradas.</p>
   </div>
   <% } else { %>
-  <%
-    // Agrupar por grado/sección
-    const porSeccion = {};
-    assignments.forEach(a => {
-      const key = (a.grade_nombre || '') + ' ' + (a.section_display || '');
-      if (!porSeccion[key]) porSeccion[key] = [];
-      porSeccion[key].push(a);
-    });
-  %>
-  <div class="space-y-4">
-    <% Object.keys(porSeccion).sort().forEach(secKey => { %>
-    <div class="bg-white rounded-xl border border-slate-200/70 overflow-hidden">
-      <div class="px-5 py-3 bg-slate-50/80 border-b border-slate-100 flex items-center gap-2">
-        <i class="bi bi-people text-slate-400 text-sm"></i>
-        <span class="text-sm font-semibold text-slate-700"><%= secKey %></span>
-        <span class="ml-auto inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700"><%= porSeccion[secKey].length %> asignación<%= porSeccion[secKey].length !== 1 ? 'es' : '' %></span>
-      </div>
-      <table class="w-full text-sm">
+  <div class="bg-white rounded-xl border border-slate-200/70 overflow-hidden">
+    <div class="px-5 py-3 bg-slate-50/80 border-b border-slate-100 flex items-center gap-2">
+      <i class="bi bi-calendar2-check text-slate-400 text-sm"></i>
+      <span class="text-sm font-semibold text-slate-700">Asignaciones docentes</span>
+      <span class="ml-auto inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700"><%= totalAssignments %></span>
+    </div>
+    <div class="table-wrap">
+      <table class="w-full text-sm min-w-[560px]">
         <thead class="bg-slate-50/50">
           <tr>
             <th class="px-5 py-2.5 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Maestro</th>
             <th class="px-4 py-2.5 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Curso</th>
+            <th class="px-4 py-2.5 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Grado / Sección</th>
             <th class="px-4 py-2.5 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Año</th>
             <th class="px-4 py-2.5 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Estado</th>
           </tr>
         </thead>
         <tbody>
-          <% porSeccion[secKey].forEach(a => { %>
+          <% assignments.forEach(a => { %>
           <tr class="border-t border-slate-100 hover:bg-slate-50/40 transition-colors">
             <td class="px-5 py-3 font-medium text-slate-800"><%= a.teacher_name %></td>
             <td class="px-4 py-3 text-slate-600 text-sm"><%= a.course_nombre %></td>
+            <td class="px-4 py-3">
+              <span class="text-slate-700 text-xs"><%= a.grade_nombre %></span>
+              <span class="ml-1 inline-flex items-center px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 text-xs"><%= a.section_display %></span>
+            </td>
             <td class="px-4 py-3 text-slate-500 text-xs"><%= a.school_year %></td>
             <td class="px-4 py-3">
               <% if (a.is_active) { %>
@@ -205,7 +201,7 @@
         </tbody>
       </table>
     </div>
-    <% }) %>
+    <%- include('../partials/admin-pagination', { pagina: paginaA, totalPaginas: totalPaginasA, total: totalAssignments, limit, baseUrl: '/admin/maestros' + (q ? '?q=' + encodeURIComponent(q) : ''), pageParam: 'pa' }) %>
   </div>
   <% } %>
 </div>

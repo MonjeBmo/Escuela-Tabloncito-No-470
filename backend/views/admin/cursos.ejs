@@ -94,6 +94,7 @@
           </tbody>
         </table>
       </div>
+      <%- include('../partials/admin-pagination', { pagina, totalPaginas, total, limit, baseUrl: '/admin/cursos' + (q ? '?q=' + encodeURIComponent(q) : '') }) %>
       <% } %>
     </div>
   </div>

@@ -1,0 +1,37 @@
+<%#
+  Params:
+    pagina       - página actual
+    totalPaginas - total de páginas
+    total        - total de registros
+    limit        - items por página actual
+    baseUrl      - URL base con query params existentes (sin pagina/limit), ej: "/admin/grados?ps=2"
+    pageParam    - (opcional) nombre del param de página, por defecto "pagina"
+%>
+<% const _pp = typeof pageParam !== 'undefined' ? pageParam : 'pagina'; %>
+<% const _sep = baseUrl.includes('?') ? '&' : '?'; %>
+<% if (totalPaginas > 1 || total > 5) { %>
+<div class="flex items-center justify-between px-5 py-3 border-t border-slate-100 bg-slate-50/40">
+  <span class="text-xs text-slate-400"><%= total %> registros · página <%= pagina %> de <%= totalPaginas %></span>
+  <div class="flex items-center gap-1">
+    <% [5, 10].forEach(function(n) { %>
+    <a href="<%= baseUrl %><%= _sep %>limit=<%= n %>&<%= _pp %>=1"
+       class="px-2.5 py-1 text-xs font-medium rounded-lg transition-colors
+         <%= limit === n ? 'bg-blue-600 text-white' : 'text-slate-500 hover:bg-slate-100 border border-slate-200' %>">
+      <%= n %>
+    </a>
+    <% }) %>
+    <span class="w-px h-4 bg-slate-200 mx-1"></span>
+    <a href="<%= baseUrl %><%= _sep %>limit=<%= limit %>&<%= _pp %>=<%= Math.max(1, pagina - 1) %>"
+       class="w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 transition-colors
+         <%= pagina <= 1 ? 'pointer-events-none opacity-30' : 'hover:bg-slate-100' %>">
+      <i class="bi bi-chevron-left text-xs"></i>
+    </a>
+    <span class="text-xs text-slate-600 font-medium min-w-[3rem] text-center"><%= pagina %> / <%= totalPaginas %></span>
+    <a href="<%= baseUrl %><%= _sep %>limit=<%= limit %>&<%= _pp %>=<%= Math.min(totalPaginas, pagina + 1) %>"
+       class="w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 transition-colors
+         <%= pagina >= totalPaginas ? 'pointer-events-none opacity-30' : 'hover:bg-slate-100' %>">
+      <i class="bi bi-chevron-right text-xs"></i>
+    </a>
+  </div>
+</div>
+<% } %>

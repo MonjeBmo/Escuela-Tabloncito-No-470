@@ -83,6 +83,7 @@
           </tbody>
         </table>
       </div>
+      <%- include('../partials/admin-pagination', { pagina: paginaG, totalPaginas: totalPaginasG, total: totalGrades, limit, baseUrl: '/admin/grados?ps=' + paginaS, pageParam: 'pg' }) %>
     </div>
   </div>
   <div>
@@ -174,6 +175,7 @@
           </tbody>
         </table>
       </div>
+      <%- include('../partials/admin-pagination', { pagina: paginaS, totalPaginas: totalPaginasS, total: totalSections, limit, baseUrl: '/admin/grados?pg=' + paginaG, pageParam: 'ps' }) %>
     </div>
   </div>
   <div>
