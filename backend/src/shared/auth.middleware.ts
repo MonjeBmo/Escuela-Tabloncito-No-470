@@ -24,6 +24,23 @@ export function requirePermission(perm: string) {
   };
 }
 
+export function requireAnyPermission(...perms: string[]) {
+  return (req: Request, res: Response, next: NextFunction): void => {
+    if (!req.session.usuario) {
+      res.redirect('/auth/login');
+      return;
+    }
+    const hasAny = perms.some(p => req.session.usuario!.permisos.includes(p));
+    if (!hasAny) {
+      req.session.flash = { tipo: 'danger', mensaje: 'No tiene permisos para acceder a esta sección.' };
+      res.redirect('/dashboard');
+      return;
+    }
+    next();
+  };
+}
+
+
 // Compat: comprueba por nombre de rol (útil durante transición)
 export function requireRol(...roles: string[]) {
   return (req: Request, res: Response, next: NextFunction): void => {

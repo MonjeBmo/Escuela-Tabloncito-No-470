@@ -110,7 +110,12 @@
                   <div>
                     <label class="block text-xs font-bold text-marino-700 uppercase tracking-wider mb-1">Nueva Contraseña <span class="text-marino-400 normal-case font-normal">(opcional)</span></label>
                     <input type="password" name="password" minlength="8" placeholder="Dejar en blanco para no cambiar"
-                      class="h-10 px-3 text-xs rounded-xl border border-hueso-300 bg-white text-marino-950 placeholder-marino-300 focus:border-marino-600 focus:ring-2 focus:ring-marino-500/20 w-56 outline-none">
+                      class="h-10 px-3 text-xs rounded-xl border border-hueso-300 bg-white text-marino-950 placeholder-marino-300 focus:border-marino-600 focus:ring-2 focus:ring-marino-500/20 w-48 outline-none">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-marino-700 uppercase tracking-wider mb-1">Confirmar Nueva Contraseña</label>
+                    <input type="password" name="password_confirm" minlength="8" placeholder="Repetir nueva contraseña"
+                      class="h-10 px-3 text-xs rounded-xl border border-hueso-300 bg-white text-marino-950 placeholder-marino-300 focus:border-marino-600 focus:ring-2 focus:ring-marino-500/20 w-48 outline-none">
                   </div>
                   <div class="flex items-center gap-2">
                     <button type="submit" class="h-10 px-4 bg-marino-700 hover:bg-marino-800 text-white text-xs font-semibold rounded-xl shadow-xs transition-all">Guardar</button>
@@ -156,6 +161,11 @@
         <div>
           <label class="block text-xs font-bold text-marino-700 uppercase tracking-wider mb-1.5">Contraseña Inicial <span class="text-ladrillo-600">*</span></label>
           <input type="password" name="password" required minlength="8" placeholder="Mínimo 8 caracteres"
+            class="w-full h-10 px-3.5 text-xs rounded-xl border border-hueso-300 bg-hueso-50/50 text-marino-950 placeholder-marino-300 focus:bg-white focus:border-marino-600 focus:ring-2 focus:ring-marino-500/20 transition-all outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-marino-700 uppercase tracking-wider mb-1.5">Confirmar Contraseña <span class="text-ladrillo-600">*</span></label>
+          <input type="password" name="password_confirm" required minlength="8" placeholder="Repita la contraseña"
             class="w-full h-10 px-3.5 text-xs rounded-xl border border-hueso-300 bg-hueso-50/50 text-marino-950 placeholder-marino-300 focus:bg-white focus:border-marino-600 focus:ring-2 focus:ring-marino-500/20 transition-all outline-none">
         </div>
         <div>

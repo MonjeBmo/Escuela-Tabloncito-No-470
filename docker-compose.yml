@@ -18,6 +18,9 @@ services:
     env_file: .env
     environment:
       - NODE_ENV=production
+    volumes:
+      - ./backend/views:/app/views:ro
+      - ./backend/public:/app/public:ro
     depends_on:
       postgres:
         condition: service_healthy

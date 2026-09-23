@@ -4,15 +4,87 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
   <title>Ingresar — Tabloncito 470</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/><text y='.9em' font-size='68' x='14'>🎓</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23B84A39'/><text y='.9em' font-size='68' x='14'>🎓</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>tailwind.config = { theme: { fontFamily: { sans: ['Inter','system-ui','sans-serif'] } } }</script>
+  <script>
+    tailwind.config = {
+      theme: {
+        fontFamily: {
+          sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          display: ['Outfit', 'system-ui', 'sans-serif'],
+        },
+        extend: {
+          colors: {
+            hueso: {
+              50: '#FDFBF7',
+              100: '#F7F3EB',
+              200: '#ECE5D8',
+              300: '#DFD5C3',
+              400: '#CBBDA5',
+              500: '#A8977B',
+            },
+            ladrillo: {
+              50: '#FDF4F2',
+              100: '#FCE7E4',
+              200: '#F7D0CA',
+              300: '#EEABA0',
+              400: '#DE7868',
+              500: '#C84B31',
+              600: '#B84A39',
+              700: '#96392B',
+              800: '#7B2E23',
+              900: '#541D15',
+            },
+            marino: {
+              50: '#F0F4F8',
+              100: '#D9E2EC',
+              200: '#BCCCDC',
+              300: '#9FB3C8',
+              400: '#627D98',
+              500: '#334E68',
+              600: '#1E3A5F',
+              700: '#162C46',
+              800: '#0F1E30',
+              900: '#09121D',
+            },
+            bosque: {
+              50: '#F0F7F4',
+              100: '#DCEDE4',
+              200: '#B9DDCB',
+              300: '#86C5A6',
+              400: '#52A77E',
+              500: '#40916C',
+              600: '#2D6A4F',
+              700: '#1B4332',
+              800: '#143326',
+              900: '#0B2017',
+            },
+            ocre: {
+              50: '#FEF9E7',
+              100: '#FCF3CF',
+              200: '#F9E79F',
+              300: '#F7DC6F',
+              400: '#F1C40F',
+              500: '#D4AC0D',
+              600: '#B7950B',
+              700: '#9A7D0A',
+              800: '#7D6608',
+            },
+            brand: '#B84A39',
+          },
+          borderColor: { DEFAULT: '#ECE5D8' },
+        }
+      }
+    }
+  </script>
   <link rel="stylesheet" href="/css/app.css">
 </head>
-<body class="min-h-screen bg-[#F7F5EF] font-sans antialiased flex items-center justify-center p-4 py-10 relative overflow-hidden">
+<body class="min-h-screen bg-hueso-100 font-sans antialiased flex items-center justify-center p-4 py-10 relative overflow-hidden text-marino-900">
+
 
   <!-- Background blobs -->
   <div class="absolute -top-32 -left-32 w-80 h-80 bg-blue-100/50 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>

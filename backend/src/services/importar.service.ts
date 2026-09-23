@@ -24,19 +24,19 @@ const PLANTILLAS: Record<string, PlantillaConfig> = {
   },
   maestros: {
     nombre: 'Maestros',
-    headers: ['full_name*', 'email', 'phone'],
+    headers: ['nombre_completo*', 'correo', 'telefono'],
     ejemplo: ['Ana López', 'alopez@escuela.gt', '5555-9876'],
     widths: [28, 28, 14],
   },
   usuarios: {
     nombre: 'Usuarios',
-    headers: ['nombre*', 'username*', 'password*', 'rol*'],
+    headers: ['nombre_completo*', 'usuario*', 'password*', 'rol*'],
     ejemplo: ['María González', 'mgonzalez', 'Contraseña123!', 'docente'],
     widths: [24, 18, 20, 16],
   },
   grados: {
     nombre: 'Grados',
-    headers: ['nombre*', 'nombre_corto', 'sort_order'],
+    headers: ['nombre_grado*', 'nombre_corto', 'orden'],
     ejemplo: ['Séptimo', '7°', 7],
     widths: [20, 14, 12],
   },
@@ -48,7 +48,7 @@ const PLANTILLAS: Record<string, PlantillaConfig> = {
   },
   cursos: {
     nombre: 'Cursos',
-    headers: ['nombre*', 'nombre_corto', 'sort_order'],
+    headers: ['nombre_curso*', 'nombre_corto', 'orden'],
     ejemplo: ['Matemáticas', 'MATE', 1],
     widths: [24, 14, 12],
   },
@@ -72,15 +72,15 @@ export function generarPlantilla(modulo: string): Buffer {
 
   // Sheet 2: instructions
   const instrucciones = [
-    ['INSTRUCCIONES'],
+    ['INSTRUCCIONES DE IMPORTACIÓN'],
     [''],
-    ['1. Llene los datos a partir de la fila 2 (la fila 2 es un ejemplo, puede borrarla o sobreescribirla).'],
-    ['2. Las columnas marcadas con * son obligatorias.'],
-    ['3. No modifique los nombres de las columnas de la fila 1.'],
-    ['4. Las fechas deben tener el formato DD/MM/AAAA.'],
-    ['5. El campo genero acepta únicamente M o F.'],
-    ['6. Los valores de grado/sección/maestro/curso deben coincidir exactamente con los registrados en el sistema.'],
-    ['7. Guarde el archivo en formato .xlsx o .csv antes de subirlo.'],
+    ['1. Ingrese los registros a partir de la fila 2 (la fila 2 contiene un ejemplo editable).'],
+    ['2. Las columnas marcadas con asterisco (*) son obligatorias.'],
+    ['3. No modifique ni elimine los nombres de las columnas en la fila 1.'],
+    ['4. Las fechas deben tener el formato DD/MM/AAAA (ej. 15/03/2012).'],
+    ['5. El campo género acepta "M" (Masculino) o "F" (Femenino).'],
+    ['6. Los nombres de grados, secciones, maestros y cursos deben coincidir con los existentes en el sistema.'],
+    ['7. Guarde el archivo en formato .xlsx antes de cargarlo al sistema.'],
   ];
   const wsInfo = XLSX.utils.aoa_to_sheet(instrucciones);
   wsInfo['!cols'] = [{ wch: 90 }];
@@ -91,23 +91,83 @@ export function generarPlantilla(modulo: string): Buffer {
   return Buffer.from(XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' }));
 }
 
-// ── Parse uploaded Excel ────────────────────────────────────────────────────
+// ── Parse uploaded Excel with intelligent normalization ──────────────────────
 
-type RawRow = Record<string, string | number | null | undefined>;
-
-function leerExcel(buffer: Buffer): RawRow[] {
-  const wb = XLSX.read(buffer, { type: 'buffer', cellDates: false });
-  const ws = wb.Sheets[wb.SheetNames[0]];
-  return XLSX.utils.sheet_to_json<RawRow>(ws, { defval: null, raw: false });
+function normalizeKey(k: string): string {
+  return k
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // remove accents
+    .replace(/[\*\(\)\.\:\-\_\/]/g, ' ') // replace punctuation with space
+    .replace(/\s+/g, '_')
+    .trim()
+    .replace(/^_+|_+$/g, '');
 }
 
-function str(v: unknown): string {
-  return v == null ? '' : String(v).trim();
+function leerExcel(buffer: Buffer): Record<string, string>[] {
+  const wb = XLSX.read(buffer, { type: 'buffer', cellDates: false });
+  const sheetName = wb.SheetNames[0];
+  const ws = wb.Sheets[sheetName];
+  if (!ws) return [];
+  const rawRows = XLSX.utils.sheet_to_json<Record<string, any>>(ws, { defval: null, raw: false });
+
+  return rawRows.map(row => {
+    const normalized: Record<string, string> = {};
+    for (const [key, val] of Object.entries(row)) {
+      if (key) {
+        const normKey = normalizeKey(key);
+        const strVal = val == null ? '' : String(val).trim();
+        normalized[normKey] = strVal;
+        normalized[key.toLowerCase().trim()] = strVal;
+      }
+    }
+    return normalized;
+  });
+}
+
+function getVal(r: Record<string, string>, ...aliases: string[]): string {
+  for (const a of aliases) {
+    const norm = normalizeKey(a);
+    if (r[norm] !== undefined && r[norm] !== '') return r[norm];
+    const raw = a.toLowerCase().trim();
+    if (r[raw] !== undefined && r[raw] !== '') return r[raw];
+  }
+  return '';
 }
 
 function num(v: unknown): number | null {
   const n = parseFloat(String(v ?? ''));
   return isNaN(n) ? null : n;
+}
+
+function parseFecha(val: string): string | null {
+  if (!val) return null;
+  val = val.trim();
+  // Format DD/MM/YYYY or DD-MM-YYYY
+  const slashMatch = val.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+  if (slashMatch) {
+    const day = slashMatch[1].padStart(2, '0');
+    const month = slashMatch[2].padStart(2, '0');
+    const year = slashMatch[3];
+    return `${year}-${month}-${day}`;
+  }
+  // Format YYYY-MM-DD
+  const isoMatch = val.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/);
+  if (isoMatch) {
+    const year = isoMatch[1];
+    const month = isoMatch[2].padStart(2, '0');
+    const day = isoMatch[3].padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+  // Numeric serial from Excel
+  const serial = parseFloat(val);
+  if (!isNaN(serial) && serial > 1000 && serial < 80000) {
+    const date = new Date((serial - 25569) * 86400 * 1000);
+    if (!isNaN(date.getTime())) {
+      return date.toISOString().split('T')[0];
+    }
+  }
+  return null;
 }
 
 // ── Import logic per module ─────────────────────────────────────────────────
@@ -132,29 +192,38 @@ export async function importarAlumnos(buffer: Buffer, registradoPor: number): Pr
   for (let i = 0; i < rows.length; i++) {
     const r = rows[i];
     const fila = i + 2;
-    const pNombre = str(r['primer_nombre*'] ?? r['primer_nombre']);
-    const pApellido = str(r['primer_apellido*'] ?? r['primer_apellido']);
+
+    const pNombre = getVal(r, 'primer_nombre', 'primer_nombre_del_alumno', 'nombre1', 'nombre');
+    const pApellido = getVal(r, 'primer_apellido', 'primer_apellido_del_alumno', 'apellido1', 'apellido');
+
     if (!pNombre || !pApellido) {
-      result.errores.push({ fila, mensaje: 'primer_nombre y primer_apellido son obligatorios.' });
+      const hasAny = Object.values(r).some(v => v !== '');
+      if (!hasAny) continue; // Skip empty row
+      result.errores.push({ fila, mensaje: 'El primer nombre y primer apellido son campos obligatorios.' });
       result.omitidos++;
       continue;
     }
 
-    const gradoNombre = str(r['grado']).toLowerCase();
-    const seccionNombre = str(r['seccion']).toLowerCase();
+    const sNombre = getVal(r, 'segundo_nombre', 'nombre2', 'otros_nombres') || null;
+    const sApellido = getVal(r, 'segundo_apellido', 'apellido2') || null;
+    const cui = getVal(r, 'cui', 'cui_del_alumno', 'identificacion') || null;
+
+    const gradoNombre = getVal(r, 'grado', 'nombre_del_grado').toLowerCase();
+    const seccionNombre = getVal(r, 'seccion', 'nombre_seccion').toLowerCase();
     const sectionId = gradoNombre && seccionNombre ? (sectionMap[`${gradoNombre}:${seccionNombre}`] ?? null) : null;
     if (gradoNombre && seccionNombre && !sectionId) {
-      result.errores.push({ fila, mensaje: `Grado/sección "${str(r['grado'])} ${str(r['seccion'])}" no encontrado.` });
+      result.errores.push({ fila, mensaje: `Grado/sección "${gradoNombre} ${seccionNombre}" no encontrado en el catálogo escolar.` });
     }
 
-    const fechaStr = str(r['fecha_nacimiento (DD/MM/AAAA)'] ?? r['fecha_nacimiento']);
-    let fechaNacimiento: string | null = null;
-    if (fechaStr) {
-      const parts = fechaStr.split('/');
-      if (parts.length === 3) {
-        fechaNacimiento = `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
-      }
-    }
+    const fechaNacimiento = parseFecha(getVal(r, 'fecha_nacimiento_dd_mm_aaaa', 'fecha_nacimiento', 'fecha_de_nacimiento', 'nacimiento'));
+    const generoVal = getVal(r, 'genero_m_f', 'genero', 'sexo').toUpperCase();
+    const genero = (generoVal === 'M' || generoVal === 'F') ? generoVal : null;
+
+    const anioIngreso = num(getVal(r, 'anio_ingreso', 'anio')) ?? new Date().getFullYear();
+    const municipio = getVal(r, 'municipio') || null;
+    const departamento = getVal(r, 'departamento') || null;
+    const nombreEncargado = getVal(r, 'nombre_encargado', 'encargado', 'tutor') || null;
+    const telefonoEncargado = getVal(r, 'telefono_encargado', 'telefono', 'contacto') || null;
 
     try {
       await pool.query(
@@ -164,18 +233,18 @@ export async function importarAlumnos(buffer: Buffer, registradoPor: number): Pr
          VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)`,
         [
           pNombre,
-          str(r['segundo_nombre']) || null,
+          sNombre,
           pApellido,
-          str(r['segundo_apellido']) || null,
-          str(r['cui']) || null,
+          sApellido,
+          cui,
           fechaNacimiento,
-          str(r['genero (M/F)'] ?? r['genero']) || null,
+          genero,
           sectionId,
-          num(r['anio_ingreso']) ?? new Date().getFullYear(),
-          str(r['municipio']) || null,
-          str(r['departamento']) || null,
-          str(r['nombre_encargado']) || null,
-          str(r['telefono_encargado']) || null,
+          anioIngreso,
+          municipio,
+          departamento,
+          nombreEncargado,
+          telefonoEncargado,
           registradoPor,
         ]
       );
@@ -194,13 +263,27 @@ export async function importarMaestros(buffer: Buffer): Promise<ImportResult> {
   for (let i = 0; i < rows.length; i++) {
     const r = rows[i];
     const fila = i + 2;
-    const fullName = str(r['full_name*'] ?? r['full_name']);
-    if (!fullName) { result.errores.push({ fila, mensaje: 'full_name es obligatorio.' }); result.omitidos++; continue; }
+    const fullName = getVal(r, 'nombre_completo', 'full_name', 'nombre', 'docente', 'maestro', 'profesor');
+    if (!fullName) {
+      const hasAny = Object.values(r).some(v => v !== '');
+      if (!hasAny) continue; // Skip empty row
+      result.errores.push({ fila, mensaje: 'El nombre completo del maestro es obligatorio.' });
+      result.omitidos++;
+      continue;
+    }
+    const email = getVal(r, 'correo', 'email', 'correo_electronico') || null;
+    const phone = getVal(r, 'telefono', 'phone', 'celular', 'tel') || null;
+
     try {
-      await pool.query('INSERT INTO teachers (full_name, email, phone) VALUES ($1,$2,$3)',
-        [fullName, str(r['email']) || null, str(r['phone']) || null]);
+      await pool.query(
+        'INSERT INTO teachers (full_name, email, phone) VALUES ($1,$2,$3)',
+        [fullName, email, phone]
+      );
       result.insertados++;
-    } catch (e: unknown) { result.errores.push({ fila, mensaje: (e as Error).message }); result.omitidos++; }
+    } catch (e: unknown) {
+      result.errores.push({ fila, mensaje: (e as Error).message });
+      result.omitidos++;
+    }
   }
   return result;
 }
@@ -209,27 +292,41 @@ export async function importarUsuarios(buffer: Buffer): Promise<ImportResult> {
   const rows = leerExcel(buffer);
   const roles = await rolesRepo.findAll();
   const roleMap: Record<string, number> = {};
-  roles.forEach(r => { roleMap[r.nombre.toLowerCase()] = r.id; });
+  roles.forEach(r => { roleMap[r.nombre.toLowerCase().trim()] = r.id; });
 
   const result: ImportResult = { insertados: 0, omitidos: 0, errores: [] };
   for (let i = 0; i < rows.length; i++) {
     const r = rows[i];
     const fila = i + 2;
-    const nombre = str(r['nombre*'] ?? r['nombre']);
-    const username = str(r['username*'] ?? r['username']);
-    const password = str(r['password*'] ?? r['password']);
-    const rolNombre = str(r['rol*'] ?? r['rol']).toLowerCase();
+    const nombre = getVal(r, 'nombre_completo', 'nombre', 'full_name');
+    const username = getVal(r, 'usuario', 'username', 'user');
+    const password = getVal(r, 'password', 'clave', 'contrasena');
+    const rolNombre = getVal(r, 'rol', 'role', 'perfil').toLowerCase();
+
     if (!nombre || !username || !password) {
-      result.errores.push({ fila, mensaje: 'nombre, username y password son obligatorios.' }); result.omitidos++; continue;
+      const hasAny = Object.values(r).some(v => v !== '');
+      if (!hasAny) continue; // Skip empty row
+      result.errores.push({ fila, mensaje: 'Nombre, usuario y contraseña son campos obligatorios.' });
+      result.omitidos++;
+      continue;
     }
     const roleId = roleMap[rolNombre];
-    if (!roleId) { result.errores.push({ fila, mensaje: `Rol "${rolNombre}" no encontrado.` }); result.omitidos++; continue; }
+    if (!roleId) {
+      result.errores.push({ fila, mensaje: `El rol "${rolNombre}" no existe en el sistema.` });
+      result.omitidos++;
+      continue;
+    }
     try {
       const hash = await bcrypt.hash(password, 12);
-      await pool.query('INSERT INTO usuarios (nombre, username, password, role_id) VALUES ($1,$2,$3,$4)',
-        [nombre, username, hash, roleId]);
+      await pool.query(
+        'INSERT INTO usuarios (nombre, username, password, role_id) VALUES ($1,$2,$3,$4)',
+        [nombre, username, hash, roleId]
+      );
       result.insertados++;
-    } catch (e: unknown) { result.errores.push({ fila, mensaje: (e as Error).message }); result.omitidos++; }
+    } catch (e: unknown) {
+      result.errores.push({ fila, mensaje: (e as Error).message });
+      result.omitidos++;
+    }
   }
   return result;
 }
@@ -240,13 +337,27 @@ export async function importarGrados(buffer: Buffer): Promise<ImportResult> {
   for (let i = 0; i < rows.length; i++) {
     const r = rows[i];
     const fila = i + 2;
-    const nombre = str(r['nombre*'] ?? r['nombre']);
-    if (!nombre) { result.errores.push({ fila, mensaje: 'nombre es obligatorio.' }); result.omitidos++; continue; }
+    const nombre = getVal(r, 'nombre_grado', 'nombre', 'grado');
+    if (!nombre) {
+      const hasAny = Object.values(r).some(v => v !== '');
+      if (!hasAny) continue;
+      result.errores.push({ fila, mensaje: 'El nombre del grado es obligatorio.' });
+      result.omitidos++;
+      continue;
+    }
+    const nombreCorto = getVal(r, 'nombre_corto', 'corto', 'abreviatura') || null;
+    const sortOrder = num(getVal(r, 'orden', 'sort_order', 'posicion')) ?? 0;
+
     try {
-      await pool.query('INSERT INTO grades (nombre, nombre_corto, sort_order) VALUES ($1,$2,$3)',
-        [nombre, str(r['nombre_corto']) || null, num(r['sort_order']) ?? 0]);
+      await pool.query(
+        'INSERT INTO grades (nombre, nombre_corto, sort_order) VALUES ($1,$2,$3)',
+        [nombre, nombreCorto, sortOrder]
+      );
       result.insertados++;
-    } catch (e: unknown) { result.errores.push({ fila, mensaje: (e as Error).message }); result.omitidos++; }
+    } catch (e: unknown) {
+      result.errores.push({ fila, mensaje: (e as Error).message });
+      result.omitidos++;
+    }
   }
   return result;
 }
@@ -261,17 +372,32 @@ export async function importarSecciones(buffer: Buffer): Promise<ImportResult> {
   for (let i = 0; i < rows.length; i++) {
     const r = rows[i];
     const fila = i + 2;
-    const gradoNombre = str(r['grado*'] ?? r['grado']).toLowerCase();
-    const seccionNombre = str(r['nombre_seccion*'] ?? r['nombre_seccion']);
-    if (!gradoNombre || !seccionNombre) { result.errores.push({ fila, mensaje: 'grado y nombre_seccion son obligatorios.' }); result.omitidos++; continue; }
+    const gradoNombre = getVal(r, 'grado', 'nombre_del_grado').toLowerCase();
+    const seccionNombre = getVal(r, 'nombre_seccion', 'seccion', 'nombre');
+    if (!gradoNombre || !seccionNombre) {
+      const hasAny = Object.values(r).some(v => v !== '');
+      if (!hasAny) continue;
+      result.errores.push({ fila, mensaje: 'Grado y nombre de sección son campos obligatorios.' });
+      result.omitidos++;
+      continue;
+    }
     const gradeId = gradeMap[gradoNombre];
-    if (!gradeId) { result.errores.push({ fila, mensaje: `Grado "${str(r['grado*'] ?? r['grado'])}" no encontrado.` }); result.omitidos++; continue; }
+    if (!gradeId) {
+      result.errores.push({ fila, mensaje: `Grado "${gradoNombre}" no encontrado.` });
+      result.omitidos++;
+      continue;
+    }
     const grade = grades.find(g => g.id === gradeId)!;
     try {
-      await pool.query('INSERT INTO sections (grade_id, nombre, display_name) VALUES ($1,$2,$3)',
-        [gradeId, seccionNombre, `${grade.nombre} ${seccionNombre}`]);
+      await pool.query(
+        'INSERT INTO sections (grade_id, nombre, display_name) VALUES ($1,$2,$3)',
+        [gradeId, seccionNombre, `${grade.nombre} ${seccionNombre}`]
+      );
       result.insertados++;
-    } catch (e: unknown) { result.errores.push({ fila, mensaje: (e as Error).message }); result.omitidos++; }
+    } catch (e: unknown) {
+      result.errores.push({ fila, mensaje: (e as Error).message });
+      result.omitidos++;
+    }
   }
   return result;
 }
@@ -282,13 +408,27 @@ export async function importarCursos(buffer: Buffer): Promise<ImportResult> {
   for (let i = 0; i < rows.length; i++) {
     const r = rows[i];
     const fila = i + 2;
-    const nombre = str(r['nombre*'] ?? r['nombre']);
-    if (!nombre) { result.errores.push({ fila, mensaje: 'nombre es obligatorio.' }); result.omitidos++; continue; }
+    const nombre = getVal(r, 'nombre_curso', 'nombre', 'curso', 'materia', 'asignatura');
+    if (!nombre) {
+      const hasAny = Object.values(r).some(v => v !== '');
+      if (!hasAny) continue;
+      result.errores.push({ fila, mensaje: 'El nombre del curso es obligatorio.' });
+      result.omitidos++;
+      continue;
+    }
+    const nombreCorto = getVal(r, 'nombre_corto', 'corto', 'codigo') || null;
+    const sortOrder = num(getVal(r, 'orden', 'sort_order')) ?? 0;
+
     try {
-      await pool.query('INSERT INTO courses (nombre, nombre_corto, sort_order) VALUES ($1,$2,$3)',
-        [nombre, str(r['nombre_corto']) || null, num(r['sort_order']) ?? 0]);
+      await pool.query(
+        'INSERT INTO courses (nombre, nombre_corto, sort_order) VALUES ($1,$2,$3)',
+        [nombre, nombreCorto, sortOrder]
+      );
       result.insertados++;
-    } catch (e: unknown) { result.errores.push({ fila, mensaje: (e as Error).message }); result.omitidos++; }
+    } catch (e: unknown) {
+      result.errores.push({ fila, mensaje: (e as Error).message });
+      result.omitidos++;
+    }
   }
   return result;
 }
@@ -316,11 +456,15 @@ export async function importarAsignaciones(buffer: Buffer): Promise<ImportResult
   for (let i = 0; i < rows.length; i++) {
     const r = rows[i];
     const fila = i + 2;
-    const maestroNombre  = str(r['maestro*'] ?? r['maestro']).toLowerCase();
-    const cursoNombre    = str(r['curso*']   ?? r['curso']).toLowerCase();
-    const gradoNombre    = str(r['grado*']   ?? r['grado']).toLowerCase();
-    const seccionNombre  = str(r['seccion*'] ?? r['seccion']).toLowerCase();
-    const anio           = num(r['anio_escolar*'] ?? r['anio_escolar']) ?? new Date().getFullYear();
+    const maestroNombre  = getVal(r, 'maestro', 'docente', 'profesor', 'full_name').toLowerCase();
+    const cursoNombre    = getVal(r, 'curso', 'materia', 'asignatura').toLowerCase();
+    const gradoNombre    = getVal(r, 'grado').toLowerCase();
+    const seccionNombre  = getVal(r, 'seccion').toLowerCase();
+    const anio           = num(getVal(r, 'anio_escolar', 'anio', 'ciclo')) ?? new Date().getFullYear();
+
+    if (!maestroNombre && !cursoNombre && !gradoNombre && !seccionNombre) {
+      continue; // Skip empty row
+    }
 
     const teacherId  = teacherMap[maestroNombre];
     const courseId   = courseMap[cursoNombre];
@@ -328,10 +472,14 @@ export async function importarAsignaciones(buffer: Buffer): Promise<ImportResult
     const sectionId  = sectionMap[`${gradoNombre}:${seccionNombre}`];
 
     const missing = [];
-    if (!teacherId) missing.push(`maestro "${str(r['maestro*'] ?? r['maestro'])}"`);
-    if (!courseId)  missing.push(`curso "${str(r['curso*'] ?? r['curso'])}"`);
-    if (!sectionId) missing.push(`sección "${str(r['grado*'] ?? r['grado'])} ${str(r['seccion*'] ?? r['seccion'])}"`);
-    if (missing.length) { result.errores.push({ fila, mensaje: `No encontrado: ${missing.join(', ')}.` }); result.omitidos++; continue; }
+    if (!teacherId) missing.push(`maestro "${maestroNombre}"`);
+    if (!courseId)  missing.push(`curso "${cursoNombre}"`);
+    if (!sectionId) missing.push(`sección "${gradoNombre} ${seccionNombre}"`);
+    if (missing.length) {
+      result.errores.push({ fila, mensaje: `No encontrado en el sistema: ${missing.join(', ')}.` });
+      result.omitidos++;
+      continue;
+    }
 
     try {
       await pool.query(
@@ -340,7 +488,10 @@ export async function importarAsignaciones(buffer: Buffer): Promise<ImportResult
         [teacherId, courseId, gradeId, sectionId, anio]
       );
       result.insertados++;
-    } catch (e: unknown) { result.errores.push({ fila, mensaje: (e as Error).message }); result.omitidos++; }
+    } catch (e: unknown) {
+      result.errores.push({ fila, mensaje: (e as Error).message });
+      result.omitidos++;
+    }
   }
   return result;
 }
@@ -368,65 +519,89 @@ export async function previewRollover(): Promise<RolloverPreview> {
   });
 
   const { rows } = await pool.query(`
-    SELECT s.id AS section_id, g.nombre AS grade_nombre, s.nombre AS section_nombre,
-           COUNT(a.id)::int AS count
-    FROM alumnos a
-    JOIN sections s ON s.id = a.section_id
-    JOIN grades   g ON g.id = s.grade_id
-    WHERE a.deleted_at IS NULL
-    GROUP BY s.id, g.sort_order, g.nombre, s.nombre
+    SELECT
+      g.nombre AS grade_nombre,
+      s.nombre AS section_nombre,
+      s.id     AS section_id,
+      COUNT(a.id)::int AS count
+    FROM sections s
+    JOIN grades g ON g.id = s.grade_id
+    LEFT JOIN alumnos a ON a.section_id = s.id AND a.is_active = TRUE
+    GROUP BY g.nombre, g.sort_order, s.nombre, s.id
     ORDER BY g.sort_order, s.nombre
   `);
 
   const { rows: sinSecRows } = await pool.query(`
-    SELECT COUNT(*)::int AS n FROM alumnos WHERE deleted_at IS NULL AND section_id IS NULL
+    SELECT COUNT(*)::int AS count FROM alumnos WHERE section_id IS NULL AND is_active = TRUE
   `);
-  const total = rows.reduce((s: number, r: { count: number }) => s + r.count, 0) + sinSecRows[0].n;
 
-  return {
-    total,
-    sinSeccion: sinSecRows[0].n,
-    porGrado: rows.map((r: { section_id: number; grade_nombre: string; section_nombre: string; count: number }) => ({
-      grade_nombre: r.grade_nombre,
-      section_nombre: r.section_nombre,
-      count: r.count,
-      siguiente: nextSectionMap[r.section_id] ?? null,
-    })),
-  };
+  const porGrado = rows.map(r => ({
+    grade_nombre:   r.grade_nombre,
+    section_nombre: r.section_nombre,
+    count:          r.count,
+    siguiente:      nextSectionMap[r.section_id] ?? null,
+  }));
+
+  const total = porGrado.reduce((acc, r) => acc + r.count, 0) + (sinSecRows[0]?.count ?? 0);
+  return { total, porGrado, sinSeccion: sinSecRows[0]?.count ?? 0 };
 }
 
 export async function ejecutarRollover(): Promise<{ promovidos: number; egresados: number; sinSeccion: number }> {
   const grades = await gradesRepo.findAllGrades(true);
-  const sections = await gradesRepo.findAllSections();
   const gradeByOrder: Record<number, typeof grades[0]> = {};
   grades.forEach(g => { gradeByOrder[g.sort_order] = g; });
 
-  // Map: current section_id → next section_id (or null = egresado)
-  const nextSectionId: Record<number, number | null> = {};
+  const sections = await gradesRepo.findAllSections();
+  const nextSectionMap: Record<number, number | 'egresado' | null> = {};
+
   sections.forEach(s => {
     const currGrade = grades.find(g => g.id === s.grade_id);
     if (!currGrade) return;
     const nextGrade = gradeByOrder[currGrade.sort_order + 1];
-    if (!nextGrade) { nextSectionId[s.id] = null; return; }
-    const nextSection = sections.find(ns => ns.grade_id === nextGrade.id && ns.nombre === s.nombre);
-    nextSectionId[s.id] = nextSection?.id ?? null;
+    if (!nextGrade) {
+      nextSectionMap[s.id] = 'egresado';
+      return;
+    }
+    const nextSec = sections.find(ns => ns.grade_id === nextGrade.id && ns.nombre === s.nombre);
+    nextSectionMap[s.id] = nextSec ? nextSec.id : null;
   });
 
-  const { rows: alumnos } = await pool.query(
-    'SELECT id, section_id FROM alumnos WHERE deleted_at IS NULL AND section_id IS NOT NULL'
-  );
+  const client = await pool.connect();
+  let promovidos = 0;
+  let egresados  = 0;
 
-  let promovidos = 0, egresados = 0;
-  for (const a of alumnos) {
-    if (!(a.section_id in nextSectionId)) continue;
-    const next = nextSectionId[a.section_id];
-    await pool.query('UPDATE alumnos SET section_id = $1 WHERE id = $2', [next, a.id]);
-    if (next === null) egresados++; else promovidos++;
+  try {
+    await client.query('BEGIN');
+
+    for (const [currSecId, nextAction] of Object.entries(nextSectionMap)) {
+      if (nextAction === 'egresado') {
+        const res = await client.query(
+          `UPDATE alumnos SET is_active = FALSE, updated_at = NOW()
+           WHERE section_id = $1 AND is_active = TRUE`,
+          [currSecId]
+        );
+        egresados += res.rowCount ?? 0;
+      } else if (typeof nextAction === 'number') {
+        const res = await client.query(
+          `UPDATE alumnos SET section_id = $1, updated_at = NOW()
+           WHERE section_id = $2 AND is_active = TRUE`,
+          [nextAction, currSecId]
+        );
+        promovidos += res.rowCount ?? 0;
+      }
+    }
+
+    await client.query('COMMIT');
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
   }
 
-  const { rows: sinSec } = await pool.query(
-    'SELECT COUNT(*)::int AS n FROM alumnos WHERE deleted_at IS NULL AND section_id IS NULL'
+  const { rows: sinSecRows } = await pool.query(
+    `SELECT COUNT(*)::int AS count FROM alumnos WHERE section_id IS NULL AND is_active = TRUE`
   );
 
-  return { promovidos, egresados, sinSeccion: sinSec[0].n };
+  return { promovidos, egresados, sinSeccion: sinSecRows[0]?.count ?? 0 };
 }
