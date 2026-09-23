@@ -1,46 +1,48 @@
-<aside id="sidebar" class="w-56 bg-white border-r border-slate-200/70 flex flex-col flex-shrink-0 sticky top-14 h-[calc(100vh-56px)] sidebar-scroll overflow-y-auto">
+<aside id="sidebar" class="w-60 bg-white/90 backdrop-blur border-r border-hueso-200 flex flex-col flex-shrink-0 sticky top-14 h-[calc(100vh-56px)] sidebar-scroll overflow-y-auto">
 
   <!-- Mobile header: brand + close (lg: hidden) -->
-  <div class="flex items-center justify-between px-4 py-3 border-b border-slate-200/70 lg:hidden flex-shrink-0">
+  <div class="flex items-center justify-between px-4 py-3 border-b border-hueso-200 lg:hidden flex-shrink-0 bg-hueso-50">
     <div class="flex items-center gap-2.5 min-w-0">
-      <div class="w-6 h-6 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+      <div class="w-7 h-7 bg-gradient-to-br from-ladrillo-600 to-ladrillo-700 rounded-xl flex items-center justify-center flex-shrink-0 shadow-xs">
         <i class="bi bi-mortarboard-fill text-white text-xs"></i>
       </div>
-      <span class="text-sm font-semibold text-slate-800 truncate">Tabloncito 470</span>
+      <span class="text-sm font-display font-bold text-marino-800 truncate">Tabloncito 470</span>
     </div>
     <button id="sidebar-close"
-      class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 transition-colors flex-shrink-0"
+      class="w-8 h-8 flex items-center justify-center rounded-lg text-marino-500 hover:bg-hueso-200 transition-colors flex-shrink-0"
       aria-label="Cerrar menú">
       <i class="bi bi-x-lg text-sm"></i>
     </button>
   </div>
 
   <!-- Navigation -->
-  <nav class="flex-1 p-2 pt-3 space-y-0.5 overflow-y-auto">
+  <nav class="flex-1 p-3 space-y-1 overflow-y-auto">
 
-    <div class="px-3 pb-1 pt-0.5">
-      <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Principal</span>
+    <div class="px-3 pb-1 pt-1">
+      <span class="text-[10px] font-bold text-marino-400 uppercase tracking-wider font-display">Principal</span>
     </div>
-    <a href="/dashboard" class="js-nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
-      <i class="bi bi-grid-1x2 w-4 text-center flex-shrink-0"></i>
+    <a href="/dashboard" class="js-nav-link flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-marino-700 hover:bg-hueso-100 hover:text-marino-900 transition-colors group">
+      <i class="bi bi-grid-1x2 w-4 text-center text-marino-400 group-hover:text-ladrillo-600 transition-colors flex-shrink-0"></i>
       <span>Panel</span>
     </a>
 
     <% if (can('documents.view')) { %>
     <div class="px-3 pb-1 pt-3">
-      <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Cuadros</span>
+      <span class="text-[10px] font-bold text-ladrillo-600/80 uppercase tracking-wider font-display flex items-center gap-1.5">
+        <i class="bi bi-archive-fill text-[9px] text-ladrillo-500"></i> Cuadros Históricos
+      </span>
     </div>
-    <a href="/cuadros" class="js-nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
-      <i class="bi bi-folder2 w-4 text-center flex-shrink-0"></i>
+    <a href="/cuadros" class="js-nav-link flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-marino-700 hover:bg-hueso-100 hover:text-marino-900 transition-colors group">
+      <i class="bi bi-folder2 w-4 text-center text-marino-400 group-hover:text-ladrillo-600 transition-colors flex-shrink-0"></i>
       <span>Todos los cuadros</span>
     </a>
-    <a href="/cuadros/busqueda" class="js-nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
-      <i class="bi bi-search w-4 text-center flex-shrink-0"></i>
-      <span>Buscar</span>
+    <a href="/cuadros/busqueda" class="js-nav-link flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-marino-700 hover:bg-hueso-100 hover:text-marino-900 transition-colors group">
+      <i class="bi bi-search w-4 text-center text-marino-400 group-hover:text-ladrillo-600 transition-colors flex-shrink-0"></i>
+      <span>Búsqueda avanzada</span>
     </a>
     <% if (can('documents.create')) { %>
-    <a href="/cuadros/crear" class="js-nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
-      <i class="bi bi-file-earmark-plus w-4 text-center flex-shrink-0"></i>
+    <a href="/cuadros/crear" class="js-nav-link flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-marino-700 hover:bg-hueso-100 hover:text-marino-900 transition-colors group">
+      <i class="bi bi-file-earmark-plus w-4 text-center text-marino-400 group-hover:text-ladrillo-600 transition-colors flex-shrink-0"></i>
       <span>Registrar cuadro</span>
     </a>
     <% } %>
@@ -48,15 +50,17 @@
 
     <% if (can('students.view')) { %>
     <div class="px-3 pb-1 pt-3">
-      <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Alumnos</span>
+      <span class="text-[10px] font-bold text-bosque-600 uppercase tracking-wider font-display flex items-center gap-1.5">
+        <i class="bi bi-tree-fill text-[9px] text-bosque-500"></i> Alumnos
+      </span>
     </div>
-    <a href="/alumnos" class="js-nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
-      <i class="bi bi-people w-4 text-center flex-shrink-0"></i>
-      <span>Registro</span>
+    <a href="/alumnos" class="js-nav-link flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-marino-700 hover:bg-hueso-100 hover:text-marino-900 transition-colors group">
+      <i class="bi bi-people w-4 text-center text-marino-400 group-hover:text-bosque-600 transition-colors flex-shrink-0"></i>
+      <span>Registro escolar</span>
     </a>
     <% if (can('students.create')) { %>
-    <a href="/alumnos/crear" class="js-nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
-      <i class="bi bi-person-plus w-4 text-center flex-shrink-0"></i>
+    <a href="/alumnos/crear" class="js-nav-link flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-marino-700 hover:bg-hueso-100 hover:text-marino-900 transition-colors group">
+      <i class="bi bi-person-plus w-4 text-center text-marino-400 group-hover:text-bosque-600 transition-colors flex-shrink-0"></i>
       <span>Nuevo alumno</span>
     </a>
     <% } %>
@@ -64,15 +68,17 @@
 
     <% if (can('ocr.view')) { %>
     <div class="px-3 pb-1 pt-3">
-      <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Digitalización</span>
+      <span class="text-[10px] font-bold text-marino-600 uppercase tracking-wider font-display flex items-center gap-1.5">
+        <i class="bi bi-lightning-charge-fill text-[9px] text-ocre-500"></i> Digitalización OCR
+      </span>
     </div>
-    <a href="/ocr" class="js-nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
-      <i class="bi bi-cpu w-4 text-center flex-shrink-0"></i>
+    <a href="/ocr" class="js-nav-link flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-marino-700 hover:bg-hueso-100 hover:text-marino-900 transition-colors group">
+      <i class="bi bi-cpu w-4 text-center text-marino-400 group-hover:text-marino-700 transition-colors flex-shrink-0"></i>
       <span>Trabajos OCR</span>
     </a>
     <% if (can('ocr.run')) { %>
-    <a href="/ocr/subir" class="js-nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
-      <i class="bi bi-cloud-upload w-4 text-center flex-shrink-0"></i>
+    <a href="/ocr/subir" class="js-nav-link flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-marino-700 hover:bg-hueso-100 hover:text-marino-900 transition-colors group">
+      <i class="bi bi-cloud-upload w-4 text-center text-marino-400 group-hover:text-marino-700 transition-colors flex-shrink-0"></i>
       <span>Subir documento</span>
     </a>
     <% } %>
@@ -80,41 +86,41 @@
 
     <% if (can('admin.users') || can('admin.roles') || can('admin.grades') || can('admin.courses') || can('admin.teachers')) { %>
     <div class="px-3 pb-1 pt-3">
-      <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Admin</span>
+      <span class="text-[10px] font-bold text-marino-400 uppercase tracking-wider font-display">Administración</span>
     </div>
     <% if (can('admin.users')) { %>
-    <a href="/admin/usuarios" class="js-nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
-      <i class="bi bi-person-badge w-4 text-center flex-shrink-0"></i>
+    <a href="/admin/usuarios" class="js-nav-link flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-marino-700 hover:bg-hueso-100 hover:text-marino-900 transition-colors group">
+      <i class="bi bi-person-badge w-4 text-center text-marino-400 group-hover:text-ladrillo-600 transition-colors flex-shrink-0"></i>
       <span>Usuarios</span>
     </a>
     <% } %>
     <% if (can('admin.teachers')) { %>
-    <a href="/admin/maestros" class="js-nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
-      <i class="bi bi-person-workspace w-4 text-center flex-shrink-0"></i>
+    <a href="/admin/maestros" class="js-nav-link flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-marino-700 hover:bg-hueso-100 hover:text-marino-900 transition-colors group">
+      <i class="bi bi-person-workspace w-4 text-center text-marino-400 group-hover:text-ladrillo-600 transition-colors flex-shrink-0"></i>
       <span>Maestros</span>
     </a>
     <% } %>
     <% if (can('admin.roles')) { %>
-    <a href="/admin/roles" class="js-nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
-      <i class="bi bi-shield-check w-4 text-center flex-shrink-0"></i>
+    <a href="/admin/roles" class="js-nav-link flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-marino-700 hover:bg-hueso-100 hover:text-marino-900 transition-colors group">
+      <i class="bi bi-shield-check w-4 text-center text-marino-400 group-hover:text-ladrillo-600 transition-colors flex-shrink-0"></i>
       <span>Roles y permisos</span>
     </a>
     <% } %>
     <% if (can('admin.grades')) { %>
-    <a href="/admin/grados" class="js-nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
-      <i class="bi bi-mortarboard w-4 text-center flex-shrink-0"></i>
+    <a href="/admin/grados" class="js-nav-link flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-marino-700 hover:bg-hueso-100 hover:text-marino-900 transition-colors group">
+      <i class="bi bi-mortarboard w-4 text-center text-marino-400 group-hover:text-ladrillo-600 transition-colors flex-shrink-0"></i>
       <span>Grados y secciones</span>
     </a>
     <% } %>
     <% if (can('admin.courses')) { %>
-    <a href="/admin/cursos" class="js-nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
-      <i class="bi bi-journal-bookmark w-4 text-center flex-shrink-0"></i>
+    <a href="/admin/cursos" class="js-nav-link flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-marino-700 hover:bg-hueso-100 hover:text-marino-900 transition-colors group">
+      <i class="bi bi-journal-bookmark w-4 text-center text-marino-400 group-hover:text-ladrillo-600 transition-colors flex-shrink-0"></i>
       <span>Cursos</span>
     </a>
     <% } %>
     <% if (can('admin.users')) { %>
-    <a href="/admin/ciclo" class="js-nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
-      <i class="bi bi-arrow-up-circle w-4 text-center flex-shrink-0"></i>
+    <a href="/admin/ciclo" class="js-nav-link flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-marino-700 hover:bg-hueso-100 hover:text-marino-900 transition-colors group">
+      <i class="bi bi-arrow-up-circle w-4 text-center text-marino-400 group-hover:text-ladrillo-600 transition-colors flex-shrink-0"></i>
       <span>Ciclo escolar</span>
     </a>
     <% } %>
@@ -123,12 +129,12 @@
   </nav>
 
   <!-- Bottom actions -->
-  <div class="p-2 border-t border-slate-200/70 pb-safe flex-shrink-0">
-    <a href="/auth/perfil" class="js-nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors">
-      <i class="bi bi-gear w-4 text-center flex-shrink-0"></i>
+  <div class="p-2 border-t border-hueso-200 pb-safe flex-shrink-0 bg-hueso-50/50">
+    <a href="/auth/perfil" class="js-nav-link flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-marino-600 hover:bg-hueso-100 hover:text-marino-900 transition-colors">
+      <i class="bi bi-gear w-4 text-center text-marino-400 flex-shrink-0"></i>
       <span>Configuración</span>
     </a>
-    <a href="/auth/logout" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-red-400 hover:bg-red-50 hover:text-red-600 transition-colors">
+    <a href="/auth/logout" class="flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-ladrillo-600 hover:bg-ladrillo-50 transition-colors">
       <i class="bi bi-box-arrow-right w-4 text-center flex-shrink-0"></i>
       <span>Cerrar sesión</span>
     </a>

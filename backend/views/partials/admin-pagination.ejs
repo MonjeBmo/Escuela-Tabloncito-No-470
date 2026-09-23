@@ -10,26 +10,26 @@
 <% const _pp = typeof pageParam !== 'undefined' ? pageParam : 'pagina'; %>
 <% const _sep = baseUrl.includes('?') ? '&' : '?'; %>
 <% if (totalPaginas > 1 || total > 5) { %>
-<div class="flex items-center justify-between px-5 py-3 border-t border-slate-100 bg-slate-50/40">
-  <span class="text-xs text-slate-400"><%= total %> registros · página <%= pagina %> de <%= totalPaginas %></span>
-  <div class="flex items-center gap-1">
+<div class="flex items-center justify-between px-5 py-3 border-t border-hueso-200 bg-hueso-50/50">
+  <span class="text-xs text-marino-500 font-sans"><%= total %> registros &bull; página <%= pagina %> de <%= totalPaginas %></span>
+  <div class="flex items-center gap-1.5">
     <% [5, 10].forEach(function(n) { %>
     <a href="<%= baseUrl %><%= _sep %>limit=<%= n %>&<%= _pp %>=1"
-       class="px-2.5 py-1 text-xs font-medium rounded-lg transition-colors
-         <%= limit === n ? 'bg-blue-600 text-white' : 'text-slate-500 hover:bg-slate-100 border border-slate-200' %>">
+       class="px-2.5 py-1 text-xs font-semibold rounded-lg transition-all
+         <%= limit === n ? 'bg-marino-700 text-white shadow-xs' : 'text-marino-700 hover:bg-hueso-100 bg-white border border-hueso-300' %>">
       <%= n %>
     </a>
     <% }) %>
-    <span class="w-px h-4 bg-slate-200 mx-1"></span>
+    <span class="w-px h-4 bg-hueso-300 mx-1"></span>
     <a href="<%= baseUrl %><%= _sep %>limit=<%= limit %>&<%= _pp %>=<%= Math.max(1, pagina - 1) %>"
-       class="w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 transition-colors
-         <%= pagina <= 1 ? 'pointer-events-none opacity-30' : 'hover:bg-slate-100' %>">
+       class="w-7 h-7 flex items-center justify-center rounded-lg text-marino-600 transition-colors
+         <%= pagina <= 1 ? 'pointer-events-none opacity-30' : 'hover:bg-hueso-100 bg-white border border-hueso-200' %>">
       <i class="bi bi-chevron-left text-xs"></i>
     </a>
-    <span class="text-xs text-slate-600 font-medium min-w-[3rem] text-center"><%= pagina %> / <%= totalPaginas %></span>
+    <span class="text-xs text-marino-800 font-bold min-w-[3rem] text-center font-sans"><%= pagina %> / <%= totalPaginas %></span>
     <a href="<%= baseUrl %><%= _sep %>limit=<%= limit %>&<%= _pp %>=<%= Math.min(totalPaginas, pagina + 1) %>"
-       class="w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 transition-colors
-         <%= pagina >= totalPaginas ? 'pointer-events-none opacity-30' : 'hover:bg-slate-100' %>">
+       class="w-7 h-7 flex items-center justify-center rounded-lg text-marino-600 transition-colors
+         <%= pagina >= totalPaginas ? 'pointer-events-none opacity-30' : 'hover:bg-hueso-100 bg-white border border-hueso-200' %>">
       <i class="bi bi-chevron-right text-xs"></i>
     </a>
   </div>

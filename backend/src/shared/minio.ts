@@ -24,3 +24,25 @@ export async function ensureBucket(): Promise<void> {
 export async function getPresignedUrl(key: string, expirySecs = 3600): Promise<string> {
   return minioClient.presignedGetObject(BUCKET, key, expirySecs);
 }
+
+export async function streamObject(key: string, res: any, filename?: string, mimeType?: string, inline = true): Promise<void> {
+  try {
+    const stat = await minioClient.statObject(BUCKET, key);
+    const contentType = mimeType || stat.metaData?.['content-type'] || 'application/pdf';
+    res.setHeader('Content-Type', contentType);
+    res.setHeader('Content-Length', stat.size);
+    const disposition = inline ? 'inline' : 'attachment';
+    if (filename) {
+      res.setHeader('Content-Disposition', `${disposition}; filename="${encodeURIComponent(filename)}"`);
+    } else {
+      res.setHeader('Content-Disposition', disposition);
+    }
+    const stream = await minioClient.getObject(BUCKET, key);
+    stream.pipe(res);
+  } catch (err: any) {
+    console.error(`[MinIO] Error al obtener objeto ${key}:`, err.message);
+    if (!res.headersSent) {
+      res.status(404).send('Documento no encontrado o no disponible');
+    }
+  }
+}

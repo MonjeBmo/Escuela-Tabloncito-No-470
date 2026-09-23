@@ -1,29 +1,50 @@
 <!-- Header -->
-<div class="flex items-start sm:items-center justify-between gap-3 mb-6">
-  <div class="min-w-0">
-    <h1 class="text-xl font-semibold text-slate-900 truncate">Cuadros PRIM</h1>
-    <p class="text-sm text-slate-500 mt-0.5"><%= total %> cuadro(s) en total</p>
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+  <div>
+    <div class="flex items-center gap-2 mb-1">
+      <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-ladrillo-100 text-ladrillo-800 border border-ladrillo-200/60">
+        <i class="bi bi-archive-fill text-[10px]"></i> Archivo Histórico
+      </span>
+      <span class="text-xs text-marino-400">•</span>
+      <span class="text-xs text-marino-500 font-medium"><%= total %> cuadro(s) en total</span>
+    </div>
+    <h1 class="text-2xl font-display font-bold text-marino-900 tracking-tight">Cuadros PRIM</h1>
   </div>
-  <div class="flex items-center gap-2 flex-shrink-0">
+  <div class="flex items-center gap-2.5 flex-shrink-0">
     <a href="/cuadros/busqueda" aria-label="Buscar cuadros"
-      class="inline-flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors">
-      <i class="bi bi-search"></i>
-      <span class="hidden sm:inline">Buscar</span>
+      class="inline-flex items-center gap-2 px-3.5 py-2 bg-white border border-hueso-300 text-marino-700 text-sm font-semibold rounded-xl hover:bg-hueso-100 hover:text-marino-900 shadow-xs transition-colors">
+      <i class="bi bi-search text-marino-500"></i>
+      <span>Buscar</span>
     </a>
+    <% if (can('documents.create')) { %>
     <a href="/cuadros/crear" aria-label="Registrar cuadro"
-      class="inline-flex items-center gap-2 px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
+      class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-ladrillo-600 to-ladrillo-700 text-white text-sm font-bold font-display rounded-xl hover:from-ladrillo-700 hover:to-ladrillo-800 shadow-sm shadow-ladrillo-600/25 transition-all">
       <i class="bi bi-plus-lg"></i>
-      <span class="hidden sm:inline">Registrar cuadro</span>
+      <span>Registrar cuadro</span>
     </a>
+    <% } %>
   </div>
 </div>
 
-<div class="bg-white rounded-xl border border-slate-200/70 overflow-hidden">
+<!-- Info Contextual para Docentes / Dirección -->
+<div class="mb-6 p-4 rounded-xl bg-ladrillo-50/70 border border-ladrillo-200/80 flex items-start gap-3 text-xs text-marino-700">
+  <i class="bi bi-journal-check text-ladrillo-700 text-base flex-shrink-0 mt-0.5"></i>
+  <div class="flex-1 leading-relaxed">
+    <strong class="font-semibold text-marino-900">¿Qué son los Cuadros PRIM?</strong> 
+    Son los registros anuales oficiales de promoción y evaluación escolar de la escuela. Cada registro incluye el 
+    <span class="font-semibold text-ladrillo-800">documento original escaneado (Capa 1)</span> que tiene validez legal institucional y los 
+    <span class="font-semibold text-marino-800">metadatos indexados (Capa 2)</span> para búsqueda rápida por ciclo, docente o sección.
+  </div>
+</div>
+
+<div class="bg-white rounded-2xl border border-hueso-200 shadow-sm overflow-hidden">
   <% if (cuadros.length === 0) { %>
   <div class="py-16 text-center px-4">
-    <i class="bi bi-folder2-open text-5xl text-slate-200 block mb-3"></i>
-    <p class="text-sm text-slate-400 mb-4">No hay cuadros registrados aún.</p>
-    <a href="/cuadros/crear" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
+    <div class="w-16 h-16 rounded-2xl bg-hueso-100 text-marino-300 flex items-center justify-center mx-auto mb-3">
+      <i class="bi bi-folder2-open text-3xl"></i>
+    </div>
+    <p class="text-sm font-medium text-marino-500 mb-4">No hay cuadros registrados aún.</p>
+    <a href="/cuadros/crear" class="inline-flex items-center gap-2 px-4 py-2 bg-ladrillo-600 text-white text-sm font-semibold rounded-xl hover:bg-ladrillo-700 shadow-sm transition-colors">
       <i class="bi bi-plus-lg"></i> Registrar el primero
     </a>
   </div>
@@ -32,63 +53,67 @@
   <!-- ── Desktop table (md+) ──────────────────────────── -->
   <div class="hidden md:block table-wrap">
     <table class="w-full text-sm">
-      <thead class="bg-slate-50/80">
+      <thead class="bg-hueso-100/70 border-b border-hueso-200 text-marino-600">
         <tr>
-          <th class="px-5 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Código / Doc.</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Año</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Grado</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Docente</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Origen</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Estado</th>
-          <th class="px-4 py-3 w-16"></th>
+          <th class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider font-display">Código / Documento</th>
+          <th class="px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider font-display">Año</th>
+          <th class="px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider font-display">Grado</th>
+          <th class="px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider font-display">Docente</th>
+          <th class="px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider font-display">Origen</th>
+          <th class="px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider font-display">Estado</th>
+          <th class="px-6 py-3.5 w-16"></th>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="divide-y divide-hueso-200/70">
         <% cuadros.forEach(c => { %>
-        <tr class="border-t border-slate-100 hover:bg-slate-50/60 transition-colors">
-          <td class="px-5 py-3.5">
+        <tr class="hover:bg-hueso-50/80 transition-colors">
+          <td class="px-6 py-3.5">
             <div class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-lg <%= c.origen === 'ocr' ? 'bg-purple-50' : 'bg-blue-50' %> flex items-center justify-center flex-shrink-0">
-                <i class="bi bi-file-earmark-text text-sm <%= c.origen === 'ocr' ? 'text-purple-500' : 'text-blue-500' %>"></i>
+              <div class="w-9 h-9 rounded-xl <%= c.origen === 'ocr' ? 'bg-marino-50 border border-marino-100 text-marino-700' : 'bg-ladrillo-50 border border-ladrillo-100 text-ladrillo-700' %> flex items-center justify-center flex-shrink-0 shadow-2xs">
+                <i class="bi bi-file-earmark-text text-base"></i>
               </div>
               <div class="min-w-0">
-                <div class="font-medium text-slate-800"><%= c.codigo %></div>
+                <div class="font-bold text-marino-900"><%= c.codigo %></div>
                 <% if (c.documento_nombre) { %>
-                <div class="text-xs text-slate-400 mt-0.5 truncate max-w-[160px]"><%= c.documento_nombre %></div>
+                <div class="text-xs text-marino-400 mt-0.5 truncate max-w-[180px]"><%= c.documento_nombre %></div>
                 <% } %>
               </div>
             </div>
           </td>
-          <td class="px-4 py-3.5 text-slate-600 font-medium"><%= c.anio %></td>
-          <td class="px-4 py-3.5 text-slate-500"><%= c.grado_nombre || '—' %></td>
-          <td class="px-4 py-3.5 text-slate-500 max-w-[140px]"><span class="truncate block"><%= c.docente || '—' %></span></td>
+          <td class="px-4 py-3.5 text-marino-800 font-semibold font-display"><%= c.anio %></td>
+          <td class="px-4 py-3.5 text-marino-600 font-medium"><%= c.grado_nombre || '—' %></td>
+          <td class="px-4 py-3.5 text-marino-600 max-w-[150px]"><span class="truncate block font-medium"><%= c.docente || '—' %></span></td>
           <td class="px-4 py-3.5">
-            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium <%= c.origen === 'ocr' ? 'bg-purple-50 text-purple-700' : 'bg-blue-50 text-blue-700' %>">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold <%= c.origen === 'ocr' ? 'bg-marino-100 text-marino-800 border border-marino-200' : 'bg-hueso-200 text-marino-700' %>">
               <i class="bi bi-<%= c.origen === 'ocr' ? 'cpu' : 'pencil' %> mr-1 text-[10px]"></i><%= c.origen %>
             </span>
           </td>
           <td class="px-4 py-3.5">
             <% if (c.validado_por) { %>
-              <span class="inline-flex items-center gap-1 text-xs text-emerald-600 font-medium"><i class="bi bi-check-circle-fill"></i> Validado</span>
+              <span class="inline-flex items-center gap-1 text-xs text-bosque-700 bg-bosque-50 border border-bosque-200 px-2.5 py-0.5 rounded-full font-bold">
+                <i class="bi bi-check-circle-fill text-[11px]"></i> Validado
+              </span>
             <% } else { %>
-              <span class="text-xs text-slate-400">Sin validar</span>
+              <span class="inline-flex items-center gap-1 text-xs text-ocre-800 bg-ocre-50 border border-ocre-200 px-2.5 py-0.5 rounded-full font-bold">
+                <i class="bi bi-clock-fill text-[11px]"></i> Sin validar
+              </span>
             <% } %>
           </td>
-          <td class="px-4 py-3.5 text-right">
-            <div class="flex items-center justify-end gap-1">
+          <td class="px-6 py-3.5 text-right">
+            <div class="flex items-center justify-end gap-1.5">
               <a href="/cuadros/<%= c.id %>" aria-label="Ver cuadro <%= c.codigo %>"
-                class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors">
+                class="w-8 h-8 flex items-center justify-center rounded-lg text-marino-500 hover:bg-hueso-200 hover:text-marino-900 transition-colors">
                 <i class="bi bi-eye text-sm"></i>
               </a>
               <% if (can('documents.delete')) { %>
               <div class="relative">
                 <button data-dd-trigger aria-label="Más opciones"
-                  class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors">
+                  class="w-8 h-8 flex items-center justify-center rounded-lg text-marino-400 hover:bg-hueso-200 hover:text-marino-700 transition-colors">
                   <i class="bi bi-three-dots text-sm"></i>
                 </button>
-                <div data-dd-menu class="dropdown-menu closed absolute right-0 top-full mt-1 w-36 bg-white rounded-xl border border-slate-200 shadow-lg p-1.5 z-20">
+                <div data-dd-menu class="dropdown-menu closed absolute right-0 top-full mt-1 w-36 bg-white rounded-xl border border-hueso-200 shadow-xl p-1.5 z-20">
                   <form method="POST" action="/cuadros/<%= c.id %>/eliminar">
-                    <button type="button" class="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-500 rounded-lg hover:bg-red-50 transition-colors"
+                    <button type="button" class="w-full flex items-center gap-2 px-3 py-2 text-sm text-ladrillo-600 font-medium rounded-lg hover:bg-ladrillo-50 transition-colors"
                       data-confirm="¿Eliminar el cuadro <%= c.codigo %>? Esta acción no se puede deshacer.">
                       <i class="bi bi-trash"></i> Eliminar
                     </button>
@@ -105,36 +130,36 @@
   </div>
 
   <!-- ── Mobile card list (< md) ──────────────────────── -->
-  <div class="md:hidden divide-y divide-slate-100">
+  <div class="md:hidden divide-y divide-hueso-200/70">
     <% cuadros.forEach(c => { %>
-    <div class="px-4 py-3.5">
+    <div class="px-4 py-4">
       <div class="flex items-start justify-between gap-2">
         <a href="/cuadros/<%= c.id %>" class="flex items-center gap-3 min-w-0 flex-1">
-          <div class="w-10 h-10 rounded-xl <%= c.origen === 'ocr' ? 'bg-purple-50' : 'bg-blue-50' %> flex items-center justify-center flex-shrink-0">
-            <i class="bi bi-file-earmark-text <%= c.origen === 'ocr' ? 'text-purple-500' : 'text-blue-500' %>"></i>
+          <div class="w-10 h-10 rounded-xl <%= c.origen === 'ocr' ? 'bg-marino-50 border border-marino-100 text-marino-700' : 'bg-ladrillo-50 border border-ladrillo-100 text-ladrillo-700' %> flex items-center justify-center flex-shrink-0">
+            <i class="bi bi-file-earmark-text text-lg"></i>
           </div>
           <div class="min-w-0">
-            <div class="font-medium text-slate-800 truncate"><%= c.codigo %></div>
-            <div class="text-xs text-slate-500 mt-0.5">
-              <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium mr-1.5 <%= c.origen === 'ocr' ? 'bg-purple-50 text-purple-700' : 'bg-blue-50 text-blue-700' %>"><%= c.origen %></span>
-              <%= c.anio %>
+            <div class="font-bold text-marino-900 truncate"><%= c.codigo %></div>
+            <div class="text-xs text-marino-500 mt-0.5">
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold mr-1.5 <%= c.origen === 'ocr' ? 'bg-marino-100 text-marino-800' : 'bg-hueso-200 text-marino-700' %>"><%= c.origen %></span>
+              <span class="font-display font-semibold text-marino-800"><%= c.anio %></span>
             </div>
           </div>
         </a>
-        <div class="flex items-center gap-0.5 flex-shrink-0">
+        <div class="flex items-center gap-1 flex-shrink-0">
           <a href="/cuadros/<%= c.id %>" aria-label="Ver cuadro"
-            class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors">
+            class="w-9 h-9 flex items-center justify-center rounded-lg text-marino-500 hover:bg-hueso-200 transition-colors">
             <i class="bi bi-eye text-sm"></i>
           </a>
           <% if (can('documents.delete')) { %>
           <div class="relative">
             <button data-dd-trigger aria-label="Más opciones"
-              class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors">
+              class="w-9 h-9 flex items-center justify-center rounded-lg text-marino-400 hover:bg-hueso-200 transition-colors">
               <i class="bi bi-three-dots text-sm"></i>
             </button>
-            <div data-dd-menu class="dropdown-menu closed absolute right-0 top-full mt-1 w-36 bg-white rounded-xl border border-slate-200 shadow-lg p-1.5 z-20">
+            <div data-dd-menu class="dropdown-menu closed absolute right-0 top-full mt-1 w-36 bg-white rounded-xl border border-hueso-200 shadow-xl p-1.5 z-20">
               <form method="POST" action="/cuadros/<%= c.id %>/eliminar">
-                <button type="button" class="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-500 rounded-lg hover:bg-red-50 transition-colors"
+                <button type="button" class="w-full flex items-center gap-2 px-3 py-2 text-sm text-ladrillo-600 font-medium rounded-lg hover:bg-ladrillo-50 transition-colors"
                   data-confirm="¿Eliminar el cuadro <%= c.codigo %>?">
                   <i class="bi bi-trash"></i> Eliminar
                 </button>
@@ -144,14 +169,14 @@
           <% } %>
         </div>
       </div>
-      <div class="mt-2 ml-[52px] flex flex-wrap gap-x-3 gap-y-1">
+      <div class="mt-2.5 ml-[52px] flex flex-wrap gap-x-3 gap-y-1 text-xs">
         <% if (c.grado_nombre) { %>
-        <span class="text-xs text-slate-500"><i class="bi bi-mortarboard mr-0.5 text-[10px]"></i><%= c.grado_nombre %></span>
+        <span class="text-marino-600 font-medium"><i class="bi bi-mortarboard mr-1 text-marino-400"></i><%= c.grado_nombre %></span>
         <% } %>
         <% if (c.validado_por) { %>
-        <span class="text-xs text-emerald-600 font-medium"><i class="bi bi-check-circle-fill mr-0.5"></i>Validado</span>
+        <span class="text-bosque-700 font-semibold"><i class="bi bi-check-circle-fill mr-1"></i>Validado</span>
         <% } else { %>
-        <span class="text-xs text-slate-400">Sin validar</span>
+        <span class="text-ocre-700 font-medium">Sin validar</span>
         <% } %>
       </div>
     </div>
@@ -159,33 +184,33 @@
   </div>
 
   <!-- Pagination bar -->
-  <div class="flex items-center justify-between gap-3 px-4 py-3 border-t border-slate-100">
+  <div class="flex items-center justify-between gap-3 px-6 py-4 border-t border-hueso-200 bg-hueso-50/40">
     <!-- Per-page selector -->
-    <div class="flex items-center gap-2 text-xs text-slate-500">
-      <span class="hidden sm:inline">Mostrar</span>
+    <div class="flex items-center gap-2 text-xs font-medium text-marino-500">
+      <span class="hidden sm:inline">Mostrar:</span>
       <% [10, 20].forEach(n => { %>
         <a href="?pagina=1&limit=<%= n %>"
-          class="w-9 h-8 flex items-center justify-center rounded-lg border text-xs font-medium transition-colors
-            <%= limit === n ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' %>">
+          class="w-8 h-7 flex items-center justify-center rounded-lg border text-xs font-semibold transition-all
+            <%= limit === n ? 'bg-ladrillo-600 text-white border-ladrillo-600 shadow-xs' : 'bg-white text-marino-700 border-hueso-300 hover:bg-hueso-100' %>">
           <%= n %>
         </a>
       <% }) %>
     </div>
     <!-- Page links -->
     <% if (totalPaginas > 1) { %>
-    <div class="flex items-center gap-1">
+    <div class="flex items-center gap-1.5">
       <% if (pagina > 1) { %>
-        <a href="?pagina=<%= pagina-1 %>&limit=<%= limit %>" class="w-9 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 transition-colors text-sm"><i class="bi bi-chevron-left"></i></a>
+        <a href="?pagina=<%= pagina-1 %>&limit=<%= limit %>" class="w-8 h-8 flex items-center justify-center rounded-lg text-marino-600 hover:bg-hueso-200 transition-colors text-sm"><i class="bi bi-chevron-left"></i></a>
       <% } %>
       <% for(let p=1; p<=totalPaginas; p++) { %>
         <% if (p===pagina) { %>
-          <span class="w-9 h-8 flex items-center justify-center rounded-lg bg-blue-600 text-white text-sm font-medium"><%= p %></span>
+          <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-ladrillo-600 text-white text-xs font-bold shadow-xs"><%= p %></span>
         <% } else { %>
-          <a href="?pagina=<%= p %>&limit=<%= limit %>" class="w-9 h-8 flex items-center justify-center rounded-lg text-slate-600 hover:bg-slate-100 transition-colors text-sm"><%= p %></a>
+          <a href="?pagina=<%= p %>&limit=<%= limit %>" class="w-8 h-8 flex items-center justify-center rounded-lg text-marino-700 hover:bg-hueso-200 transition-colors text-xs font-semibold"><%= p %></a>
         <% } %>
       <% } %>
       <% if (pagina < totalPaginas) { %>
-        <a href="?pagina=<%= pagina+1 %>&limit=<%= limit %>" class="w-9 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 transition-colors text-sm"><i class="bi bi-chevron-right"></i></a>
+        <a href="?pagina=<%= pagina+1 %>&limit=<%= limit %>" class="w-8 h-8 flex items-center justify-center rounded-lg text-marino-600 hover:bg-hueso-200 transition-colors text-sm"><i class="bi bi-chevron-right"></i></a>
       <% } %>
     </div>
     <% } else { %>

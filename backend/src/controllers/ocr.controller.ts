@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { UploadedFile } from 'express-fileupload';
 import * as service from '../services/ocr.service';
 import * as gradosRepo from '../repositories/grados.repository';
-import { getPresignedUrl } from '../shared/minio';
 
 const LIMITES_VALIDOS = [10, 20];
 
@@ -48,6 +47,8 @@ export async function doUpload(req: Request, res: Response): Promise<void> {
   }
 }
 
+import { getPresignedUrl, streamObject } from '../shared/minio';
+
 export async function showRevision(req: Request, res: Response): Promise<void> {
   const id = parseInt(req.params.id);
   const [job, grados] = await Promise.all([
@@ -59,8 +60,33 @@ export async function showRevision(req: Request, res: Response): Promise<void> {
     res.redirect('/ocr');
     return;
   }
-  const docUrl = await getPresignedUrl(job.documento_key, 3600).catch(() => null);
+  const docUrl = `/ocr/revision/${job.id}/documento`;
   res.render('ocr/revision', { titulo: 'Revisar extracción OCR', job, grados, docUrl });
+}
+
+export async function showDocumento(req: Request, res: Response): Promise<void> {
+  const id = parseInt(req.params.id);
+  const job = await service.obtener(id);
+  if (!job || !job.documento_key) {
+    res.status(404).send('Documento no encontrado');
+    return;
+  }
+  await streamObject(job.documento_key, res, job.documento_nombre || `documento-${job.id}.pdf`, undefined, true);
+}
+
+export async function checkStatus(req: Request, res: Response): Promise<void> {
+  const id = parseInt(req.params.id);
+  const job = await service.obtener(id);
+  if (!job) {
+    res.status(404).json({ error: 'Job no encontrado' });
+    return;
+  }
+  res.json({ id: job.id, estado: job.estado, notas_revision: job.notas_revision });
+}
+
+export async function checkAllPending(req: Request, res: Response): Promise<void> {
+  const conteo = await service.conteoEstados();
+  res.json({ conteo });
 }
 
 export async function doReprocesar(req: Request, res: Response): Promise<void> {

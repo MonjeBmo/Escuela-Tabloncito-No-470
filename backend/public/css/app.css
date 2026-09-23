@@ -1,27 +1,27 @@
 /* ── Custom scrollbar ─────────────────────────────────────── */
-::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+::-webkit-scrollbar-thumb { background: #DFD5C3; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #CBBDA5; }
 
 /* ── Confidence bar ───────────────────────────────────────── */
 .confidence-bar {
-  height: 4px;
-  background: #e2e8f0;
+  height: 5px;
+  background: #ECE5D8;
   border-radius: 99px;
   overflow: hidden;
 }
-.conf-fill { height: 100%; transition: width .5s ease; }
+.conf-fill { height: 100%; transition: width .5s cubic-bezier(0.4, 0, 0.2, 1); }
 
 /* ── Dropdown ─────────────────────────────────────────────── */
 .dropdown-menu {
   transform-origin: top right;
-  transition: opacity .12s ease, transform .12s ease;
+  transition: opacity .15s ease, transform .15s ease;
 }
 .dropdown-menu.closed {
   opacity: 0;
   pointer-events: none;
-  transform: scale(.95) translateY(-4px);
+  transform: scale(.96) translateY(-6px);
 }
 .dropdown-menu.open {
   opacity: 1;
@@ -31,68 +31,85 @@
 
 /* ── SweetAlert2 ──────────────────────────────────────────── */
 .swal2-popup {
-  border-radius: 16px !important;
-  font-family: 'Inter', sans-serif !important;
+  border-radius: 20px !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
   padding: 28px !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 20px 60px rgba(0,0,0,.10) !important;
+  background: #FFFFFF !important;
+  border: 1px solid #ECE5D8 !important;
+  box-shadow: 0 25px 60px -15px rgba(22, 44, 70, 0.18) !important;
 }
-.swal2-title { font-size: 17px !important; font-weight: 600 !important; color: #0f172a !important; }
-.swal2-html-container { font-size: 14px !important; color: #64748b !important; }
+.swal2-title {
+  font-family: 'Outfit', sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  color: #162C46 !important;
+}
+.swal2-html-container { font-size: 14px !important; color: #627D98 !important; }
 .swal2-confirm {
-  background: #2563eb !important;
-  border-radius: 8px !important;
-  font-weight: 500 !important;
+  background: #B84A39 !important;
+  color: #FFFFFF !important;
+  border-radius: 12px !important;
+  font-weight: 600 !important;
   font-size: 14px !important;
-  padding: 8px 20px !important;
+  padding: 10px 22px !important;
+  box-shadow: 0 4px 12px rgba(184, 74, 57, 0.25) !important;
+  transition: all .15s ease !important;
+}
+.swal2-confirm:hover {
+  background: #96392B !important;
+  transform: translateY(-1px) !important;
 }
 .swal2-cancel {
-  background: #f8fafc !important;
-  border: 1px solid #e2e8f0 !important;
-  color: #374151 !important;
-  border-radius: 8px !important;
-  font-weight: 500 !important;
+  background: #F7F3EB !important;
+  border: 1px solid #ECE5D8 !important;
+  color: #334E68 !important;
+  border-radius: 12px !important;
+  font-weight: 600 !important;
   font-size: 14px !important;
-  padding: 8px 20px !important;
+  padding: 10px 22px !important;
 }
-.swal2-icon { margin: 0 auto 16px !important; }
+.swal2-cancel:hover {
+  background: #ECE5D8 !important;
+}
+.swal2-icon { margin: 0 auto 18px !important; }
 
 /* ── Native select chevron ────────────────────────────────── */
 select {
   -webkit-appearance: none;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23627D98' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 10px center;
-  padding-right: 32px !important;
+  background-position: right 12px center;
+  padding-right: 36px !important;
 }
 
 /* ── Sidebar scroll ───────────────────────────────────────── */
-.sidebar-scroll { scrollbar-width: thin; scrollbar-color: #e2e8f0 transparent; }
+.sidebar-scroll { scrollbar-width: thin; scrollbar-color: #ECE5D8 transparent; }
 
 /* ── Table responsive wrapper ─────────────────────────────── */
 .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
 /* ── Page transition ──────────────────────────────────────── */
-.page-enter { animation: fadeSlide .18s ease; }
+.page-enter { animation: fadeSlide .2s ease; }
 @keyframes fadeSlide {
-  from { opacity: 0; transform: translateY(6px); }
+  from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ── Focus ring ───────────────────────────────────────────── */
 input:focus, select:focus, textarea:focus {
   outline: none;
-  box-shadow: 0 0 0 4px rgba(37,99,235,.08);
+  border-color: #B84A39 !important;
+  box-shadow: 0 0 0 3px rgba(184, 74, 57, 0.15) !important;
 }
 
-/* ── Autofill: no yellow background ──────────────────────── */
+/* ── Autofill: warm background ───────────────────────────── */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 1000px #fff inset !important;
-  -webkit-text-fill-color: #1e293b !important;
+  -webkit-box-shadow: 0 0 0 1000px #FFFFFF inset !important;
+  -webkit-text-fill-color: #162C46 !important;
   transition: background-color 9999s ease-in-out 0s;
 }
 
@@ -137,7 +154,7 @@ button, [role="button"], a {
   }
   #sidebar.sidebar-open {
     transform: translateX(0);
-    box-shadow: 20px 0 60px rgba(15, 23, 42, .15);
+    box-shadow: 20px 0 60px rgba(15, 30, 48, .2);
   }
 }
 
@@ -146,7 +163,8 @@ button, [role="button"], a {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, .4);
+  background: rgba(15, 30, 48, .5);
+  backdrop-filter: blur(2px);
   z-index: 45;
   animation: overlayIn .2s ease;
 }
@@ -163,3 +181,4 @@ body.sidebar-open-body { overflow: hidden; }
 .pb-safe {
   padding-bottom: max(env(safe-area-inset-bottom, 0px), 8px);
 }
+

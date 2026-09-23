@@ -5,20 +5,81 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title><%= typeof titulo !== 'undefined' ? titulo + ' — ' : '' %>Tabloncito 470</title>
 
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/><text y='.9em' font-size='68' x='14'>🎓</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23B84A39'/><text y='.9em' font-size='68' x='14'>🎓</text></svg>">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
-        fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+        fontFamily: {
+          sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          display: ['Outfit', 'system-ui', 'sans-serif'],
+        },
         extend: {
-          colors: { brand: '#2563eb' },
-          borderColor: { DEFAULT: 'rgb(226 232 240 / .7)' },
+          colors: {
+            hueso: {
+              50: '#FDFBF7',
+              100: '#F7F3EB',
+              200: '#ECE5D8',
+              300: '#DFD5C3',
+              400: '#CBBDA5',
+              500: '#A8977B',
+            },
+            ladrillo: {
+              50: '#FDF4F2',
+              100: '#FCE7E4',
+              200: '#F7D0CA',
+              300: '#EEABA0',
+              400: '#DE7868',
+              500: '#C84B31',
+              600: '#B84A39',
+              700: '#96392B',
+              800: '#7B2E23',
+              900: '#541D15',
+            },
+            marino: {
+              50: '#F0F4F8',
+              100: '#D9E2EC',
+              200: '#BCCCDC',
+              300: '#9FB3C8',
+              400: '#627D98',
+              500: '#334E68',
+              600: '#1E3A5F',
+              700: '#162C46',
+              800: '#0F1E30',
+              900: '#09121D',
+            },
+            bosque: {
+              50: '#F0F7F4',
+              100: '#DCEDE4',
+              200: '#B9DDCB',
+              300: '#86C5A6',
+              400: '#52A77E',
+              500: '#40916C',
+              600: '#2D6A4F',
+              700: '#1B4332',
+              800: '#143326',
+              900: '#0B2017',
+            },
+            ocre: {
+              50: '#FEF9E7',
+              100: '#FCF3CF',
+              200: '#F9E79F',
+              300: '#F7DC6F',
+              400: '#F1C40F',
+              500: '#D4AC0D',
+              600: '#B7950B',
+              700: '#9A7D0A',
+              800: '#7D6608',
+            },
+            brand: '#B84A39',
+          },
+          borderColor: { DEFAULT: '#ECE5D8' },
         }
       }
     }
@@ -27,7 +88,7 @@
   <link rel="stylesheet" href="/css/app.css">
   <%- typeof style !== 'undefined' ? style : '' %>
 </head>
-<body class="h-full bg-slate-100 font-sans antialiased">
+<body class="h-full bg-hueso-100 font-sans text-marino-900 antialiased selection:bg-ladrillo-100 selection:text-ladrillo-900">
 
 <!-- Mobile sidebar overlay -->
 <div id="sidebar-overlay" aria-hidden="true"></div>
@@ -35,26 +96,29 @@
 <div class="min-h-dvh flex flex-col">
 
   <!-- ══ TOPBAR ══════════════════════════════════════════════ -->
-  <header class="h-14 bg-white border-b border-slate-200/70 flex items-center px-3 sm:px-4 gap-2 sticky top-0 z-40 flex-shrink-0">
+  <header class="h-14 bg-white/95 backdrop-blur border-b border-hueso-200 flex items-center px-3 sm:px-4 gap-2 sticky top-0 z-40 flex-shrink-0 shadow-sm shadow-marino-900/5">
 
     <!-- Mobile hamburger -->
     <button id="sidebar-toggle"
-      class="lg:hidden w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 transition-colors flex-shrink-0"
+      class="lg:hidden w-9 h-9 flex items-center justify-center rounded-lg text-marino-600 hover:bg-hueso-200 transition-colors flex-shrink-0"
       aria-label="Abrir menú lateral">
       <i class="bi bi-list text-xl"></i>
     </button>
 
     <!-- Brand -->
-    <a href="/dashboard" class="flex items-center gap-2 flex-shrink-0 mr-1 sm:mr-2">
-      <div class="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+    <a href="/dashboard" class="flex items-center gap-2.5 flex-shrink-0 mr-1 sm:mr-3 group">
+      <div class="w-8 h-8 bg-gradient-to-br from-ladrillo-600 to-ladrillo-700 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm shadow-ladrillo-600/30 group-hover:scale-105 transition-transform">
         <i class="bi bi-mortarboard-fill text-white text-sm"></i>
       </div>
-      <span class="text-sm font-semibold text-slate-800 hidden sm:block">Tabloncito 470</span>
+      <div class="hidden sm:flex flex-col">
+        <span class="text-sm font-display font-bold text-marino-800 tracking-tight leading-none group-hover:text-ladrillo-700 transition-colors">Tabloncito 470</span>
+        <span class="text-[10px] text-marino-400 font-medium leading-tight">Gestión Escolar</span>
+      </div>
     </a>
 
-    <div class="w-px h-5 bg-slate-200 hidden md:block flex-shrink-0"></div>
+    <div class="w-px h-5 bg-hueso-300 hidden md:block flex-shrink-0"></div>
 
-    <span class="text-sm text-slate-500 hidden md:block min-w-0 truncate">
+    <span class="text-sm font-medium text-marino-600 hidden md:block min-w-0 truncate">
       <%= typeof titulo !== 'undefined' ? titulo : 'Panel' %>
     </span>
 
@@ -62,47 +126,51 @@
 
     <!-- Global search (sm+) -->
     <div class="relative hidden sm:flex items-center flex-shrink-0">
-      <i class="bi bi-search absolute left-3 text-slate-400 text-xs pointer-events-none"></i>
+      <i class="bi bi-search absolute left-3 text-marino-300 text-xs pointer-events-none"></i>
       <input id="global-search" type="search" placeholder="Buscar cuadros..." autocomplete="off"
-        class="h-8 pl-8 pr-3 text-sm bg-slate-50 border border-slate-200 rounded-lg w-40 lg:w-52 focus:w-52 lg:focus:w-64 focus:border-blue-400 focus:bg-white transition-all outline-none placeholder-slate-400">
+        class="h-8 pl-8 pr-3 text-sm bg-hueso-50 border border-hueso-200 rounded-xl w-40 lg:w-56 focus:w-56 lg:focus:w-64 focus:border-ladrillo-400 focus:bg-white transition-all outline-none placeholder-marino-300 text-marino-800">
     </div>
 
-    <div class="flex items-center gap-1 flex-shrink-0">
+    <div class="flex items-center gap-1.5 flex-shrink-0">
+      <% if (can('documents.create')) { %>
       <a href="/cuadros/crear" title="Registrar cuadro" aria-label="Registrar cuadro"
-        class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors">
-        <i class="bi bi-plus-lg text-base"></i>
+        class="w-8 h-8 flex items-center justify-center rounded-lg bg-ladrillo-50 text-ladrillo-700 hover:bg-ladrillo-100 hover:text-ladrillo-800 transition-colors border border-ladrillo-200/60">
+        <i class="bi bi-plus-lg text-sm"></i>
       </a>
+      <% } %>
 
       <% if (usuario) { %>
-      <div class="relative ml-0.5">
+      <div class="relative ml-1">
         <button data-dd-trigger
-          class="flex items-center gap-1.5 sm:gap-2 pl-1.5 sm:pl-2 pr-2 sm:pr-3 h-9 rounded-lg hover:bg-slate-100 transition-colors">
-          <div class="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
+          class="flex items-center gap-2 pl-1.5 sm:pl-2 pr-2 sm:pr-2.5 h-9 rounded-xl hover:bg-hueso-100 border border-transparent hover:border-hueso-200 transition-colors">
+          <div class="w-7 h-7 rounded-lg bg-marino-700 text-white flex items-center justify-center text-xs font-semibold flex-shrink-0 shadow-xs">
             <%= usuario.nombre.charAt(0).toUpperCase() %>
           </div>
-          <span class="text-sm font-medium text-slate-700 hidden md:block max-w-[90px] truncate"><%= usuario.nombre.split(' ')[0] %></span>
-          <i class="bi bi-chevron-down text-slate-400 text-[10px] hidden md:block"></i>
+          <span class="text-sm font-medium text-marino-800 hidden md:block max-w-[100px] truncate"><%= usuario.nombre.split(' ')[0] %></span>
+          <i class="bi bi-chevron-down text-marino-400 text-[10px] hidden md:block"></i>
         </button>
 
         <div data-dd-menu
-          class="dropdown-menu closed absolute right-0 top-full mt-1.5 w-52 bg-white rounded-xl border border-slate-200 shadow-lg shadow-slate-900/5 p-1.5 z-50">
-          <div class="px-3 py-2 border-b border-slate-100 mb-1">
-            <div class="text-xs font-semibold text-slate-800 truncate"><%= usuario.nombre %></div>
-            <div class="text-[11px] text-slate-500 mt-0.5">
-              <span class="inline-flex items-center px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-600 font-medium"><%= usuario.rol %></span>
+          class="dropdown-menu closed absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl border border-hueso-200 shadow-xl shadow-marino-900/10 p-2 z-50">
+          <div class="px-3 py-2.5 bg-hueso-50 rounded-xl border border-hueso-200/80 mb-1.5">
+            <div class="text-xs font-bold text-marino-800 truncate"><%= usuario.nombre %></div>
+            <div class="text-[11px] text-marino-500 mt-0.5 flex items-center gap-1.5">
+              <span class="inline-flex items-center px-1.5 py-0.5 rounded-md bg-ladrillo-50 text-ladrillo-700 font-semibold border border-ladrillo-200/50 uppercase text-[9px]"><%= usuario.rol %></span>
+              <span class="text-marino-400">•</span>
+              <span class="truncate">@<%= usuario.username %></span>
             </div>
           </div>
-          <a href="/auth/perfil" class="flex items-center gap-2.5 px-3 py-2 text-sm text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
-            <i class="bi bi-person-circle text-base w-4"></i> Mi perfil
+          <a href="/auth/perfil" class="flex items-center gap-2.5 px-3 py-2 text-sm text-marino-700 rounded-xl hover:bg-hueso-100 hover:text-marino-900 transition-colors">
+            <i class="bi bi-person-circle text-base text-marino-400"></i> Mi perfil
           </a>
           <% if (usuario.rol === 'director') { %>
-          <a href="/auth/usuarios" class="flex items-center gap-2.5 px-3 py-2 text-sm text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
-            <i class="bi bi-people text-base w-4"></i> Usuarios
+          <a href="/admin/usuarios" class="flex items-center gap-2.5 px-3 py-2 text-sm text-marino-700 rounded-xl hover:bg-hueso-100 hover:text-marino-900 transition-colors">
+            <i class="bi bi-people text-base text-marino-400"></i> Usuarios
           </a>
           <% } %>
-          <div class="border-t border-slate-100 mt-1 pt-1">
-            <a href="/auth/logout" class="flex items-center gap-2.5 px-3 py-2 text-sm text-red-500 rounded-lg hover:bg-red-50 transition-colors">
-              <i class="bi bi-box-arrow-right text-base w-4"></i> Cerrar sesión
+          <div class="border-t border-hueso-200 mt-1 pt-1">
+            <a href="/auth/logout" class="flex items-center gap-2.5 px-3 py-2 text-sm text-ladrillo-600 rounded-xl hover:bg-ladrillo-50 transition-colors font-medium">
+              <i class="bi bi-box-arrow-right text-base"></i> Cerrar sesión
             </a>
           </div>
         </div>
@@ -117,18 +185,18 @@
     <%- include('../partials/sidebar') %>
 
     <main class="flex-1 min-w-0 overflow-y-auto">
-      <div class="p-4 md:p-6 max-w-screen-xl mx-auto">
+      <div class="p-4 md:p-6 lg:p-8 max-w-screen-xl mx-auto">
 
         <% if (flash) { %>
-        <div id="flash-msg" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium mb-5 border
-          <%= flash.tipo === 'success' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-             flash.tipo === 'danger'  ? 'bg-red-50 text-red-700 border-red-200' :
-             flash.tipo === 'warning' ? 'bg-amber-50 text-amber-700 border-amber-200' :
-                                        'bg-blue-50 text-blue-700 border-blue-200' %>">
-          <i class="bi bi-<%= flash.tipo === 'success' ? 'check-circle' : flash.tipo === 'danger' ? 'x-circle' : flash.tipo === 'warning' ? 'exclamation-triangle' : 'info-circle' %> text-base flex-shrink-0"></i>
+        <div id="flash-msg" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium mb-6 border shadow-sm
+          <%= flash.tipo === 'success' ? 'bg-bosque-50 text-bosque-800 border-bosque-200' :
+             flash.tipo === 'danger'  ? 'bg-ladrillo-50 text-ladrillo-800 border-ladrillo-200' :
+             flash.tipo === 'warning' ? 'bg-ocre-50 text-ocre-800 border-ocre-200' :
+                                        'bg-marino-50 text-marino-800 border-marino-200' %>">
+          <i class="bi bi-<%= flash.tipo === 'success' ? 'check-circle-fill text-bosque-600' : flash.tipo === 'danger' ? 'x-circle-fill text-ladrillo-600' : flash.tipo === 'warning' ? 'exclamation-triangle-fill text-ocre-600' : 'info-circle-fill text-marino-600' %> text-lg flex-shrink-0"></i>
           <span class="min-w-0 flex-1"><%= flash.mensaje %></span>
           <button onclick="document.getElementById('flash-msg').remove()"
-            class="ml-auto flex-shrink-0 w-7 h-7 flex items-center justify-center text-current opacity-50 hover:opacity-100">
+            class="ml-auto flex-shrink-0 w-7 h-7 flex items-center justify-center text-current opacity-60 hover:opacity-100 rounded-lg hover:bg-black/5 transition-colors">
             <i class="bi bi-x text-lg"></i>
           </button>
         </div>
