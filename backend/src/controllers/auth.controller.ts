@@ -36,11 +36,21 @@ export function showPerfil(req: Request, res: Response): void {
 }
 
 export async function cambiarPassword(req: Request, res: Response): Promise<void> {
-  const { old_password, new_password } = req.body as Record<string, string>;
+  const { old_password, new_password, new_password_confirm } = req.body as Record<string, string>;
+  if (!new_password || new_password !== new_password_confirm) {
+    req.session.flash = { tipo: 'danger', mensaje: 'La nueva contraseña y su confirmación no coinciden.' };
+    res.redirect('/auth/perfil');
+    return;
+  }
+  if (new_password.length < 8) {
+    req.session.flash = { tipo: 'danger', mensaje: 'La nueva contraseña debe tener un mínimo de 8 caracteres.' };
+    res.redirect('/auth/perfil');
+    return;
+  }
   const userId = req.session.usuario!.id;
   const ok = await authService.changePassword(userId, old_password, new_password);
   if (ok) {
-    req.session.flash = { tipo: 'success', mensaje: 'Contraseña actualizada.' };
+    req.session.flash = { tipo: 'success', mensaje: 'Contraseña actualizada exitosamente.' };
   } else {
     req.session.flash = { tipo: 'danger', mensaje: 'La contraseña actual no es correcta.' };
   }

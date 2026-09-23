@@ -182,3 +182,26 @@ body.sidebar-open-body { overflow: hidden; }
   padding-bottom: max(env(safe-area-inset-bottom, 0px), 8px);
 }
 
+/* ── Brand utilities for Logo and Buttons ─────────────────── */
+.bg-brand-gradient {
+  background: linear-gradient(135deg, #B84A39 0%, #96392B 100%) !important;
+}
+
+.btn-brand-gradient {
+  background: linear-gradient(135deg, #B84A39 0%, #96392B 100%) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 14px rgba(184, 74, 57, 0.3) !important;
+  transition: all 0.2s ease !important;
+}
+
+.btn-brand-gradient:hover {
+  background: linear-gradient(135deg, #96392B 0%, #7B2E23 100%) !important;
+  box-shadow: 0 6px 20px rgba(184, 74, 57, 0.4) !important;
+  transform: translateY(-1px);
+}
+
+.btn-brand-gradient:active {
+  transform: translateY(0);
+}
+
+

@@ -29,10 +29,20 @@ export async function showUsuarios(req: Request, res: Response): Promise<void> {
 }
 
 export async function crearUsuario(req: Request, res: Response): Promise<void> {
-  const { nombre, username, password, role_id } = req.body as Record<string, string>;
+  const { nombre, username, password, password_confirm, role_id } = req.body as Record<string, string>;
+  if (!password || password !== password_confirm) {
+    req.session.flash = { tipo: 'danger', mensaje: 'Las contraseñas no coinciden. Por favor verifique e intente de nuevo.' };
+    res.redirect('/admin/usuarios');
+    return;
+  }
+  if (password.length < 8) {
+    req.session.flash = { tipo: 'danger', mensaje: 'La contraseña debe tener un mínimo de 8 caracteres.' };
+    res.redirect('/admin/usuarios');
+    return;
+  }
   try {
     const hash = await bcrypt.hash(password, 12);
-    await userRepo.create({ nombre, username, passwordHash: hash, role_id: parseInt(role_id) });
+    await userRepo.create({ nombre: nombre.trim(), username: username.trim(), passwordHash: hash, role_id: parseInt(role_id) });
     req.session.flash = { tipo: 'success', mensaje: 'Usuario creado exitosamente.' };
   } catch {
     req.session.flash = { tipo: 'danger', mensaje: 'Error al crear el usuario. Verifique que el nombre de usuario no exista.' };
@@ -41,7 +51,19 @@ export async function crearUsuario(req: Request, res: Response): Promise<void> {
 }
 
 export async function editarUsuario(req: Request, res: Response): Promise<void> {
-  const { nombre, role_id, password } = req.body as Record<string, string>;
+  const { nombre, role_id, password, password_confirm } = req.body as Record<string, string>;
+  if (password && password.trim()) {
+    if (password !== password_confirm) {
+      req.session.flash = { tipo: 'danger', mensaje: 'La nueva contraseña y su confirmación no coinciden. No se realizaron cambios.' };
+      res.redirect('/admin/usuarios');
+      return;
+    }
+    if (password.length < 8) {
+      req.session.flash = { tipo: 'danger', mensaje: 'La nueva contraseña debe tener un mínimo de 8 caracteres.' };
+      res.redirect('/admin/usuarios');
+      return;
+    }
+  }
   try {
     await userRepo.update(parseInt(req.params.id), {
       nombre: nombre.trim(),

@@ -27,9 +27,11 @@ $(function () {
 
   if ($active) {
     $active
-      .removeClass('text-slate-600 hover:bg-slate-100 hover:text-slate-900')
-      .addClass('bg-blue-50 text-blue-600 font-medium');
+      .removeClass('text-marino-700 hover:bg-hueso-100 hover:text-marino-900')
+      .addClass('bg-ladrillo-50/80 text-ladrillo-800 font-bold border border-ladrillo-200/80 shadow-2xs');
+    $active.find('i').removeClass('text-marino-400').addClass('text-ladrillo-600');
   }
+
 
   /* ── Sidebar drawer (mobile) ─────────────────────────── */
   const $sidebarEl = $('#sidebar');
