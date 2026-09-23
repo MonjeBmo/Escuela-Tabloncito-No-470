@@ -1,111 +1,119 @@
 <%# login.ejs — visual only, backend/logic unchanged %>
 
-<div class="w-full max-w-5xl mx-auto py-4 md:py-8">
-  <div class="flex items-center justify-center gap-8 xl:gap-16">
+  <div class="w-full max-w-5xl mx-auto py-4 md:py-8">
+    <div class="flex items-center justify-center gap-8 xl:gap-16">
 
-    <!-- ── Decoración izquierda — estudio / lectura ─────────── -->
-    <div class="hidden xl:flex flex-col items-center gap-6 w-56 flex-shrink-0 select-none" aria-hidden="true">
-      <div class="p-4 bg-white/60 backdrop-blur rounded-3xl border border-hueso-200/80 shadow-sm">
-        <img src="/img/study.svg" alt="" width="180" height="153" class="drop-shadow-sm opacity-95">
-      </div>
-
-      <!-- Small floating caption chip -->
-      <div class="bg-white rounded-2xl border border-hueso-200 shadow-sm px-4 py-2.5 text-center">
-        <p class="text-xs font-display font-bold text-marino-900">Escuela El Tabloncito</p>
-        <p class="text-[11px] text-bosque-700 font-medium mt-0.5 flex items-center justify-center gap-1">
-          <i class="bi bi-tree-fill text-[9px]"></i> Educación para todos
-        </p>
-      </div>
-    </div>
-
-    <!-- ── Tarjeta principal ─────────────────────────────────── -->
-    <div class="w-full max-w-[440px] flex-shrink-0">
-
-      <div class="bg-white rounded-3xl border border-hueso-200 shadow-xl shadow-marino-900/5 p-8 md:p-10">
-
-        <!-- Encabezado -->
-        <div class="text-center mb-8">
-          <div class="w-16 h-16 bg-brand-gradient rounded-2xl flex items-center justify-center shadow-lg shadow-ladrillo-600/30 mx-auto mb-4 text-white">
-            <i class="bi bi-mortarboard-fill text-3xl"></i>
-          </div>
-          <h1 class="text-2xl font-display font-bold tracking-tight text-marino-900 mb-1">Bienvenido</h1>
-          <p class="text-sm font-semibold text-ladrillo-700 font-display">Escuela El Tabloncito No. 470</p>
-          <p class="text-xs text-marino-500 mt-0.5">Sistema de Gestión y Archivo Histórico</p>
+      <!-- ── Decoración izquierda — estudio / lectura ─────────── -->
+      <div class="hidden xl:flex flex-col items-center gap-6 w-56 flex-shrink-0 select-none" aria-hidden="true">
+        <div class="p-4 bg-white/90 backdrop-blur-xl rounded-3xl border border-white/80 shadow-xl shadow-marino-950/25">
+          <img src="/img/study.svg" alt="" width="180" height="153" class="drop-shadow-sm opacity-95">
         </div>
 
-        <!-- Flash error -->
-        <% if (locals.flash) { %>
-        <div class="flex items-center gap-2.5 px-3.5 py-3 rounded-xl text-sm text-ladrillo-800 bg-ladrillo-50 border border-ladrillo-200 mb-6">
-          <i class="bi bi-exclamation-circle-fill text-ladrillo-600 flex-shrink-0"></i>
-          <span><%= flash.mensaje %></span>
+        <!-- Small floating caption chip -->
+        <div
+          class="bg-white/95 backdrop-blur-xl rounded-2xl border border-hueso-200/90 shadow-md px-4 py-2.5 text-center">
+          <p class="text-xs font-display font-bold text-marino-900">Escuela El Tabloncito</p>
+          <p class="text-[11px] text-bosque-700 font-medium mt-0.5 flex items-center justify-center gap-1">
+            <i class="bi bi-tree-fill text-[9px]"></i> Educación para todos
+          </p>
         </div>
-        <% } %>
-
-        <!-- Formulario -->
-        <form method="POST" action="/auth/login" class="space-y-4">
-
-          <!-- Usuario -->
-          <div>
-            <label class="block text-xs font-bold text-marino-700 uppercase tracking-wider font-display mb-1.5">
-              Usuario
-            </label>
-            <div class="relative">
-              <i class="bi bi-person absolute left-3.5 top-1/2 -translate-y-1/2 text-marino-400 text-base pointer-events-none"></i>
-              <input type="text" name="username" required autofocus autocomplete="username"
-                placeholder="nombre.usuario"
-                class="w-full h-11 pl-10 pr-4 text-sm font-medium rounded-xl border border-hueso-300 bg-hueso-50/50 text-marino-900 placeholder-marino-300 focus:bg-white focus:border-ladrillo-500 transition-all outline-none">
-            </div>
-          </div>
-
-          <!-- Contraseña -->
-          <div>
-            <label class="block text-xs font-bold text-marino-700 uppercase tracking-wider font-display mb-1.5">
-              Contraseña
-            </label>
-            <div class="relative">
-              <i class="bi bi-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-marino-400 text-base pointer-events-none"></i>
-              <input type="password" id="pw-input" name="password" required autocomplete="current-password"
-                placeholder="••••••••"
-                class="w-full h-11 pl-10 pr-10 text-sm font-medium rounded-xl border border-hueso-300 bg-hueso-50/50 text-marino-900 placeholder-marino-300 focus:bg-white focus:border-ladrillo-500 transition-all outline-none">
-              <button type="button" id="toggle-pw" aria-label="Mostrar u ocultar contraseña"
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-marino-400 hover:text-marino-700 transition-colors p-1 rounded-lg hover:bg-hueso-200">
-                <i id="toggle-pw-icon" class="bi bi-eye text-sm"></i>
-              </button>
-            </div>
-          </div>
-
-          <!-- Botón -->
-          <div class="pt-2">
-            <button type="submit"
-              class="w-full h-12 btn-brand-gradient text-white text-sm font-bold font-display rounded-xl flex items-center justify-center gap-2">
-              <i class="bi bi-box-arrow-in-right text-lg"></i>
-              <span>Iniciar Sesión</span>
-            </button>
-          </div>
-
-        </form>
       </div>
 
-      <p class="text-center text-xs text-marino-400 mt-5 font-medium">
-        Escuela El Tabloncito No. 470 &copy; <%= new Date().getFullYear() %>
-      </p>
-    </div>
+      <!-- ── Tarjeta principal ─────────────────────────────────── -->
+      <div class="w-full max-w-[440px] flex-shrink-0">
 
-    <!-- ── Decoración derecha — documentos / gestión ─────────── -->
-    <div class="hidden xl:flex flex-col items-center gap-6 w-56 flex-shrink-0 select-none" aria-hidden="true">
-      <!-- Small caption chip -->
-      <div class="bg-white rounded-2xl border border-hueso-200 shadow-sm px-4 py-2.5 text-center">
-        <p class="text-xs font-display font-bold text-marino-900">Gestión Documental</p>
-        <p class="text-[11px] text-ladrillo-600 font-medium mt-0.5 flex items-center justify-center gap-1">
-          <i class="bi bi-archive-fill text-[9px]"></i> Cuadros PRIM Digitalizados
+        <div
+          class="bg-white/95 backdrop-blur-2xl rounded-3xl border border-hueso-200/90 shadow-2xl shadow-marino-950/35 p-8 md:p-10">
+
+          <!-- Encabezado -->
+          <div class="text-center mb-8">
+            <div
+              class="w-16 h-16 bg-brand-gradient rounded-2xl flex items-center justify-center shadow-lg shadow-ladrillo-600/30 mx-auto mb-4 text-white">
+              <i class="bi bi-mortarboard-fill text-3xl"></i>
+            </div>
+            <h1 class="text-2xl font-display font-bold tracking-tight text-marino-900 mb-1">Bienvenido</h1>
+            <p class="text-sm font-semibold text-ladrillo-700 font-display">Escuela El Tabloncito No. 470</p>
+            <p class="text-xs text-marino-500 mt-0.5">Sistema de Gestión y Archivo Histórico</p>
+          </div>
+
+          <!-- Flash error -->
+          <% if (locals.flash) { %>
+            <div
+              class="flex items-center gap-2.5 px-3.5 py-3 rounded-xl text-sm text-ladrillo-800 bg-ladrillo-50 border border-ladrillo-200 mb-6 shadow-xs">
+              <i class="bi bi-exclamation-circle-fill text-ladrillo-600 flex-shrink-0"></i>
+              <span>
+                <%= flash.mensaje %>
+              </span>
+            </div>
+            <% } %>
+
+              <!-- Formulario -->
+              <form method="POST" action="/auth/login" class="space-y-4">
+
+                <!-- Usuario -->
+                <div>
+                  <label class="block text-xs font-bold text-marino-700 uppercase tracking-wider font-display mb-1.5">
+                    Usuario
+                  </label>
+                  <div class="relative">
+                    <i
+                      class="bi bi-person absolute left-3.5 top-1/2 -translate-y-1/2 text-marino-400 text-base pointer-events-none"></i>
+                    <input type="text" name="username" required autofocus autocomplete="username"
+                      placeholder="nombre.usuario"
+                      class="w-full h-11 pl-10 pr-4 text-sm font-medium rounded-xl border border-hueso-300 bg-hueso-50/70 text-marino-900 placeholder-marino-400 focus:bg-white focus:border-ladrillo-500 transition-all outline-none">
+                  </div>
+                </div>
+
+                <!-- Contraseña -->
+                <div>
+                  <label class="block text-xs font-bold text-marino-700 uppercase tracking-wider font-display mb-1.5">
+                    Contraseña
+                  </label>
+                  <div class="relative">
+                    <i
+                      class="bi bi-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-marino-400 text-base pointer-events-none"></i>
+                    <input type="password" id="pw-input" name="password" required autocomplete="current-password"
+                      placeholder="••••••••"
+                      class="w-full h-11 pl-10 pr-10 text-sm font-medium rounded-xl border border-hueso-300 bg-hueso-50/70 text-marino-900 placeholder-marino-400 focus:bg-white focus:border-ladrillo-500 transition-all outline-none">
+                    <button type="button" id="toggle-pw" aria-label="Mostrar u ocultar contraseña"
+                      class="absolute right-3 top-1/2 -translate-y-1/2 text-marino-400 hover:text-marino-700 transition-colors p-1 rounded-lg hover:bg-hueso-200">
+                      <i id="toggle-pw-icon" class="bi bi-eye text-sm"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Botón -->
+                <div class="pt-2">
+                  <button type="submit"
+                    class="w-full h-12 btn-brand-gradient text-white text-sm font-bold font-display rounded-xl flex items-center justify-center gap-2">
+                    <i class="bi bi-box-arrow-in-right text-lg"></i>
+                    <span>Iniciar Sesión</span>
+                  </button>
+                </div>
+
+              </form>
+        </div>
+
+        <p class="text-center text-xs text-marino-900 mt-5 font-medium drop-shadow-sm">
+          Escuela El Tabloncito No. 470 &copy; <%= new Date().getFullYear() %>
         </p>
       </div>
 
-      <div class="p-4 bg-white/60 backdrop-blur rounded-3xl border border-hueso-200/80 shadow-sm">
-        <img src="/img/documents.svg" alt="" width="180" height="153" class="drop-shadow-sm opacity-95">
-      </div>
-    </div>
+      <!-- ── Decoración derecha — documentos / gestión ─────────── -->
+      <div class="hidden xl:flex flex-col items-center gap-6 w-56 flex-shrink-0 select-none" aria-hidden="true">
+        <!-- Small caption chip -->
+        <div
+          class="bg-white/95 backdrop-blur-xl rounded-2xl border border-hueso-200/90 shadow-md px-4 py-2.5 text-center">
+          <p class="text-xs font-display font-bold text-marino-900">Gestión Documental</p>
+          <p class="text-[11px] text-ladrillo-600 font-medium mt-0.5 flex items-center justify-center gap-1">
+            <i class="bi bi-archive-fill text-[9px]"></i> Cuadros PRIM Digitalizados
+          </p>
+        </div>
 
+        <div class="p-4 bg-white/90 backdrop-blur-xl rounded-3xl border border-white/80 shadow-xl shadow-marino-950/25">
+          <img src="/img/documents.svg" alt="" width="180" height="153" class="drop-shadow-sm opacity-95">
+        </div>
+      </div>
+
+    </div>
   </div>
-</div>
-
