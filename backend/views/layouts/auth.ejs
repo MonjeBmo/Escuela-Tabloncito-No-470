@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="es" class="h-full">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
   <title>Ingresar — Tabloncito 470</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23B84A39'/><text y='.9em' font-size='68' x='14'>🎓</text></svg>">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23B84A39'/><text y='.9em' font-size='68' x='14'>🎓</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -83,41 +87,41 @@
   </script>
   <link rel="stylesheet" href="/css/app.css">
 </head>
-<body class="min-h-screen bg-hueso-100 font-sans antialiased flex items-center justify-center p-4 py-10 relative overflow-hidden text-marino-900">
 
+<body
+  class="min-h-screen bg-marino-950 font-sans antialiased flex items-center justify-center p-4 py-10 relative overflow-hidden text-white">
 
-  <!-- Background blobs -->
-  <div class="absolute -top-32 -left-32 w-80 h-80 bg-blue-100/50 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
-  <div class="absolute -bottom-32 -right-32 w-80 h-80 bg-amber-100/60 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+  <!-- Dark Translucent School Background Image with Hueso & Marino Gradient -->
+  <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
+    <img src="/img/bg/fondo_2.jpg" alt=""
+      class="w-full h-full object-cover object-center opacity-20 filter contrast-[1.08] brightness-[0.65]">
 
-  <!-- Dot grid — top right -->
-  <div class="hidden lg:block absolute top-10 right-10 opacity-[0.18] pointer-events-none" aria-hidden="true">
-    <svg width="128" height="128" viewBox="0 0 128 128">
-      <defs>
-        <pattern id="dot-tr" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
-          <circle cx="2" cy="2" r="1.5" fill="#64748b"/>
-        </pattern>
-      </defs>
-      <rect width="128" height="128" fill="url(#dot-tr)"/>
-    </svg>
+    <!-- Multi-stop Gradient: subtle warm Hueso tint at top transitioning into deep Marino -->
+    <div
+      class="absolute inset-0 bg-gradient-to-b from-hueso-400/30 via-marino-950/80 to-marino-950/95 backdrop-blur-[0.9px]">
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-tr from-marino-950/90 via-transparent to-hueso-200/15">
+    </div>
   </div>
 
-  <!-- Dot grid — bottom left -->
-  <div class="hidden lg:block absolute bottom-10 left-10 opacity-[0.18] pointer-events-none" aria-hidden="true">
-    <svg width="128" height="128" viewBox="0 0 128 128">
-      <defs>
-        <pattern id="dot-bl" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
-          <circle cx="2" cy="2" r="1.5" fill="#64748b"/>
-        </pattern>
-      </defs>
-      <rect width="128" height="128" fill="url(#dot-bl)"/>
-    </svg>
+  <!-- Warm Hueso & Institutional Ambient Glows -->
+  <div
+    class="absolute top-10 left-1/2 -translate-x-1/2 w-[650px] h-[350px] bg-hueso-300/15 rounded-full blur-[110px] pointer-events-none z-0"
+    aria-hidden="true"></div>
+  <div class="absolute -top-32 -left-32 w-96 h-96 bg-bosque-600/20 rounded-full blur-3xl pointer-events-none z-0"
+    aria-hidden="true"></div>
+  <div class="absolute -bottom-32 -right-32 w-96 h-96 bg-ladrillo-600/25 rounded-full blur-3xl pointer-events-none z-0"
+    aria-hidden="true"></div>
+
+  <!-- Main content wrapper -->
+  <div class="relative z-10 w-full flex items-center justify-center">
+    <%- body %>
   </div>
 
-  <%- body %>
 
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
   <script src="/js/app.js"></script>
 </body>
+
 </html>
