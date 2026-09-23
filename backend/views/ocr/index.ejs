@@ -1,111 +1,137 @@
 <!-- Header -->
-<div class="flex items-start sm:items-center justify-between gap-3 mb-6">
-  <div class="min-w-0">
-    <h1 class="text-xl font-semibold text-slate-900 truncate">Digitalización OCR</h1>
-    <p class="text-sm text-slate-500 mt-0.5">Reconocimiento óptico de caracteres</p>
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+  <div>
+    <div class="flex items-center gap-2 mb-1">
+      <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-marino-100 text-marino-800 border border-marino-200/70">
+        <i class="bi bi-cpu-fill text-[10px]"></i> Digitalización
+      </span>
+      <span class="text-xs text-marino-400">•</span>
+      <span class="text-xs text-marino-500 font-medium">Reconocimiento Óptico de Caracteres</span>
+    </div>
+    <h1 class="text-2xl font-display font-bold text-marino-900 tracking-tight">Trabajos OCR</h1>
   </div>
   <a href="/ocr/subir" aria-label="Subir documento"
-    class="inline-flex items-center gap-2 px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors flex-shrink-0">
+    class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-marino-700 to-marino-800 text-white text-sm font-bold font-display rounded-xl hover:from-marino-800 hover:to-marino-900 shadow-sm shadow-marino-900/25 transition-all flex-shrink-0">
     <i class="bi bi-cloud-upload"></i>
-    <span class="hidden sm:inline">Subir documento</span>
+    <span>Subir documento</span>
   </a>
 </div>
 
+<!-- Guía de Digitalización -->
+<div class="mb-5 p-4 rounded-xl bg-ocre-50/80 border border-ocre-200/80 flex items-start gap-3 text-xs text-marino-800">
+  <i class="bi bi-magic text-ocre-700 text-base flex-shrink-0 mt-0.5"></i>
+  <div class="flex-1 leading-relaxed">
+    <strong class="font-semibold text-ocre-900">¿Cómo funciona la digitalización de cuadros?</strong>
+    1. Suba el archivo escaneado en <span class="font-semibold text-ocre-900">"Subir documento"</span>. 
+    2. El motor de OCR procesa la imagen y extrae el texto automáticamente. 
+    3. Revise los datos extraídos en <span class="font-semibold text-ocre-900">"En revisión"</span>, corrija cualquier letra dudosa y presione <span class="font-semibold text-ocre-900">"Validar e Indexar"</span> para guardarlo en el archivo oficial.
+  </div>
+</div>
+
 <!-- Stat cards -->
-<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-  <div class="bg-white rounded-xl border border-slate-200/70 p-4 flex items-center gap-3">
-    <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center flex-shrink-0">
-      <i class="bi bi-hourglass-split"></i>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-7">
+  <div class="bg-white rounded-2xl border border-hueso-200 p-4.5 flex items-center gap-4 shadow-xs">
+    <div class="w-11 h-11 rounded-xl bg-ocre-50 border border-ocre-200 text-ocre-700 flex items-center justify-center flex-shrink-0">
+      <i class="bi bi-hourglass-split text-lg"></i>
     </div>
     <div class="min-w-0">
-      <div class="text-2xl font-bold text-slate-900 leading-none"><%= conteo.revision || 0 %></div>
-      <div class="text-xs text-slate-500 mt-1 truncate">En revisión</div>
+      <div class="text-2xl font-display font-bold text-marino-900 leading-none"><%= conteo.revision || 0 %></div>
+      <div class="text-xs font-medium text-marino-500 mt-1 truncate">En revisión</div>
     </div>
   </div>
-  <div class="bg-white rounded-xl border border-slate-200/70 p-4 flex items-center gap-3">
-    <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center flex-shrink-0">
-      <i class="bi bi-cpu"></i>
+  <div class="bg-white rounded-2xl border border-hueso-200 p-4.5 flex items-center gap-4 shadow-xs">
+    <div class="w-11 h-11 rounded-xl bg-marino-50 border border-marino-100 text-marino-700 flex items-center justify-center flex-shrink-0">
+      <i class="bi bi-cpu text-lg"></i>
     </div>
     <div class="min-w-0">
-      <div class="text-2xl font-bold text-slate-900 leading-none"><%= conteo.pendiente || 0 %></div>
-      <div class="text-xs text-slate-500 mt-1 truncate">Pendientes</div>
+      <div class="text-2xl font-display font-bold text-marino-900 leading-none"><%= conteo.pendiente || 0 %></div>
+      <div class="text-xs font-medium text-marino-500 mt-1 truncate">Pendientes</div>
     </div>
   </div>
-  <div class="bg-white rounded-xl border border-slate-200/70 p-4 flex items-center gap-3">
-    <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-500 flex items-center justify-center flex-shrink-0">
-      <i class="bi bi-check-circle"></i>
+  <div class="bg-white rounded-2xl border border-hueso-200 p-4.5 flex items-center gap-4 shadow-xs">
+    <div class="w-11 h-11 rounded-xl bg-bosque-50 border border-bosque-200 text-bosque-700 flex items-center justify-center flex-shrink-0">
+      <i class="bi bi-check-circle text-lg"></i>
     </div>
     <div class="min-w-0">
-      <div class="text-2xl font-bold text-slate-900 leading-none"><%= conteo.validado || 0 %></div>
-      <div class="text-xs text-slate-500 mt-1 truncate">Validados</div>
+      <div class="text-2xl font-display font-bold text-marino-900 leading-none"><%= conteo.validado || 0 %></div>
+      <div class="text-xs font-medium text-marino-500 mt-1 truncate">Validados</div>
     </div>
   </div>
-  <div class="bg-white rounded-xl border border-slate-200/70 p-4 flex items-center gap-3">
-    <div class="w-10 h-10 rounded-xl bg-red-50 text-red-500 flex items-center justify-center flex-shrink-0">
-      <i class="bi bi-x-circle"></i>
+  <div class="bg-white rounded-2xl border border-hueso-200 p-4.5 flex items-center gap-4 shadow-xs">
+    <div class="w-11 h-11 rounded-xl bg-ladrillo-50 border border-ladrillo-200 text-ladrillo-700 flex items-center justify-center flex-shrink-0">
+      <i class="bi bi-x-circle text-lg"></i>
     </div>
     <div class="min-w-0">
-      <div class="text-2xl font-bold text-slate-900 leading-none"><%= conteo.rechazado || 0 %></div>
-      <div class="text-xs text-slate-500 mt-1 truncate">Rechazados</div>
+      <div class="text-2xl font-display font-bold text-marino-900 leading-none"><%= conteo.rechazado || 0 %></div>
+      <div class="text-xs font-medium text-marino-500 mt-1 truncate">Rechazados</div>
     </div>
   </div>
 </div>
 
-<div class="bg-white rounded-xl border border-slate-200/70 overflow-hidden">
+<div class="bg-white rounded-2xl border border-hueso-200 shadow-sm overflow-hidden">
   <% if (jobs.length === 0) { %>
   <div class="py-16 text-center px-4">
-    <i class="bi bi-cpu text-5xl text-slate-200 block mb-3"></i>
-    <p class="text-sm text-slate-400 mb-4">No hay trabajos OCR registrados.</p>
-    <a href="/ocr/subir" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
+    <div class="w-16 h-16 rounded-2xl bg-hueso-100 text-marino-300 flex items-center justify-center mx-auto mb-3">
+      <i class="bi bi-cpu text-3xl"></i>
+    </div>
+    <p class="text-sm font-medium text-marino-500 mb-4">No hay trabajos OCR registrados.</p>
+    <a href="/ocr/subir" class="inline-flex items-center gap-2 px-4 py-2 bg-marino-700 text-white text-sm font-semibold rounded-xl hover:bg-marino-800 shadow-sm transition-colors">
       <i class="bi bi-cloud-upload"></i> Subir primer documento
     </a>
   </div>
   <% } else { %>
-  <% const estadoBadge = {pendiente:'bg-blue-50 text-blue-700',procesando:'bg-violet-50 text-violet-700',revision:'bg-amber-50 text-amber-700',validado:'bg-emerald-50 text-emerald-700',rechazado:'bg-red-50 text-red-600',error:'bg-red-50 text-red-600'}; %>
+  <% const estadoBadge = {
+    pendiente: 'bg-marino-50 text-marino-700 border border-marino-200',
+    procesando: 'bg-marino-100 text-marino-800 border border-marino-200',
+    revision: 'bg-ocre-50 text-ocre-800 border border-ocre-200',
+    validado: 'bg-bosque-50 text-bosque-800 border border-bosque-200',
+    rechazado: 'bg-ladrillo-50 text-ladrillo-800 border border-ladrillo-200',
+    error: 'bg-ladrillo-50 text-ladrillo-800 border border-ladrillo-200'
+  }; %>
 
   <!-- ── Desktop table (md+) ──────────────────────────── -->
   <div class="hidden md:block table-wrap">
     <table class="w-full text-sm">
-      <thead class="bg-slate-50/80">
+      <thead class="bg-hueso-100/70 border-b border-hueso-200 text-marino-600">
         <tr>
-          <th class="px-5 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">#</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Documento</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Estado</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Subido por</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Fecha</th>
-          <th class="px-4 py-3 w-28"></th>
+          <th class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider font-display">#</th>
+          <th class="px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider font-display">Documento</th>
+          <th class="px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider font-display">Estado</th>
+          <th class="px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider font-display">Subido por</th>
+          <th class="px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider font-display">Fecha</th>
+          <th class="px-6 py-3.5 w-28"></th>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="divide-y divide-hueso-200/70">
         <% jobs.forEach(j => { %>
-        <tr class="border-t border-slate-100 hover:bg-slate-50/60 transition-colors">
-          <td class="px-5 py-3.5 text-slate-400 text-xs font-mono">#<%= j.id %></td>
+        <tr class="hover:bg-hueso-50/80 transition-colors">
+          <td class="px-6 py-3.5 text-marino-400 text-xs font-mono font-medium">#<%= j.id %></td>
           <td class="px-4 py-3.5">
-            <div class="flex items-center gap-2.5">
-              <div class="w-8 h-8 rounded-lg bg-violet-50 text-violet-600 flex items-center justify-center flex-shrink-0">
-                <i class="bi bi-file-earmark-text text-sm"></i>
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-xl bg-marino-50 border border-marino-100 text-marino-700 flex items-center justify-center flex-shrink-0">
+                <i class="bi bi-file-earmark-text text-base"></i>
               </div>
-              <span class="text-slate-700 text-xs max-w-[180px] truncate"><%= j.documento_nombre || j.documento_key %></span>
+              <span class="text-marino-900 font-medium text-xs max-w-[200px] truncate"><%= j.documento_nombre || j.documento_key %></span>
             </div>
           </td>
           <td class="px-4 py-3.5">
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= estadoBadge[j.estado] || 'bg-slate-100 text-slate-600' %>">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold <%= estadoBadge[j.estado] || 'bg-hueso-200 text-marino-700' %>">
               <%= j.estado %>
             </span>
           </td>
-          <td class="px-4 py-3.5 text-slate-500 text-xs"><%= j.subido_por_nombre || '—' %></td>
-          <td class="px-4 py-3.5 text-slate-500 text-xs"><%= new Date(j.created_at).toLocaleDateString('es-GT') %></td>
-          <td class="px-4 py-3.5 text-right">
+          <td class="px-4 py-3.5 text-marino-600 text-xs font-medium"><%= j.subido_por_nombre || '—' %></td>
+          <td class="px-4 py-3.5 text-marino-500 text-xs font-medium"><%= new Date(j.created_at).toLocaleDateString('es-GT') %></td>
+          <td class="px-6 py-3.5 text-right">
             <% if (j.estado === 'revision') { %>
-            <a href="/ocr/revision/<%= j.id %>" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 text-white text-xs font-medium rounded-lg hover:bg-amber-600 transition-colors">
+            <a href="/ocr/revision/<%= j.id %>" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-ocre-600 text-white text-xs font-bold rounded-xl hover:bg-ocre-700 shadow-xs transition-colors">
               <i class="bi bi-pencil-square"></i> Revisar
             </a>
             <% } else if (j.estado === 'validado' && j.cuadro_id) { %>
-            <a href="/cuadros/<%= j.cuadro_id %>" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 text-slate-600 text-xs font-medium rounded-lg hover:bg-slate-50 transition-colors">
+            <a href="/cuadros/<%= j.cuadro_id %>" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-hueso-300 text-marino-700 text-xs font-semibold rounded-xl hover:bg-hueso-100 transition-colors">
               <i class="bi bi-eye"></i> Ver
             </a>
             <% } else { %>
-            <span class="text-slate-300 text-xs">—</span>
+            <span class="text-marino-300 text-xs">—</span>
             <% } %>
           </td>
         </tr>
@@ -115,31 +141,31 @@
   </div>
 
   <!-- ── Mobile card list (< md) ──────────────────────── -->
-  <div class="md:hidden divide-y divide-slate-100">
+  <div class="md:hidden divide-y divide-hueso-200/70">
     <% jobs.forEach(j => { %>
-    <div class="px-4 py-3.5">
+    <div class="px-4 py-4">
       <div class="flex items-start justify-between gap-2">
         <div class="flex items-center gap-3 min-w-0 flex-1">
-          <div class="w-10 h-10 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center flex-shrink-0">
-            <i class="bi bi-file-earmark-text"></i>
+          <div class="w-10 h-10 rounded-xl bg-marino-50 border border-marino-100 text-marino-700 flex items-center justify-center flex-shrink-0">
+            <i class="bi bi-file-earmark-text text-lg"></i>
           </div>
           <div class="min-w-0">
-            <div class="text-sm font-medium text-slate-800 truncate"><%= j.documento_nombre || j.documento_key %></div>
-            <div class="text-xs text-slate-500 mt-0.5"><%= new Date(j.created_at).toLocaleDateString('es-GT') %> · #<%= j.id %></div>
+            <div class="text-sm font-bold text-marino-900 truncate"><%= j.documento_nombre || j.documento_key %></div>
+            <div class="text-xs text-marino-500 mt-0.5"><%= new Date(j.created_at).toLocaleDateString('es-GT') %> · #<%= j.id %></div>
           </div>
         </div>
-        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0 mt-0.5 <%= estadoBadge[j.estado] || 'bg-slate-100 text-slate-600' %>">
+        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold flex-shrink-0 mt-0.5 <%= estadoBadge[j.estado] || 'bg-hueso-200 text-marino-700' %>">
           <%= j.estado %>
         </span>
       </div>
       <% if (j.estado === 'revision' || (j.estado === 'validado' && j.cuadro_id)) { %>
-      <div class="mt-2.5 ml-[52px]">
+      <div class="mt-3 ml-[52px]">
         <% if (j.estado === 'revision') { %>
-        <a href="/ocr/revision/<%= j.id %>" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 text-white text-xs font-medium rounded-lg hover:bg-amber-600 transition-colors">
+        <a href="/ocr/revision/<%= j.id %>" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-ocre-600 text-white text-xs font-bold rounded-xl hover:bg-ocre-700 shadow-xs transition-colors">
           <i class="bi bi-pencil-square"></i> Revisar documento
         </a>
         <% } else { %>
-        <a href="/cuadros/<%= j.cuadro_id %>" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 text-slate-600 text-xs font-medium rounded-lg hover:bg-slate-50 transition-colors">
+        <a href="/cuadros/<%= j.cuadro_id %>" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-hueso-300 text-marino-700 text-xs font-semibold rounded-xl hover:bg-hueso-100 transition-colors">
           <i class="bi bi-eye"></i> Ver cuadro
         </a>
         <% } %>
@@ -151,28 +177,28 @@
 
   <!-- Pagination bar -->
   <% if (jobs.length > 0) { %>
-  <div class="flex items-center justify-between gap-3 px-4 py-3 border-t border-slate-100">
-    <div class="flex items-center gap-2 text-xs text-slate-500">
-      <span class="hidden sm:inline">Mostrar</span>
+  <div class="flex items-center justify-between gap-3 px-6 py-4 border-t border-hueso-200 bg-hueso-50/40">
+    <div class="flex items-center gap-2 text-xs font-medium text-marino-500">
+      <span class="hidden sm:inline">Mostrar:</span>
       <% [10, 20].forEach(n => { %>
         <a href="?pagina=1&limit=<%= n %>"
-          class="w-9 h-8 flex items-center justify-center rounded-lg border text-xs font-medium transition-colors
-            <%= limit === n ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' %>">
+          class="w-8 h-7 flex items-center justify-center rounded-lg border text-xs font-semibold transition-all
+            <%= limit === n ? 'bg-marino-700 text-white border-marino-700 shadow-xs' : 'bg-white text-marino-700 border-hueso-300 hover:bg-hueso-100' %>">
           <%= n %>
         </a>
       <% }) %>
     </div>
     <% if (totalPaginas > 1) { %>
-    <div class="flex items-center gap-1">
+    <div class="flex items-center gap-1.5">
       <% if (pagina > 1) { %>
-        <a href="?pagina=<%= pagina-1 %>&limit=<%= limit %>" class="w-9 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 text-sm"><i class="bi bi-chevron-left"></i></a>
+        <a href="?pagina=<%= pagina-1 %>&limit=<%= limit %>" class="w-8 h-8 flex items-center justify-center rounded-lg text-marino-600 hover:bg-hueso-200 text-sm"><i class="bi bi-chevron-left"></i></a>
       <% } %>
       <% for(let p=1;p<=totalPaginas;p++){%>
-        <% if(p===pagina){%><span class="w-9 h-8 flex items-center justify-center rounded-lg bg-blue-600 text-white text-sm font-medium"><%= p %></span>
-        <%}else{%><a href="?pagina=<%= p %>&limit=<%= limit %>" class="w-9 h-8 flex items-center justify-center rounded-lg text-slate-600 hover:bg-slate-100 text-sm"><%= p %></a><%}%>
+        <% if(p===pagina){%><span class="w-8 h-8 flex items-center justify-center rounded-lg bg-marino-700 text-white text-xs font-bold shadow-xs"><%= p %></span>
+        <%}else{%><a href="?pagina=<%= p %>&limit=<%= limit %>" class="w-8 h-8 flex items-center justify-center rounded-lg text-marino-700 hover:bg-hueso-200 text-xs font-semibold"><%= p %></a><%}%>
       <% } %>
       <% if (pagina < totalPaginas) { %>
-        <a href="?pagina=<%= pagina+1 %>&limit=<%= limit %>" class="w-9 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 text-sm"><i class="bi bi-chevron-right"></i></a>
+        <a href="?pagina=<%= pagina+1 %>&limit=<%= limit %>" class="w-8 h-8 flex items-center justify-center rounded-lg text-marino-600 hover:bg-hueso-200 text-sm"><i class="bi bi-chevron-right"></i></a>
       <% } %>
     </div>
     <% } else { %>
@@ -180,6 +206,24 @@
     <% } %>
   </div>
   <% } %>
-
   <% } %>
 </div>
+
+<!-- Banner de trabajos pendientes con auto-polling -->
+<% const hayTrabajosPendientes = jobs.some(j => j.estado === 'pendiente' || j.estado === 'procesando'); %>
+<% if (hayTrabajosPendientes) { %>
+<div id="ocr-processing-banner" data-revision="<%= conteo.revision || 0 %>" class="mt-4 p-4 rounded-2xl bg-white border border-ocre-300 shadow-sm flex items-center justify-between gap-4 animate-pulse">
+  <div class="flex items-center gap-3">
+    <div class="w-9 h-9 rounded-xl bg-ocre-100 text-ocre-700 flex items-center justify-center flex-shrink-0">
+      <i class="bi bi-hourglass-split text-lg animate-spin"></i>
+    </div>
+    <div>
+      <h4 class="text-xs font-bold text-marino-900">Extracción OCR en curso por Inteligencia Artificial...</h4>
+      <p class="text-[11px] text-marino-600">Esta página se actualizará automáticamente en cuanto el documento esté listo para revisión.</p>
+    </div>
+  </div>
+  <button onclick="window.location.reload()" class="px-3 py-1.5 bg-ocre-50 hover:bg-ocre-100 text-ocre-800 text-xs font-semibold rounded-xl border border-ocre-200 transition-colors flex items-center gap-1.5">
+    <i class="bi bi-arrow-clockwise"></i> Recargar ahora
+  </button>
+</div>
+<% } %>

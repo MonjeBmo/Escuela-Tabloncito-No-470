@@ -1,145 +1,249 @@
 <!-- Page header -->
-<div class="mb-6">
-  <h1 class="text-xl font-semibold text-slate-900">Panel principal</h1>
-  <p class="text-sm text-slate-500 mt-0.5">Bienvenido, <span class="font-medium text-slate-700"><%= usuario.nombre.split(' ')[0] %></span>. Aquí está el resumen del sistema.</p>
+<div class="mb-7 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+  <div>
+    <div class="flex items-center gap-2 mb-1">
+      <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-ladrillo-100 text-ladrillo-800 border border-ladrillo-200/70">
+        <i class="bi bi-building text-[10px]"></i> Escuela No. 470
+      </span>
+      <span class="text-xs text-marino-400">•</span>
+      <span class="text-xs text-marino-500 font-medium">Ciclo Escolar Activo</span>
+    </div>
+    <h1 class="text-2xl font-display font-bold text-marino-900 tracking-tight">Panel Principal</h1>
+    <p class="text-sm text-marino-500 mt-0.5">Bienvenido, <span class="font-semibold text-marino-800"><%= usuario.nombre.split(' ')[0] %></span>. Resumen del sistema de gestión y archivo histórico.</p>
+  </div>
+  <div class="flex items-center gap-2">
+    <% if (can('documents.create')) { %>
+    <a href="/cuadros/crear" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-ladrillo-600 text-white text-sm font-semibold hover:bg-ladrillo-700 shadow-sm shadow-ladrillo-600/25 transition-all">
+      <i class="bi bi-plus-lg"></i> Registrar Cuadro
+    </a>
+    <% } %>
+  </div>
+</div>
+
+<!-- Guía Rápida para el Usuario (Docente / Dirección) -->
+<div class="mb-7 bg-white/80 backdrop-blur-xs rounded-2xl border border-hueso-300 p-4 lg:p-5 shadow-xs">
+  <div class="flex items-start gap-3.5">
+    <div class="w-10 h-10 rounded-xl bg-marino-100 text-marino-800 flex items-center justify-center flex-shrink-0 font-bold">
+      <i class="bi bi-info-circle text-lg"></i>
+    </div>
+    <div class="flex-1">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+        <h2 class="text-sm font-display font-bold text-marino-900">¿Cómo utilizar este sistema escolar?</h2>
+        <span class="text-xs text-marino-500 bg-hueso-100 px-2.5 py-0.5 rounded-full border border-hueso-200 font-medium self-start sm:self-auto">Guía rápida institucional</span>
+      </div>
+      <p class="text-xs text-marino-600 mt-1 leading-relaxed">
+        Este sistema permite resguardar el patrimonio documental y agilizar las tareas administrativas de la escuela:
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
+        <div class="bg-hueso-50/80 border border-hueso-200/80 rounded-xl p-3">
+          <div class="flex items-center gap-2 text-ladrillo-800 text-xs font-bold mb-1">
+            <i class="bi bi-folder2-open text-sm"></i> 1. Cuadros PRIM (Archivo)
+          </div>
+          <p class="text-[11px] text-marino-600 leading-snug">
+            Consulte y descargue los documentos históricos escaneados (**Capa 1**) con validez legal para certificados y trámites.
+          </p>
+        </div>
+        <div class="bg-hueso-50/80 border border-hueso-200/80 rounded-xl p-3">
+          <div class="flex items-center gap-2 text-ocre-800 text-xs font-bold mb-1">
+            <i class="bi bi-file-earmark-text text-sm"></i> 2. Digitalización OCR
+          </div>
+          <p class="text-[11px] text-marino-600 leading-snug">
+            Suba fotos o PDFs de cuadros físicos. El sistema lee y extrae los nombres y notas automáticamente para revisión.
+          </p>
+        </div>
+        <div class="bg-hueso-50/80 border border-hueso-200/80 rounded-xl p-3">
+          <div class="flex items-center gap-2 text-bosque-800 text-xs font-bold mb-1">
+            <i class="bi bi-mortarboard text-sm"></i> 3. Estudiantes y Docentes
+          </div>
+          <p class="text-[11px] text-marino-600 leading-snug">
+            Gestione la matrícula activa, códigos personales MINEDUC, asignaciones de maestros, grados y secciones del ciclo.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Stats -->
-<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-  <div class="bg-white rounded-xl border border-slate-200/70 p-4 flex items-center gap-3">
-    <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0">
-      <i class="bi bi-folder2 text-lg"></i>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-7">
+  <!-- Cuadros PRIM (Ladrillo) -->
+  <div class="bg-white rounded-2xl border border-hueso-200 p-5 flex items-center gap-4 shadow-sm hover:border-ladrillo-200 transition-all group">
+    <div class="w-12 h-12 rounded-2xl bg-ladrillo-50 text-ladrillo-700 border border-ladrillo-100 flex items-center justify-center flex-shrink-0 group-hover:scale-105 group-hover:bg-ladrillo-100 transition-all shadow-xs">
+      <i class="bi bi-folder2 text-xl"></i>
     </div>
     <div>
-      <div class="text-2xl font-bold text-slate-900 leading-none"><%= totalCuadros %></div>
-      <div class="text-xs text-slate-500 mt-1">Cuadros PRIM</div>
+      <div class="text-3xl font-display font-bold text-marino-900 leading-none"><%= totalCuadros %></div>
+      <div class="text-xs font-medium text-marino-500 mt-1.5 flex items-center gap-1">
+        <span class="w-1.5 h-1.5 rounded-full bg-ladrillo-500"></span> Cuadros PRIM
+      </div>
     </div>
   </div>
-  <div class="bg-white rounded-xl border border-slate-200/70 p-4 flex items-center gap-3">
-    <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0">
-      <i class="bi bi-people text-lg"></i>
+
+  <!-- Alumnos (Verde Bosque) -->
+  <div class="bg-white rounded-2xl border border-hueso-200 p-5 flex items-center gap-4 shadow-sm hover:border-bosque-200 transition-all group">
+    <div class="w-12 h-12 rounded-2xl bg-bosque-50 text-bosque-700 border border-bosque-100 flex items-center justify-center flex-shrink-0 group-hover:scale-105 group-hover:bg-bosque-100 transition-all shadow-xs">
+      <i class="bi bi-people text-xl"></i>
     </div>
     <div>
-      <div class="text-2xl font-bold text-slate-900 leading-none"><%= totalAlumnos %></div>
-      <div class="text-xs text-slate-500 mt-1">Alumnos</div>
+      <div class="text-3xl font-display font-bold text-marino-900 leading-none"><%= totalAlumnos %></div>
+      <div class="text-xs font-medium text-marino-500 mt-1.5 flex items-center gap-1">
+        <span class="w-1.5 h-1.5 rounded-full bg-bosque-500"></span> Alumnos Activos
+      </div>
     </div>
   </div>
-  <div class="bg-white rounded-xl border border-slate-200/70 p-4 flex items-center gap-3">
-    <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center flex-shrink-0">
-      <i class="bi bi-hourglass-split text-lg"></i>
+
+  <!-- Pendientes OCR (Ocre Cálido) -->
+  <div class="bg-white rounded-2xl border border-hueso-200 p-5 flex items-center gap-4 shadow-sm hover:border-ocre-300 transition-all group">
+    <div class="w-12 h-12 rounded-2xl bg-ocre-50 text-ocre-700 border border-ocre-200 flex items-center justify-center flex-shrink-0 group-hover:scale-105 group-hover:bg-ocre-100 transition-all shadow-xs">
+      <i class="bi bi-hourglass-split text-xl"></i>
     </div>
     <div>
-      <div class="text-2xl font-bold text-slate-900 leading-none"><%= ocrEstados.revision || 0 %></div>
-      <div class="text-xs text-slate-500 mt-1">Pendientes OCR</div>
+      <div class="text-3xl font-display font-bold text-marino-900 leading-none"><%= ocrEstados.revision || 0 %></div>
+      <div class="text-xs font-medium text-marino-500 mt-1.5 flex items-center gap-1">
+        <span class="w-1.5 h-1.5 rounded-full bg-ocre-500"></span> Pendientes OCR
+      </div>
     </div>
   </div>
-  <div class="bg-white rounded-xl border border-slate-200/70 p-4 flex items-center gap-3">
-    <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center flex-shrink-0">
-      <i class="bi bi-cpu text-lg"></i>
+
+  <!-- Trabajos OCR Totales (Azul Marino) -->
+  <div class="bg-white rounded-2xl border border-hueso-200 p-5 flex items-center gap-4 shadow-sm hover:border-marino-200 transition-all group">
+    <div class="w-12 h-12 rounded-2xl bg-marino-50 text-marino-700 border border-marino-100 flex items-center justify-center flex-shrink-0 group-hover:scale-105 group-hover:bg-marino-100 transition-all shadow-xs">
+      <i class="bi bi-cpu text-xl"></i>
     </div>
     <div>
-      <div class="text-2xl font-bold text-slate-900 leading-none"><%= Object.values(ocrEstados).reduce((a,b)=>a+b,0) %></div>
-      <div class="text-xs text-slate-500 mt-1">Trabajos OCR</div>
+      <div class="text-3xl font-display font-bold text-marino-900 leading-none"><%= Object.values(ocrEstados).reduce((a,b)=>a+b,0) %></div>
+      <div class="text-xs font-medium text-marino-500 mt-1.5 flex items-center gap-1">
+        <span class="w-1.5 h-1.5 rounded-full bg-marino-500"></span> Total Digitalizados
+      </div>
     </div>
   </div>
 </div>
 
 <!-- Quick access -->
-<div class="mb-6">
-  <div class="flex items-center justify-between mb-3">
-    <h2 class="text-sm font-semibold text-slate-800">Acceso rápido</h2>
+<div class="mb-7">
+  <div class="flex items-center justify-between mb-3.5">
+    <h2 class="text-sm font-display font-bold text-marino-900 uppercase tracking-wider">Acceso Rápido</h2>
   </div>
-  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-    <a href="/cuadros/crear" class="bg-white border border-slate-200/70 rounded-xl p-4 flex items-center gap-3 hover:border-blue-200 hover:shadow-sm hover:-translate-y-px transition-all duration-150 group">
-      <div class="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0 group-hover:bg-blue-100 transition-colors">
-        <i class="bi bi-file-earmark-plus text-base"></i>
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+    <a href="/cuadros/crear" class="bg-white border border-hueso-200 rounded-2xl p-4 flex items-center gap-3.5 hover:border-ladrillo-300 hover:shadow-md hover:-translate-y-0.5 transition-all duration-150 group">
+      <div class="w-10 h-10 rounded-xl bg-ladrillo-50 text-ladrillo-700 border border-ladrillo-100 flex items-center justify-center flex-shrink-0 group-hover:bg-ladrillo-600 group-hover:text-white transition-all shadow-xs">
+        <i class="bi bi-file-earmark-plus text-lg"></i>
       </div>
-      <div><div class="text-sm font-medium text-slate-800">Registrar</div><div class="text-xs text-slate-500">Cuadro PRIM</div></div>
+      <div>
+        <div class="text-sm font-semibold text-marino-900 group-hover:text-ladrillo-700 transition-colors">Registrar</div>
+        <div class="text-xs text-marino-500">Cuadro PRIM</div>
+      </div>
     </a>
-    <a href="/alumnos/crear" class="bg-white border border-slate-200/70 rounded-xl p-4 flex items-center gap-3 hover:border-emerald-200 hover:shadow-sm hover:-translate-y-px transition-all duration-150 group">
-      <div class="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0 group-hover:bg-emerald-100 transition-colors">
-        <i class="bi bi-person-plus text-base"></i>
+    <a href="/alumnos/crear" class="bg-white border border-hueso-200 rounded-2xl p-4 flex items-center gap-3.5 hover:border-bosque-300 hover:shadow-md hover:-translate-y-0.5 transition-all duration-150 group">
+      <div class="w-10 h-10 rounded-xl bg-bosque-50 text-bosque-700 border border-bosque-100 flex items-center justify-center flex-shrink-0 group-hover:bg-bosque-600 group-hover:text-white transition-all shadow-xs">
+        <i class="bi bi-person-plus text-lg"></i>
       </div>
-      <div><div class="text-sm font-medium text-slate-800">Nuevo</div><div class="text-xs text-slate-500">Alumno</div></div>
+      <div>
+        <div class="text-sm font-semibold text-marino-900 group-hover:text-bosque-700 transition-colors">Nuevo</div>
+        <div class="text-xs text-marino-500">Alumno</div>
+      </div>
     </a>
-    <a href="/ocr/subir" class="bg-white border border-slate-200/70 rounded-xl p-4 flex items-center gap-3 hover:border-purple-200 hover:shadow-sm hover:-translate-y-px transition-all duration-150 group">
-      <div class="w-9 h-9 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center flex-shrink-0 group-hover:bg-purple-100 transition-colors">
-        <i class="bi bi-cloud-upload text-base"></i>
+    <a href="/ocr/subir" class="bg-white border border-hueso-200 rounded-2xl p-4 flex items-center gap-3.5 hover:border-marino-300 hover:shadow-md hover:-translate-y-0.5 transition-all duration-150 group">
+      <div class="w-10 h-10 rounded-xl bg-marino-50 text-marino-700 border border-marino-100 flex items-center justify-center flex-shrink-0 group-hover:bg-marino-700 group-hover:text-white transition-all shadow-xs">
+        <i class="bi bi-cloud-upload text-lg"></i>
       </div>
-      <div><div class="text-sm font-medium text-slate-800">Subir</div><div class="text-xs text-slate-500">Digitalizar OCR</div></div>
+      <div>
+        <div class="text-sm font-semibold text-marino-900 group-hover:text-marino-700 transition-colors">Subir</div>
+        <div class="text-xs text-marino-500">Digitalizar OCR</div>
+      </div>
     </a>
-    <a href="/cuadros/busqueda" class="bg-white border border-slate-200/70 rounded-xl p-4 flex items-center gap-3 hover:border-slate-300 hover:shadow-sm hover:-translate-y-px transition-all duration-150 group">
-      <div class="w-9 h-9 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0 group-hover:bg-slate-200 transition-colors">
-        <i class="bi bi-search text-base"></i>
+    <a href="/cuadros/busqueda" class="bg-white border border-hueso-200 rounded-2xl p-4 flex items-center gap-3.5 hover:border-hueso-400 hover:shadow-md hover:-translate-y-0.5 transition-all duration-150 group">
+      <div class="w-10 h-10 rounded-xl bg-hueso-100 text-marino-700 border border-hueso-200 flex items-center justify-center flex-shrink-0 group-hover:bg-marino-800 group-hover:text-white transition-all shadow-xs">
+        <i class="bi bi-search text-lg"></i>
       </div>
-      <div><div class="text-sm font-medium text-slate-800">Buscar</div><div class="text-xs text-slate-500">Cuadros</div></div>
+      <div>
+        <div class="text-sm font-semibold text-marino-900 group-hover:text-marino-700 transition-colors">Buscar</div>
+        <div class="text-xs text-marino-500">Cuadros & Alumnos</div>
+      </div>
     </a>
   </div>
 </div>
 
 <% if (ocrEstados.revision > 0) { %>
-<div class="flex items-center gap-3 px-4 py-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 text-sm mb-6">
-  <i class="bi bi-exclamation-triangle flex-shrink-0"></i>
-  <span>Hay <strong><%= ocrEstados.revision %></strong> documento(s) esperando revisión OCR.</span>
-  <a href="/ocr" class="ml-auto text-amber-700 font-medium underline underline-offset-2 hover:no-underline flex-shrink-0">Revisar</a>
+<div class="flex items-center gap-3.5 px-5 py-3.5 rounded-2xl bg-ocre-50 border border-ocre-200 text-ocre-900 text-sm mb-7 shadow-xs">
+  <div class="w-8 h-8 rounded-xl bg-ocre-100 text-ocre-700 flex items-center justify-center flex-shrink-0">
+    <i class="bi bi-exclamation-triangle-fill text-sm"></i>
+  </div>
+  <span>Hay <strong class="font-bold"><%= ocrEstados.revision %></strong> documento(s) en espera de revisión humana OCR.</span>
+  <a href="/ocr" class="ml-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-ocre-600 text-white font-semibold text-xs hover:bg-ocre-700 shadow-xs transition-colors flex-shrink-0">
+    Revisar ahora <i class="bi bi-arrow-right text-[10px]"></i>
+  </a>
 </div>
 <% } %>
 
 <!-- Cuadros recientes -->
-<div class="bg-white rounded-xl border border-slate-200/70 overflow-hidden">
-  <div class="flex items-center justify-between px-5 py-3.5 border-b border-slate-100">
-    <h2 class="text-sm font-semibold text-slate-800">Cuadros recientes</h2>
-    <a href="/cuadros" class="text-xs text-blue-600 hover:text-blue-700 font-medium">Ver todos <i class="bi bi-arrow-right"></i></a>
+<div class="bg-white rounded-2xl border border-hueso-200 shadow-sm overflow-hidden">
+  <div class="flex items-center justify-between px-6 py-4 border-b border-hueso-200 bg-hueso-50/50">
+    <div class="flex items-center gap-2.5">
+      <div class="w-2.5 h-2.5 rounded-full bg-ladrillo-500"></div>
+      <h2 class="text-base font-display font-bold text-marino-900">Cuadros Históricos Recientes</h2>
+    </div>
+    <a href="/cuadros" class="text-xs text-ladrillo-600 hover:text-ladrillo-700 font-bold flex items-center gap-1 group">
+      Ver catálogo completo <i class="bi bi-arrow-right group-hover:translate-x-0.5 transition-transform"></i>
+    </a>
   </div>
 
   <% if (ultimosCuadros.length === 0) { %>
-  <div class="py-14 text-center">
-    <i class="bi bi-folder2-open text-4xl text-slate-200 block mb-3"></i>
-    <p class="text-sm text-slate-400">No hay cuadros registrados aún.</p>
-    <a href="/cuadros/crear" class="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
+  <div class="py-16 text-center">
+    <div class="w-16 h-16 rounded-2xl bg-hueso-100 text-marino-300 flex items-center justify-center mx-auto mb-3">
+      <i class="bi bi-folder2-open text-3xl"></i>
+    </div>
+    <p class="text-sm font-medium text-marino-500">No hay cuadros registrados aún.</p>
+    <a href="/cuadros/crear" class="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-ladrillo-600 text-white text-sm font-semibold rounded-xl hover:bg-ladrillo-700 shadow-sm shadow-ladrillo-600/25 transition-colors">
       <i class="bi bi-plus-lg"></i> Registrar el primero
     </a>
   </div>
   <% } else { %>
   <div class="table-wrap">
-    <table class="w-full text-sm min-w-[520px]">
-      <thead class="bg-slate-50/80">
+    <table class="w-full text-sm min-w-[540px]">
+      <thead class="bg-hueso-100/70 border-b border-hueso-200 text-marino-600">
         <tr>
-          <th class="px-5 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Código</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Grado</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Año</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Origen</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Validado</th>
-          <th class="px-4 py-3"></th>
+          <th class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider font-display">Código</th>
+          <th class="px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider font-display">Grado y Sección</th>
+          <th class="px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider font-display">Año</th>
+          <th class="px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider font-display">Origen</th>
+          <th class="px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider font-display">Estado</th>
+          <th class="px-6 py-3.5 text-right"></th>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="divide-y divide-hueso-200/70">
         <% ultimosCuadros.forEach(c => { %>
-        <tr class="border-t border-slate-100 hover:bg-slate-50/60 transition-colors">
-          <td class="px-5 py-3">
-            <div class="flex items-center gap-2.5">
-              <div class="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
-                <i class="bi bi-file-earmark-text text-blue-500 text-xs"></i>
+        <tr class="hover:bg-hueso-50/80 transition-colors">
+          <td class="px-6 py-3.5">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-xl bg-ladrillo-50 border border-ladrillo-100 text-ladrillo-700 flex items-center justify-center flex-shrink-0">
+                <i class="bi bi-file-earmark-text text-sm"></i>
               </div>
-              <span class="font-medium text-slate-800"><%= c.codigo %></span>
+              <span class="font-bold text-marino-900"><%= c.codigo %></span>
             </div>
           </td>
-          <td class="px-4 py-3 text-slate-500"><%= c.grado_nombre || '—' %></td>
-          <td class="px-4 py-3 text-slate-600 font-medium"><%= c.anio %></td>
-          <td class="px-4 py-3">
-            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium <%= c.origen === 'ocr' ? 'bg-purple-50 text-purple-700' : 'bg-blue-50 text-blue-700' %>">
+          <td class="px-4 py-3.5 text-marino-600 font-medium"><%= c.grado_nombre || '—' %></td>
+          <td class="px-4 py-3.5 text-marino-800 font-semibold font-display"><%= c.anio %></td>
+          <td class="px-4 py-3.5">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold <%= c.origen === 'ocr' ? 'bg-marino-100 text-marino-800 border border-marino-200' : 'bg-hueso-200 text-marino-700' %>">
               <%= c.origen %>
             </span>
           </td>
-          <td class="px-4 py-3">
+          <td class="px-4 py-3.5">
             <% if (c.validado_por) { %>
-              <span class="text-emerald-600 text-xs font-medium"><i class="bi bi-check-circle-fill mr-1"></i>Validado</span>
+              <span class="inline-flex items-center gap-1 text-bosque-700 text-xs font-bold bg-bosque-50 border border-bosque-200 px-2.5 py-0.5 rounded-full">
+                <i class="bi bi-check-circle-fill text-[11px]"></i> Validado
+              </span>
             <% } else { %>
-              <span class="text-slate-400 text-xs">Pendiente</span>
+              <span class="inline-flex items-center gap-1 text-ocre-800 text-xs font-bold bg-ocre-50 border border-ocre-200 px-2.5 py-0.5 rounded-full">
+                <i class="bi bi-clock-fill text-[11px]"></i> Pendiente
+              </span>
             <% } %>
           </td>
-          <td class="px-4 py-3 text-right">
-            <a href="/cuadros/<%= c.id %>" class="text-xs text-blue-600 hover:text-blue-700 font-medium">Ver</a>
+          <td class="px-6 py-3.5 text-right">
+            <a href="/cuadros/<%= c.id %>" class="inline-flex items-center gap-1 text-xs text-ladrillo-600 hover:text-ladrillo-800 font-bold px-2.5 py-1 rounded-lg hover:bg-ladrillo-50 transition-colors">
+              Ver detalle <i class="bi bi-chevron-right text-[10px]"></i>
+            </a>
           </td>
         </tr>
         <% }) %>

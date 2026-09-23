@@ -1,94 +1,111 @@
-<div class="flex items-center gap-3 mb-6">
-  <a href="/alumnos" class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 transition-colors flex-shrink-0">
-    <i class="bi bi-arrow-left text-sm"></i>
-  </a>
-  <div class="flex-1">
-    <h1 class="text-xl font-semibold text-slate-900">
-      <%= alumno.primer_apellido %><% if(alumno.segundo_apellido){%> <%= alumno.segundo_apellido %><% } %>,
-      <%= alumno.primer_nombre %><% if(alumno.segundo_nombre){%> <%= alumno.segundo_nombre %><% } %>
-    </h1>
-    <p class="text-sm text-slate-500 mt-0.5">Perfil del alumno</p>
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+  <div class="flex items-center gap-3">
+    <a href="/alumnos" class="w-9 h-9 flex items-center justify-center rounded-xl border border-hueso-300 bg-white text-marino-700 hover:bg-hueso-100 hover:border-bosque-500 transition-all shadow-sm flex-shrink-0">
+      <i class="bi bi-arrow-left text-sm font-bold"></i>
+    </a>
+    <div class="flex-1 min-w-0">
+      <h1 class="text-xl font-bold font-serif text-marino-950 truncate">
+        <%= alumno.primer_apellido %><% if(alumno.segundo_apellido){%> <%= alumno.segundo_apellido %><% } %>,
+        <%= alumno.primer_nombre %><% if(alumno.segundo_nombre){%> <%= alumno.segundo_nombre %><% } %>
+      </h1>
+      <p class="text-xs text-marino-600/80 mt-0.5">Expediente del Estudiante &bull; Año <%= alumno.anio_ingreso %></p>
+    </div>
   </div>
-  <% if (usuario.rol === 'director') { %>
-  <form method="POST" action="/alumnos/<%= alumno.id %>/eliminar">
-    <button type="button" class="inline-flex items-center gap-2 px-3 py-2 bg-white border border-red-200 text-red-500 text-sm font-medium rounded-lg hover:bg-red-50 transition-colors"
-      data-confirm="¿Eliminar el registro de <%= alumno.primer_nombre %> <%= alumno.primer_apellido %>?">
-      <i class="bi bi-trash"></i> Eliminar
-    </button>
-  </form>
-  <% } %>
+
+  <div class="flex items-center gap-2.5">
+    <a href="/alumnos/<%= alumno.id %>/editar" class="inline-flex items-center gap-2 px-3.5 py-2 bg-white border border-hueso-300 text-marino-800 hover:bg-hueso-100 text-xs font-semibold rounded-xl shadow-sm transition-all">
+      <i class="bi bi-pencil text-bosque-600"></i> Editar Datos
+    </a>
+    <% if (usuario.rol === 'director') { %>
+    <form method="POST" action="/alumnos/<%= alumno.id %>/eliminar">
+      <button type="button" class="inline-flex items-center gap-2 px-3 py-2 bg-white border border-red-200 text-red-600 text-xs font-semibold rounded-xl hover:bg-red-50 transition-all"
+        data-confirm="¿Eliminar el registro del alumno <%= alumno.primer_nombre %> <%= alumno.primer_apellido %>? Esta acción no se puede deshacer.">
+        <i class="bi bi-trash"></i>
+      </button>
+    </form>
+    <% } %>
+  </div>
 </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-  <!-- Perfil -->
-  <div class="lg:col-span-2 space-y-5">
-    <div class="bg-white rounded-xl border border-slate-200/70 overflow-hidden">
-      <div class="px-5 py-4 border-b border-slate-100 flex items-center gap-4">
-        <div class="w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold flex-shrink-0
-          <%= alumno.genero === 'M' ? 'bg-blue-100 text-blue-700' : alumno.genero === 'F' ? 'bg-pink-100 text-pink-700' : 'bg-slate-100 text-slate-600' %>">
+  <!-- Perfil Principal -->
+  <div class="lg:col-span-2 space-y-6">
+    <div class="bg-white rounded-2xl border border-hueso-200/80 overflow-hidden shadow-sm">
+      <div class="px-6 py-5 border-b border-hueso-200 bg-hueso-50/50 flex items-center gap-4">
+        <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-xl font-bold font-serif shadow-inner flex-shrink-0
+          <%= alumno.genero === 'M' ? 'bg-marino-100 text-marino-800 border border-marino-200' : alumno.genero === 'F' ? 'bg-ladrillo-100 text-ladrillo-800 border border-ladrillo-200' : 'bg-hueso-200 text-marino-700' %>">
           <%= (alumno.primer_nombre.charAt(0) + alumno.primer_apellido.charAt(0)).toUpperCase() %>
         </div>
         <div>
-          <div class="font-semibold text-slate-900">
+          <div class="font-bold font-serif text-base text-marino-950">
             <%= alumno.primer_apellido %><% if(alumno.segundo_apellido){%> <%= alumno.segundo_apellido %><% } %>,
             <%= alumno.primer_nombre %><% if(alumno.segundo_nombre){%> <%= alumno.segundo_nombre %><% } %>
           </div>
-          <div class="text-sm text-slate-500 mt-0.5">
-            <%= alumno.genero === 'M' ? 'Masculino' : alumno.genero === 'F' ? 'Femenino' : 'Sin especificar' %>
+          <div class="inline-flex items-center gap-1.5 text-xs text-marino-600/80 mt-0.5">
+            <i class="bi bi-gender-ambiguous"></i>
+            <span><%= alumno.genero === 'M' ? 'Estudiante Masculino' : alumno.genero === 'F' ? 'Estudiante Femenina' : 'Género sin especificar' %></span>
           </div>
         </div>
       </div>
-      <dl class="divide-y divide-slate-100">
-        <div class="flex items-center px-5 py-3">
-          <dt class="text-xs font-semibold text-slate-500 uppercase tracking-wide w-40 flex-shrink-0">CUI</dt>
-          <dd class="text-sm font-mono text-slate-700"><%= alumno.cui || '—' %></dd>
+
+      <dl class="divide-y divide-hueso-100">
+        <div class="flex flex-col sm:flex-row sm:items-center px-6 py-3.5 hover:bg-hueso-50/30 transition-colors">
+          <dt class="text-xs font-bold text-marino-600 uppercase tracking-wider w-44 flex-shrink-0">Código Único (CUI)</dt>
+          <dd class="text-sm font-semibold font-mono text-marino-950 mt-1 sm:mt-0"><%= alumno.cui || 'No registrado' %></dd>
         </div>
-        <div class="flex items-center px-5 py-3">
-          <dt class="text-xs font-semibold text-slate-500 uppercase tracking-wide w-40 flex-shrink-0">Nacimiento</dt>
-          <dd class="text-sm text-slate-700"><%= alumno.fecha_nacimiento ? new Date(alumno.fecha_nacimiento).toLocaleDateString('es-GT',{day:'2-digit',month:'long',year:'numeric'}) : '—' %></dd>
+        <div class="flex flex-col sm:flex-row sm:items-center px-6 py-3.5 hover:bg-hueso-50/30 transition-colors">
+          <dt class="text-xs font-bold text-marino-600 uppercase tracking-wider w-44 flex-shrink-0">Fecha de Nacimiento</dt>
+          <dd class="text-sm text-marino-800 mt-1 sm:mt-0"><%= alumno.fecha_nacimiento ? new Date(alumno.fecha_nacimiento).toLocaleDateString('es-GT',{day:'2-digit',month:'long',year:'numeric'}) : '—' %></dd>
         </div>
-        <div class="flex items-center px-5 py-3">
-          <dt class="text-xs font-semibold text-slate-500 uppercase tracking-wide w-40 flex-shrink-0">Municipio</dt>
-          <dd class="text-sm text-slate-700"><%= alumno.municipio || '—' %></dd>
+        <div class="flex flex-col sm:flex-row sm:items-center px-6 py-3.5 hover:bg-hueso-50/30 transition-colors">
+          <dt class="text-xs font-bold text-marino-600 uppercase tracking-wider w-44 flex-shrink-0">Municipio</dt>
+          <dd class="text-sm text-marino-800 mt-1 sm:mt-0"><%= alumno.municipio || '—' %></dd>
         </div>
-        <div class="flex items-center px-5 py-3">
-          <dt class="text-xs font-semibold text-slate-500 uppercase tracking-wide w-40 flex-shrink-0">Departamento</dt>
-          <dd class="text-sm text-slate-700"><%= alumno.departamento || '—' %></dd>
+        <div class="flex flex-col sm:flex-row sm:items-center px-6 py-3.5 hover:bg-hueso-50/30 transition-colors">
+          <dt class="text-xs font-bold text-marino-600 uppercase tracking-wider w-44 flex-shrink-0">Departamento</dt>
+          <dd class="text-sm text-marino-800 mt-1 sm:mt-0"><%= alumno.departamento || '—' %></dd>
         </div>
       </dl>
     </div>
   </div>
 
   <!-- Lateral -->
-  <div class="space-y-4">
-    <div class="bg-white rounded-xl border border-slate-200/70 p-5">
-      <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Datos académicos</h2>
+  <div class="space-y-6">
+    <div class="bg-white rounded-2xl border border-hueso-200/80 p-5 shadow-sm">
+      <div class="flex items-center gap-2 pb-3 mb-3 border-b border-hueso-100">
+        <i class="bi bi-mortarboard text-bosque-600 font-bold"></i>
+        <h2 class="text-xs font-bold text-marino-600 uppercase tracking-wider">Información Académica</h2>
+      </div>
       <dl class="space-y-3">
         <div>
-          <dt class="text-xs text-slate-400 mb-0.5">Grado</dt>
-          <dd class="text-sm font-medium text-slate-800"><%= alumno.grado_nombre || '—' %></dd>
+          <dt class="text-[11px] font-semibold text-marino-500 uppercase tracking-wide">Grado Asignado</dt>
+          <dd class="text-sm font-bold text-marino-950 mt-0.5"><%= alumno.grado_nombre || 'Sin grado asignado' %></dd>
         </div>
         <div>
-          <dt class="text-xs text-slate-400 mb-0.5">Año de ingreso</dt>
-          <dd class="text-sm font-medium text-slate-800"><%= alumno.anio_ingreso %></dd>
+          <dt class="text-[11px] font-semibold text-marino-500 uppercase tracking-wide">Año de Ingreso</dt>
+          <dd class="text-sm font-semibold text-bosque-700 mt-0.5"><%= alumno.anio_ingreso %></dd>
         </div>
         <div>
-          <dt class="text-xs text-slate-400 mb-0.5">Registrado</dt>
-          <dd class="text-sm text-slate-600"><%= new Date(alumno.created_at).toLocaleDateString('es-GT') %></dd>
+          <dt class="text-[11px] font-semibold text-marino-500 uppercase tracking-wide">Fecha de Matrícula</dt>
+          <dd class="text-xs text-marino-700 mt-0.5"><%= new Date(alumno.created_at).toLocaleDateString('es-GT', {day:'2-digit',month:'short',year:'numeric'}) %></dd>
         </div>
       </dl>
     </div>
-    <div class="bg-white rounded-xl border border-slate-200/70 p-5">
-      <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Encargado</h2>
+
+    <div class="bg-white rounded-2xl border border-hueso-200/80 p-5 shadow-sm">
+      <div class="flex items-center gap-2 pb-3 mb-3 border-b border-hueso-100">
+        <i class="bi bi-people text-ocre-600 font-bold"></i>
+        <h2 class="text-xs font-bold text-marino-600 uppercase tracking-wider">Padre o Encargado</h2>
+      </div>
       <dl class="space-y-3">
         <div>
-          <dt class="text-xs text-slate-400 mb-0.5">Nombre</dt>
-          <dd class="text-sm font-medium text-slate-800"><%= alumno.nombre_encargado || '—' %></dd>
+          <dt class="text-[11px] font-semibold text-marino-500 uppercase tracking-wide">Nombre del Encargado</dt>
+          <dd class="text-sm font-bold text-marino-950 mt-0.5"><%= alumno.nombre_encargado || 'No registrado' %></dd>
         </div>
         <div>
-          <dt class="text-xs text-slate-400 mb-0.5">Teléfono</dt>
-          <dd class="text-sm text-slate-600"><%= alumno.telefono_encargado || '—' %></dd>
+          <dt class="text-[11px] font-semibold text-marino-500 uppercase tracking-wide">Teléfono de Contacto</dt>
+          <dd class="text-sm font-mono text-marino-800 mt-0.5"><%= alumno.telefono_encargado || 'No registrado' %></dd>
         </div>
       </dl>
     </div>

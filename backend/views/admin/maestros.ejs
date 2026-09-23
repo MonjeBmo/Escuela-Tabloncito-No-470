@@ -1,102 +1,104 @@
-<div class="flex items-center justify-between mb-6">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
   <div>
-    <h1 class="text-xl font-semibold text-slate-900">Maestros</h1>
-    <p class="text-sm text-slate-500 mt-0.5">Registro de docentes y asignaciones por sección</p>
+    <h1 class="text-xl font-bold font-serif text-marino-950">Plantel Docente y Asignaciones</h1>
+    <p class="text-xs text-marino-600/80 mt-0.5">Gestión de maestros titulares, cursos y distribución por grado</p>
   </div>
-  <div class="flex gap-2">
+  <div class="flex items-center gap-2 flex-wrap">
     <button type="button" onclick="document.getElementById('import-modal-maestros').showModal()"
-      class="inline-flex items-center gap-1.5 px-3 py-2 bg-green-600 text-white text-xs font-medium rounded-lg hover:bg-green-700 transition-colors">
-      <i class="bi bi-file-earmark-excel"></i>
-      <span class="hidden sm:inline">Importar maestros</span>
+      class="inline-flex items-center gap-2 px-3.5 py-2 bg-bosque-600 hover:bg-bosque-700 text-white text-xs font-semibold rounded-xl shadow-sm hover:shadow transition-all">
+      <i class="bi bi-file-earmark-spreadsheet text-sm"></i>
+      <span>Importar Maestros</span>
     </button>
     <button type="button" onclick="document.getElementById('import-modal-asignaciones').showModal()"
-      class="inline-flex items-center gap-1.5 px-3 py-2 bg-green-600 text-white text-xs font-medium rounded-lg hover:bg-green-700 transition-colors">
-      <i class="bi bi-file-earmark-excel"></i>
-      <span class="hidden sm:inline">Importar asignaciones</span>
+      class="inline-flex items-center gap-2 px-3.5 py-2 bg-white border border-hueso-300 text-marino-800 hover:bg-hueso-100 text-xs font-semibold rounded-xl shadow-sm transition-all">
+      <i class="bi bi-file-earmark-spreadsheet text-sm text-bosque-600"></i>
+      <span>Importar Asignaciones</span>
     </button>
   </div>
 </div>
 
 <!-- Tabs -->
-<div class="flex border-b border-slate-200 mb-5">
+<div class="flex border-b border-hueso-200 mb-6 gap-2">
   <button type="button" data-tab="lista"
-    class="tab-btn px-4 py-2.5 text-sm font-medium text-blue-600 border-b-2 border-blue-600 -mb-px">
-    Maestros
+    class="tab-btn px-4 py-2.5 text-xs font-bold font-serif text-marino-950 border-b-2 border-ladrillo-600 -mb-px transition-colors">
+    <i class="bi bi-person-badge mr-1.5 text-ladrillo-600"></i> Listado de Maestros
   </button>
   <button type="button" data-tab="asignaciones"
-    class="tab-btn px-4 py-2.5 text-sm font-medium text-slate-500 hover:text-slate-700 border-b-2 border-transparent -mb-px transition-colors">
-    Asignaciones
+    class="tab-btn px-4 py-2.5 text-xs font-bold font-serif text-marino-500 hover:text-marino-800 border-b-2 border-transparent -mb-px transition-colors">
+    <i class="bi bi-calendar2-check mr-1.5"></i> Asignaciones Activas
   </button>
   <button type="button" data-tab="nueva-asignacion"
-    class="tab-btn px-4 py-2.5 text-sm font-medium text-slate-500 hover:text-slate-700 border-b-2 border-transparent -mb-px transition-colors">
-    Nueva asignación
+    class="tab-btn px-4 py-2.5 text-xs font-bold font-serif text-marino-500 hover:text-marino-800 border-b-2 border-transparent -mb-px transition-colors">
+    <i class="bi bi-plus-circle mr-1.5"></i> Nueva Asignación
   </button>
 </div>
 
 <!-- ── Lista de maestros ─────────────────────────────────────── -->
-<div id="tab-lista" class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+<div id="tab-lista" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
   <div class="lg:col-span-2 space-y-4">
     <!-- Buscador -->
     <form method="GET" action="/admin/maestros" class="flex gap-2">
       <div class="relative flex-1">
-        <i class="bi bi-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm pointer-events-none"></i>
+        <i class="bi bi-search absolute left-3.5 top-1/2 -translate-y-1/2 text-marino-400 text-xs pointer-events-none"></i>
         <input type="text" name="q" value="<%= q %>" placeholder="Buscar por nombre, correo o teléfono..."
-          class="w-full h-9 pl-9 pr-3 text-sm rounded-lg border border-slate-200 bg-white text-slate-800 focus:border-blue-400 transition-colors">
+          class="w-full h-10 pl-9 pr-3 text-xs rounded-xl border border-hueso-300 bg-white text-marino-950 placeholder-marino-300 focus:border-marino-600 focus:ring-2 focus:ring-marino-500/20 transition-all outline-none">
       </div>
-      <button type="submit" class="h-9 px-4 bg-slate-100 text-slate-600 text-sm font-medium rounded-lg hover:bg-slate-200 transition-colors">
+      <button type="submit" class="h-10 px-4 bg-marino-700 hover:bg-marino-800 text-white text-xs font-semibold rounded-xl shadow-xs transition-all">
         Buscar
       </button>
       <% if (q) { %>
-      <a href="/admin/maestros" class="h-9 px-3 flex items-center text-sm text-slate-400 rounded-lg hover:bg-slate-100 transition-colors">
+      <a href="/admin/maestros" class="h-10 px-3 flex items-center text-xs text-marino-500 bg-hueso-100 rounded-xl hover:bg-hueso-200 transition-colors">
         <i class="bi bi-x-lg"></i>
       </a>
       <% } %>
     </form>
 
-    <div class="bg-white rounded-xl border border-slate-200/70 overflow-hidden">
+    <div class="bg-white rounded-2xl border border-hueso-200/80 overflow-hidden shadow-sm">
       <% if (teachers.length === 0) { %>
       <div class="py-14 text-center px-4">
-        <i class="bi bi-person-workspace text-4xl text-slate-200 block mb-3"></i>
-        <p class="text-sm text-slate-400"><%= q ? 'Sin resultados para "' + q + '".' : 'No hay maestros registrados.' %></p>
+        <div class="w-14 h-14 rounded-2xl bg-hueso-100 text-marino-300 flex items-center justify-center mx-auto mb-3">
+          <i class="bi bi-person-workspace text-2xl"></i>
+        </div>
+        <p class="text-xs text-marino-500"><%= q ? 'Sin resultados para "' + q + '".' : 'No hay maestros registrados.' %></p>
       </div>
       <% } else { %>
       <div class="table-wrap">
         <table class="w-full text-sm min-w-[520px]">
-          <thead class="bg-slate-50/80">
+          <thead class="bg-hueso-100/60 border-b border-hueso-200 text-marino-700">
             <tr>
-              <th class="px-5 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Nombre</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Contacto</th>
-              <th class="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wide">Acciones</th>
+              <th class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider">Nombre del Docente</th>
+              <th class="px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">Contacto</th>
+              <th class="px-6 py-3.5 text-right text-xs font-bold uppercase tracking-wider">Acciones</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody class="divide-y divide-hueso-100">
             <% teachers.forEach(t => { %>
-            <tr class="border-t border-slate-100 hover:bg-slate-50/40 transition-colors">
-              <td class="px-5 py-3.5">
+            <tr class="hover:bg-hueso-50/50 transition-colors">
+              <td class="px-6 py-3.5">
                 <div class="flex items-center gap-3">
-                  <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold flex-shrink-0">
+                  <div class="w-8 h-8 rounded-xl bg-bosque-100 text-bosque-800 border border-bosque-200 flex items-center justify-center text-xs font-bold font-serif flex-shrink-0">
                     <%= t.full_name.charAt(0).toUpperCase() %>
                   </div>
                   <div class="min-w-0">
-                    <div class="font-medium text-slate-800 truncate"><%= t.full_name %></div>
-                    <% if (t.username) { %><div class="text-xs text-slate-400">@<%= t.username %></div><% } %>
+                    <div class="font-bold text-marino-950 text-xs truncate"><%= t.full_name %></div>
+                    <% if (t.username) { %><div class="text-[11px] text-marino-500 font-mono">@<%= t.username %></div><% } %>
                   </div>
                 </div>
               </td>
               <td class="px-4 py-3.5">
-                <% if (t.email) { %><div class="text-xs text-slate-600 truncate max-w-[150px]"><i class="bi bi-envelope mr-1 text-slate-300"></i><%= t.email %></div><% } %>
-                <% if (t.phone) { %><div class="text-xs text-slate-400"><i class="bi bi-telephone mr-1 text-slate-300"></i><%= t.phone %></div><% } %>
-                <% if (!t.email && !t.phone) { %><span class="text-slate-300 text-xs">—</span><% } %>
+                <% if (t.email) { %><div class="text-xs text-marino-700 truncate max-w-[170px]"><i class="bi bi-envelope mr-1 text-marino-400"></i><%= t.email %></div><% } %>
+                <% if (t.phone) { %><div class="text-[11px] text-marino-500 font-mono mt-0.5"><i class="bi bi-telephone mr-1 text-marino-400"></i><%= t.phone %></div><% } %>
+                <% if (!t.email && !t.phone) { %><span class="text-marino-400 text-xs">—</span><% } %>
               </td>
-              <td class="px-4 py-3.5">
+              <td class="px-6 py-3.5">
                 <div class="flex items-center justify-end gap-2">
                   <button type="button" onclick="toggleEdit('maestro-<%= t.id %>')"
-                    class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition-colors">
-                    <i class="bi bi-pencil"></i> Editar
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl border border-hueso-300 bg-white text-marino-700 hover:bg-hueso-100 transition-all shadow-xs">
+                    <i class="bi bi-pencil text-bosque-600"></i> Editar
                   </button>
                   <form method="POST" action="/admin/maestros/<%= t.id %>/toggle">
-                    <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors
-                      <%= t.is_active ? 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100' : 'border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100' %>">
+                    <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl border transition-all shadow-xs
+                      <%= t.is_active ? 'border-bosque-200 bg-bosque-50 text-bosque-700 hover:bg-bosque-100' : 'border-hueso-300 bg-hueso-100 text-marino-500 hover:bg-hueso-200' %>">
                       <i class="bi bi-toggle-<%= t.is_active ? 'on' : 'off' %>"></i>
                       <%= t.is_active ? 'Activo' : 'Inactivo' %>
                     </button>
@@ -104,28 +106,28 @@
                 </div>
               </td>
             </tr>
-            <tr id="edit-row-maestro-<%= t.id %>" class="hidden bg-blue-50/40 border-t border-blue-100">
-              <td colspan="3" class="px-5 py-4">
+            <tr id="edit-row-maestro-<%= t.id %>" class="hidden bg-hueso-100/60 border-t border-hueso-200">
+              <td colspan="3" class="px-6 py-4">
                 <form method="POST" action="/admin/maestros/<%= t.id %>" class="flex flex-wrap items-end gap-3">
                   <div>
-                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Nombre completo</label>
+                    <label class="block text-xs font-bold text-marino-700 uppercase tracking-wider mb-1">Nombre Completo</label>
                     <input type="text" name="full_name" value="<%= t.full_name %>" required
-                      class="h-9 px-3 text-sm rounded-lg border border-slate-200 bg-white text-slate-800 focus:border-blue-400 w-48">
+                      class="h-10 px-3 text-xs rounded-xl border border-hueso-300 bg-white text-marino-950 focus:border-marino-600 focus:ring-2 focus:ring-marino-500/20 w-48 outline-none">
                   </div>
                   <div>
-                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Correo</label>
+                    <label class="block text-xs font-bold text-marino-700 uppercase tracking-wider mb-1">Correo</label>
                     <input type="email" name="email" value="<%= t.email || '' %>"
-                      class="h-9 px-3 text-sm rounded-lg border border-slate-200 bg-white text-slate-800 focus:border-blue-400 w-44">
+                      class="h-10 px-3 text-xs rounded-xl border border-hueso-300 bg-white text-marino-950 focus:border-marino-600 focus:ring-2 focus:ring-marino-500/20 w-44 outline-none">
                   </div>
                   <div>
-                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Teléfono</label>
+                    <label class="block text-xs font-bold text-marino-700 uppercase tracking-wider mb-1">Teléfono</label>
                     <input type="tel" name="phone" value="<%= t.phone || '' %>" placeholder="####-####"
-                      class="h-9 px-3 text-sm rounded-lg border border-slate-200 bg-white text-slate-800 focus:border-blue-400 w-32">
+                      class="h-10 px-3 text-xs rounded-xl border border-hueso-300 bg-white text-marino-950 focus:border-marino-600 focus:ring-2 focus:ring-marino-500/20 w-32 outline-none">
                   </div>
                   <div class="flex items-center gap-2">
-                    <button type="submit" class="h-9 px-4 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">Guardar</button>
+                    <button type="submit" class="h-10 px-4 bg-marino-700 hover:bg-marino-800 text-white text-xs font-semibold rounded-xl shadow-xs transition-all">Guardar</button>
                     <button type="button" onclick="toggleEdit('maestro-<%= t.id %>')"
-                      class="h-9 px-3 text-sm text-slate-500 rounded-lg hover:bg-slate-100 transition-colors">Cancelar</button>
+                      class="h-10 px-3 text-xs text-marino-600 rounded-xl hover:bg-hueso-200 transition-colors">Cancelar</button>
                   </div>
                 </form>
               </td>
@@ -140,26 +142,34 @@
   </div>
 
   <div>
-    <div class="bg-white rounded-xl border border-slate-200/70 p-5">
-      <h2 class="text-sm font-semibold text-slate-800 mb-4">Registrar maestro</h2>
-      <form method="POST" action="/admin/maestros" class="space-y-3">
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Nombre completo <span class="text-red-400">*</span></label>
-          <input type="text" name="full_name" required
-            class="w-full h-9 px-3 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 focus:bg-white focus:border-blue-400 transition-colors">
+    <div class="bg-white rounded-2xl border border-hueso-200/80 p-6 shadow-sm">
+      <div class="flex items-center gap-2.5 pb-4 mb-4 border-b border-hueso-100">
+        <div class="w-8 h-8 rounded-lg bg-bosque-100 text-bosque-700 flex items-center justify-center font-bold text-sm">
+          <i class="bi bi-person-plus"></i>
         </div>
         <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Correo electrónico</label>
-          <input type="email" name="email"
-            class="w-full h-9 px-3 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 focus:bg-white focus:border-blue-400 transition-colors">
+          <h2 class="text-sm font-bold text-marino-950 font-serif">Registrar Maestro</h2>
+          <p class="text-[11px] text-marino-600/70">Nuevo integrante del cuerpo docente</p>
+        </div>
+      </div>
+      <form method="POST" action="/admin/maestros" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-marino-700 uppercase tracking-wider mb-1.5">Nombre Completo <span class="text-ladrillo-600">*</span></label>
+          <input type="text" name="full_name" required placeholder="Profesor/a..."
+            class="w-full h-10 px-3.5 text-xs rounded-xl border border-hueso-300 bg-hueso-50/50 text-marino-950 placeholder-marino-300 focus:bg-white focus:border-marino-600 focus:ring-2 focus:ring-marino-500/20 transition-all outline-none">
         </div>
         <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Teléfono</label>
-          <input type="tel" name="phone" placeholder="####-####"
-            class="w-full h-9 px-3 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 focus:bg-white focus:border-blue-400 transition-colors">
+          <label class="block text-xs font-bold text-marino-700 uppercase tracking-wider mb-1.5">Correo Electrónico</label>
+          <input type="email" name="email" placeholder="docente@tabloncito.edu.gt"
+            class="w-full h-10 px-3.5 text-xs rounded-xl border border-hueso-300 bg-hueso-50/50 text-marino-950 placeholder-marino-300 focus:bg-white focus:border-marino-600 focus:ring-2 focus:ring-marino-500/20 transition-all outline-none">
         </div>
-        <button type="submit" class="w-full h-10 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
-          <i class="bi bi-person-plus"></i> Registrar maestro
+        <div>
+          <label class="block text-xs font-bold text-marino-700 uppercase tracking-wider mb-1.5">Teléfono</label>
+          <input type="tel" name="phone" placeholder="5555-5555"
+            class="w-full h-10 px-3.5 text-xs rounded-xl border border-hueso-300 bg-hueso-50/50 text-marino-950 placeholder-marino-300 focus:bg-white focus:border-marino-600 focus:ring-2 focus:ring-marino-500/20 transition-all outline-none">
+        </div>
+        <button type="submit" class="w-full h-11 bg-bosque-600 hover:bg-bosque-700 text-white text-xs font-semibold rounded-xl shadow-sm hover:shadow transition-all flex items-center justify-center gap-2">
+          <i class="bi bi-person-check text-sm"></i> Guardar Docente
         </button>
       </form>
     </div>
@@ -169,43 +179,58 @@
 <!-- ── Asignaciones ──────────────────────────────────────────── -->
 <div id="tab-asignaciones" class="hidden">
   <% if (totalAssignments === 0) { %>
-  <div class="bg-white rounded-xl border border-slate-200/70 py-16 text-center">
-    <i class="bi bi-calendar2-check text-4xl text-slate-200 block mb-3"></i>
-    <p class="text-sm text-slate-400">No hay asignaciones registradas.</p>
+  <div class="bg-white rounded-2xl border border-hueso-200/80 py-16 text-center">
+    <div class="w-14 h-14 rounded-2xl bg-hueso-100 text-marino-300 flex items-center justify-center mx-auto mb-3">
+      <i class="bi bi-calendar2-check text-2xl"></i>
+    </div>
+    <p class="text-xs text-marino-500">No hay asignaciones registradas.</p>
   </div>
   <% } else { %>
-  <div class="bg-white rounded-xl border border-slate-200/70 overflow-hidden">
-    <div class="px-5 py-3 bg-slate-50/80 border-b border-slate-100 flex items-center gap-2">
-      <i class="bi bi-calendar2-check text-slate-400 text-sm"></i>
-      <span class="text-sm font-semibold text-slate-700">Asignaciones docentes</span>
-      <span class="ml-auto inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700"><%= totalAssignments %></span>
+  <div class="bg-white rounded-2xl border border-hueso-200/80 overflow-hidden shadow-sm">
+    <div class="px-6 py-4 bg-hueso-50/50 border-b border-hueso-200 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg bg-marino-100 text-marino-700 flex items-center justify-center font-bold text-sm">
+          <i class="bi bi-calendar2-check"></i>
+        </div>
+        <div>
+          <h2 class="text-sm font-bold text-marino-950 font-serif">Asignaciones Docentes</h2>
+          <p class="text-[11px] text-marino-600/70">Distribución de grados, secciones y materias</p>
+        </div>
+      </div>
+      <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-marino-100 text-marino-800 border border-marino-200">
+        <%= totalAssignments %> asignaciones
+      </span>
     </div>
     <div class="table-wrap">
       <table class="w-full text-sm min-w-[560px]">
-        <thead class="bg-slate-50/50">
+        <thead class="bg-hueso-100/60 border-b border-hueso-200 text-marino-700">
           <tr>
-            <th class="px-5 py-2.5 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Maestro</th>
-            <th class="px-4 py-2.5 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Curso</th>
-            <th class="px-4 py-2.5 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Grado / Sección</th>
-            <th class="px-4 py-2.5 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Año</th>
-            <th class="px-4 py-2.5 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Estado</th>
+            <th class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider">Maestro</th>
+            <th class="px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">Curso</th>
+            <th class="px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">Grado y Sección</th>
+            <th class="px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">Ciclo</th>
+            <th class="px-6 py-3.5 text-right text-xs font-bold uppercase tracking-wider">Estado</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="divide-y divide-hueso-100">
           <% assignments.forEach(a => { %>
-          <tr class="border-t border-slate-100 hover:bg-slate-50/40 transition-colors">
-            <td class="px-5 py-3 font-medium text-slate-800"><%= a.teacher_name %></td>
-            <td class="px-4 py-3 text-slate-600 text-sm"><%= a.course_nombre %></td>
-            <td class="px-4 py-3">
-              <span class="text-slate-700 text-xs"><%= a.grade_nombre %></span>
-              <span class="ml-1 inline-flex items-center px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 text-xs"><%= a.section_display %></span>
+          <tr class="hover:bg-hueso-50/50 transition-colors">
+            <td class="px-6 py-3.5 font-bold text-marino-950 text-xs"><%= a.teacher_name %></td>
+            <td class="px-4 py-3.5 text-marino-800 text-xs font-semibold"><%= a.course_nombre %></td>
+            <td class="px-4 py-3.5">
+              <span class="text-marino-900 text-xs font-medium"><%= a.grade_nombre %></span>
+              <span class="ml-1.5 inline-flex items-center px-2 py-0.5 rounded-lg bg-hueso-200 text-marino-800 text-[11px] font-bold border border-hueso-300"><%= a.section_display %></span>
             </td>
-            <td class="px-4 py-3 text-slate-500 text-xs"><%= a.school_year %></td>
-            <td class="px-4 py-3">
+            <td class="px-4 py-3.5 text-ladrillo-700 font-bold text-xs"><%= a.school_year %></td>
+            <td class="px-6 py-3.5 text-right">
               <% if (a.is_active) { %>
-              <span class="inline-flex items-center gap-1 text-xs text-emerald-700"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Activa</span>
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-bosque-100 text-bosque-800 border border-bosque-200">
+                <span class="w-1.5 h-1.5 rounded-full bg-bosque-600"></span> Activa
+              </span>
               <% } else { %>
-              <span class="inline-flex items-center gap-1 text-xs text-slate-400"><span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>Inactiva</span>
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-hueso-200 text-marino-500 border border-hueso-300">
+                <span class="w-1.5 h-1.5 rounded-full bg-marino-400"></span> Inactiva
+              </span>
               <% } %>
             </td>
           </tr>
@@ -221,51 +246,62 @@
 <!-- ── Nueva asignación ─────────────────────────────────────── -->
 <div id="tab-nueva-asignacion" class="hidden">
   <% if (teachers.filter(t => t.is_active).length === 0) { %>
-  <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-700">
-    <i class="bi bi-exclamation-triangle mr-2"></i>Debe registrar maestros activos primero.
+  <div class="bg-ocre-50 border border-ocre-200 rounded-2xl p-5 text-xs text-ocre-900 flex items-center gap-3">
+    <i class="bi bi-exclamation-triangle text-ocre-600 text-lg"></i>
+    <span>Debe registrar maestros activos primero para poder asignar cursos y grados.</span>
   </div>
   <% } else { %>
   <script id="sections-data" type="application/json"><%- JSON.stringify(sections) %></script>
-  <div class="max-w-lg">
-    <div class="bg-white rounded-xl border border-slate-200/70 p-5">
-      <h2 class="text-sm font-semibold text-slate-800 mb-4">Nueva asignación docente</h2>
+  <div class="max-w-xl">
+    <div class="bg-white rounded-2xl border border-hueso-200/80 p-6 shadow-sm">
+      <div class="flex items-center gap-2.5 pb-4 mb-5 border-b border-hueso-100">
+        <div class="w-8 h-8 rounded-lg bg-marino-100 text-marino-700 flex items-center justify-center font-bold text-sm">
+          <i class="bi bi-link-45deg"></i>
+        </div>
+        <div>
+          <h2 class="text-sm font-bold text-marino-950 font-serif">Nueva Asignación Docente</h2>
+          <p class="text-[11px] text-marino-600/70">Vincular maestro a curso, grado y sección</p>
+        </div>
+      </div>
       <form method="POST" action="/admin/maestros/asignacion" class="space-y-4">
         <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Maestro <span class="text-red-400">*</span></label>
-          <select name="teacher_id" required class="w-full h-9 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-700 px-3 focus:bg-white focus:border-blue-400 transition-colors">
+          <label class="block text-xs font-bold text-marino-700 uppercase tracking-wider mb-1.5">Maestro Responsable <span class="text-ladrillo-600">*</span></label>
+          <select name="teacher_id" required class="w-full h-10 text-xs rounded-xl border border-hueso-300 bg-hueso-50/50 text-marino-900 px-3 focus:bg-white focus:border-marino-600 focus:ring-2 focus:ring-marino-500/20 transition-all outline-none">
             <option value="">Seleccione...</option>
             <% teachers.filter(t => t.is_active).forEach(t => { %><option value="<%= t.id %>"><%= t.full_name %></option><% }) %>
           </select>
         </div>
         <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Curso <span class="text-red-400">*</span></label>
-          <select name="course_id" required class="w-full h-9 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-700 px-3 focus:bg-white focus:border-blue-400 transition-colors">
+          <label class="block text-xs font-bold text-marino-700 uppercase tracking-wider mb-1.5">Curso / Materia <span class="text-ladrillo-600">*</span></label>
+          <select name="course_id" required class="w-full h-10 text-xs rounded-xl border border-hueso-300 bg-hueso-50/50 text-marino-900 px-3 focus:bg-white focus:border-marino-600 focus:ring-2 focus:ring-marino-500/20 transition-all outline-none">
             <option value="">Seleccione...</option>
             <% courses.forEach(c => { %><option value="<%= c.id %>"><%= c.nombre %></option><% }) %>
           </select>
         </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Grado <span class="text-red-400">*</span></label>
-          <select name="grade_id" id="asig-grade" required class="w-full h-9 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-700 px-3 focus:bg-white focus:border-blue-400 transition-colors">
-            <option value="">Seleccione...</option>
-            <% grades.forEach(g => { %><option value="<%= g.id %>"><%= g.nombre %></option><% }) %>
-          </select>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-marino-700 uppercase tracking-wider mb-1.5">Grado <span class="text-ladrillo-600">*</span></label>
+            <select name="grade_id" id="asig-grade" required class="w-full h-10 text-xs rounded-xl border border-hueso-300 bg-hueso-50/50 text-marino-900 px-3 focus:bg-white focus:border-marino-600 focus:ring-2 focus:ring-marino-500/20 transition-all outline-none">
+              <option value="">Seleccione...</option>
+              <% grades.forEach(g => { %><option value="<%= g.id %>"><%= g.nombre %></option><% }) %>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-marino-700 uppercase tracking-wider mb-1.5">Sección <span class="text-ladrillo-600">*</span></label>
+            <select name="section_id" id="asig-section" required class="w-full h-10 text-xs rounded-xl border border-hueso-300 bg-hueso-50/50 text-marino-900 px-3 focus:bg-white focus:border-marino-600 focus:ring-2 focus:ring-marino-500/20 transition-all outline-none">
+              <option value="">Seleccione...</option>
+              <% sections.forEach(s => { %><option value="<%= s.id %>" data-grade="<%= s.grade_id %>"><%= s.display_name %></option><% }) %>
+            </select>
+          </div>
         </div>
         <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Sección <span class="text-red-400">*</span></label>
-          <select name="section_id" id="asig-section" required class="w-full h-9 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-700 px-3 focus:bg-white focus:border-blue-400 transition-colors">
-            <option value="">Seleccione...</option>
-            <% sections.forEach(s => { %><option value="<%= s.id %>" data-grade="<%= s.grade_id %>"><%= s.display_name %></option><% }) %>
-          </select>
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Año escolar <span class="text-red-400">*</span></label>
+          <label class="block text-xs font-bold text-marino-700 uppercase tracking-wider mb-1.5">Ciclo Escolar <span class="text-ladrillo-600">*</span></label>
           <input type="number" name="school_year" required value="<%= new Date().getFullYear() %>"
             min="2000" max="<%= new Date().getFullYear() + 1 %>"
-            class="w-full h-9 px-3 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 focus:bg-white focus:border-blue-400 transition-colors">
+            class="w-full h-10 px-3.5 text-xs rounded-xl border border-hueso-300 bg-hueso-50/50 text-marino-950 focus:bg-white focus:border-marino-600 focus:ring-2 focus:ring-marino-500/20 transition-all outline-none">
         </div>
-        <button type="submit" class="w-full h-10 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
-          <i class="bi bi-person-plus"></i> Crear asignación
+        <button type="submit" class="w-full h-11 bg-marino-700 hover:bg-marino-800 text-white text-xs font-semibold rounded-xl shadow-sm hover:shadow transition-all flex items-center justify-center gap-2 pt-1">
+          <i class="bi bi-check2-circle text-base"></i> Crear Asignación Oficial
         </button>
       </form>
     </div>
@@ -282,11 +318,11 @@ function toggleEdit(key) {
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', function () {
     document.querySelectorAll('.tab-btn').forEach(b => {
-      b.classList.remove('text-blue-600','border-blue-600');
-      b.classList.add('text-slate-500','border-transparent');
+      b.classList.remove('text-marino-950','border-ladrillo-600');
+      b.classList.add('text-marino-500','border-transparent');
     });
-    this.classList.add('text-blue-600','border-blue-600');
-    this.classList.remove('text-slate-500','border-transparent');
+    this.classList.add('text-marino-950','border-ladrillo-600');
+    this.classList.remove('text-marino-500','border-transparent');
     document.getElementById('tab-lista').classList.toggle('hidden', this.dataset.tab !== 'lista');
     document.getElementById('tab-asignaciones').classList.toggle('hidden', this.dataset.tab !== 'asignaciones');
     document.getElementById('tab-nueva-asignacion').classList.toggle('hidden', this.dataset.tab !== 'nueva-asignacion');

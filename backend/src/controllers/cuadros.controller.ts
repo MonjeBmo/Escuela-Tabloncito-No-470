@@ -85,6 +85,8 @@ export async function doCreate(req: Request, res: Response): Promise<void> {
   }
 }
 
+import { streamObject } from '../shared/minio';
+
 export async function show(req: Request, res: Response): Promise<void> {
   const id = parseInt(req.params.id);
   const cuadro = await service.obtener(id);
@@ -92,10 +94,27 @@ export async function show(req: Request, res: Response): Promise<void> {
 
   let urlDescarga: string | null = null;
   if (cuadro.documento_key) {
-    urlDescarga = await service.urlDescarga(cuadro.documento_key);
+    urlDescarga = `/cuadros/${cuadro.id}/documento`;
   }
 
   res.render('cuadros/detalle', { titulo: `Cuadro ${cuadro.codigo}`, cuadro, urlDescarga });
+}
+
+export async function showDocumento(req: Request, res: Response): Promise<void> {
+  const id = parseInt(req.params.id);
+  const cuadro = await service.obtener(id);
+  if (!cuadro || !cuadro.documento_key) {
+    res.status(404).send('Documento no encontrado');
+    return;
+  }
+  const isDownload = req.query.download === '1';
+  await streamObject(
+    cuadro.documento_key,
+    res,
+    cuadro.documento_nombre || `cuadro-${cuadro.codigo}.pdf`,
+    cuadro.documento_mime || undefined,
+    !isDownload
+  );
 }
 
 export async function doValidar(req: Request, res: Response): Promise<void> {

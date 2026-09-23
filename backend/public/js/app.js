@@ -139,4 +139,24 @@ $(function () {
   /* ── Animación de entrada de página ────────────────────── */
   $('main').addClass('page-enter');
 
+  /* ── OCR Auto-Polling cuando hay trabajos pendientes ───── */
+  const $ocrBanner = $('#ocr-processing-banner');
+  if ($ocrBanner.length) {
+    const initialRev = parseInt($ocrBanner.data('revision') || '0', 10);
+    const pollInterval = setInterval(function () {
+      fetch('/ocr/status-all')
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          const counts = data.conteo || {};
+          const pending = (counts.pendiente || 0) + (counts.procesando || 0);
+          const currentRev = counts.revision || 0;
+          if (pending === 0 || currentRev > initialRev) {
+            clearInterval(pollInterval);
+            window.location.reload();
+          }
+        })
+        .catch(function () {});
+    }, 3000);
+  }
+
 });

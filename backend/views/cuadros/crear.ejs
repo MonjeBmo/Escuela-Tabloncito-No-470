@@ -1,11 +1,16 @@
 <!-- Header -->
-<div class="flex items-center gap-3 mb-6">
-  <a href="/cuadros" class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 transition-colors">
+<div class="flex items-center gap-3 mb-7">
+  <a href="/cuadros" class="w-9 h-9 flex items-center justify-center rounded-xl border border-hueso-300 text-marino-600 bg-white hover:bg-hueso-100 transition-colors shadow-xs">
     <i class="bi bi-arrow-left text-sm"></i>
   </a>
   <div>
-    <h1 class="text-xl font-semibold text-slate-900">Registrar cuadro PRIM</h1>
-    <p class="text-sm text-slate-500 mt-0.5">Ingrese los metadatos y adjunte el documento escaneado original</p>
+    <div class="flex items-center gap-2 mb-0.5">
+      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-ladrillo-100 text-ladrillo-800 border border-ladrillo-200/60">
+        <i class="bi bi-file-earmark-plus text-[9px]"></i> Nuevo Registro
+      </span>
+    </div>
+    <h1 class="text-2xl font-display font-bold text-marino-900 tracking-tight">Registrar Cuadro PRIM</h1>
+    <p class="text-sm text-marino-500">Ingrese los metadatos y adjunte el documento escaneado original (Capa 1).</p>
   </div>
 </div>
 
@@ -13,64 +18,72 @@
 <script id="teachers-data" type="application/json"><%- JSON.stringify(teachers) %></script>
 
 <form method="POST" action="/cuadros/crear" enctype="multipart/form-data">
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
     <!-- Datos del cuadro (2/3) -->
     <div class="lg:col-span-2 space-y-5">
-      <div class="bg-white rounded-xl border border-slate-200/70 p-5">
-        <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-4">Datos del cuadro</h2>
+      <div class="bg-white rounded-2xl border border-hueso-200 p-6 shadow-sm">
+        <div class="flex items-center gap-2 mb-4 pb-3 border-b border-hueso-200">
+          <div class="w-2 h-2 rounded-full bg-ladrillo-600"></div>
+          <h2 class="text-xs font-bold text-marino-800 uppercase tracking-wider font-display">Metadatos del Cuadro</h2>
+        </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">
-              Código <span class="text-red-400">*</span>
+            <label class="block text-xs font-bold text-marino-700 uppercase tracking-wider font-display mb-1.5">
+              Código de Cuadro <span class="text-ladrillo-600">*</span>
             </label>
             <input type="text" name="codigo" required placeholder="ej. PRIM-2024-001"
-              class="w-full h-9 px-3 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 placeholder-slate-400 focus:bg-white focus:border-blue-400 transition-colors">
+              class="w-full h-10 px-3.5 text-sm rounded-xl border border-hueso-300 bg-hueso-50/50 text-marino-900 placeholder-marino-400 focus:bg-white focus:border-ladrillo-500 transition-colors outline-none font-medium">
+            <p class="text-[11px] text-marino-500 mt-1">Identificador oficial o correlativo impreso en el cuadro.</p>
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">
-              Año <span class="text-red-400">*</span>
+            <label class="block text-xs font-bold text-marino-700 uppercase tracking-wider font-display mb-1.5">
+              Año Escolar <span class="text-ladrillo-600">*</span>
             </label>
             <input type="number" name="anio" required
               min="1990" max="<%= new Date().getFullYear() %>" value="<%= new Date().getFullYear() %>"
-              class="w-full h-9 px-3 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 focus:bg-white focus:border-blue-400 transition-colors">
+              class="w-full h-10 px-3.5 text-sm rounded-xl border border-hueso-300 bg-hueso-50/50 text-marino-900 focus:bg-white focus:border-ladrillo-500 transition-colors outline-none font-display font-semibold">
+            <p class="text-[11px] text-marino-500 mt-1">Ciclo lectivo correspondiente al registro de notas.</p>
           </div>
           <!-- Grado (selector dependiente) -->
           <div>
-            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Grado</label>
-            <select id="grade-sel" class="w-full h-9 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-700 px-3 focus:bg-white focus:border-blue-400 transition-colors">
+            <label class="block text-xs font-bold text-marino-700 uppercase tracking-wider font-display mb-1.5">Grado</label>
+            <select id="grade-sel" class="w-full h-10 text-sm rounded-xl border border-hueso-300 bg-hueso-50/50 text-marino-700 px-3 focus:bg-white focus:border-ladrillo-500 transition-colors outline-none font-medium">
               <option value="">Sin especificar</option>
               <% grades.forEach(g => { %><option value="<%= g.id %>"><%= g.nombre %></option><% }) %>
             </select>
+            <p class="text-[11px] text-marino-500 mt-1">Seleccione el grado para filtrar las secciones disponibles.</p>
           </div>
           <!-- Sección (filtrada por grado) -->
           <div>
-            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Sección</label>
-            <select name="section_id" id="section-sel" class="w-full h-9 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-700 px-3 focus:bg-white focus:border-blue-400 transition-colors">
+            <label class="block text-xs font-bold text-marino-700 uppercase tracking-wider font-display mb-1.5">Sección</label>
+            <select name="section_id" id="section-sel" class="w-full h-10 text-sm rounded-xl border border-hueso-300 bg-hueso-50/50 text-marino-700 px-3 focus:bg-white focus:border-ladrillo-500 transition-colors outline-none font-medium">
               <option value="">Sin especificar</option>
               <% sections.forEach(s => { %><option value="<%= s.id %>" data-grade="<%= s.grade_id %>"><%= s.nombre %></option><% }) %>
             </select>
+            <p class="text-[11px] text-marino-500 mt-1">Sección (A, B, C, etc.) según asignación escolar.</p>
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Total alumnos</label>
+            <label class="block text-xs font-bold text-marino-700 uppercase tracking-wider font-display mb-1.5">Total Alumnos Evaluados</label>
             <input type="number" name="total_alumnos" min="0" max="100" placeholder="ej. 35"
-              class="w-full h-9 px-3 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 placeholder-slate-400 focus:bg-white focus:border-blue-400 transition-colors">
+              class="w-full h-10 px-3.5 text-sm rounded-xl border border-hueso-300 bg-hueso-50/50 text-marino-900 placeholder-marino-400 focus:bg-white focus:border-ladrillo-500 transition-colors outline-none font-medium">
+            <p class="text-[11px] text-marino-500 mt-1">Cantidad de estudiantes registrados en este cuadro.</p>
           </div>
           <div class="sm:col-span-2">
-            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Docente</label>
+            <label class="block text-xs font-bold text-marino-700 uppercase tracking-wider font-display mb-1.5">Docente Responsable</label>
             <div class="relative">
-              <i class="bi bi-person absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm pointer-events-none"></i>
+              <i class="bi bi-person absolute left-3.5 top-1/2 -translate-y-1/2 text-marino-400 text-sm pointer-events-none"></i>
               <input type="text" id="docente-input" name="docente"
-                placeholder="Buscar maestro o escribir nombre..."
+                placeholder="Buscar maestro registrado o escribir nombre completo..."
                 autocomplete="off"
-                class="w-full h-9 pl-8 pr-8 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 placeholder-slate-400 focus:bg-white focus:border-blue-400 transition-colors">
-              <button type="button" id="docente-clear" class="hidden absolute right-2 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500 transition-colors">
+                class="w-full h-10 pl-9 pr-8 text-sm rounded-xl border border-hueso-300 bg-hueso-50/50 text-marino-900 placeholder-marino-400 focus:bg-white focus:border-ladrillo-500 transition-colors outline-none font-medium">
+              <button type="button" id="docente-clear" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-marino-300 hover:text-marino-600 transition-colors">
                 <i class="bi bi-x-circle-fill text-sm"></i>
               </button>
               <div id="docente-dropdown"
-                class="hidden absolute z-30 top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg overflow-hidden">
-                <div id="docente-list" class="max-h-52 overflow-y-auto"></div>
-                <div id="docente-empty" class="hidden px-4 py-3 text-xs text-slate-400 text-center">Sin coincidencias — se guardará el texto ingresado</div>
+                class="hidden absolute z-30 top-full left-0 right-0 mt-1.5 bg-white border border-hueso-200 rounded-2xl shadow-xl overflow-hidden p-1.5">
+                <div id="docente-list" class="max-h-52 overflow-y-auto space-y-0.5"></div>
+                <div id="docente-empty" class="hidden px-4 py-3 text-xs text-marino-400 text-center font-medium">Sin coincidencias — se guardará el texto ingresado</div>
               </div>
             </div>
           </div>
@@ -80,28 +93,33 @@
 
     <!-- Documento fuente (1/3) -->
     <div class="space-y-4">
-      <div class="bg-white rounded-xl border border-slate-200/70 p-5">
-        <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Documento fuente</h2>
-        <p class="text-xs text-slate-400 mb-4">Capa 1 — Original con validez legal</p>
+      <div class="bg-white rounded-2xl border border-hueso-200 p-6 shadow-sm">
+        <div class="flex items-center gap-2 mb-1">
+          <div class="w-2 h-2 rounded-full bg-bosque-600"></div>
+          <h2 class="text-xs font-bold text-marino-800 uppercase tracking-wider font-display">Documento Fuente</h2>
+        </div>
+        <p class="text-xs text-marino-500 mb-4 font-medium">Capa 1 — Original con validez legal y firmas</p>
 
-        <label for="doc-file" class="flex flex-col items-center justify-center h-32 border-2 border-dashed border-slate-200 rounded-xl cursor-pointer hover:border-blue-300 hover:bg-blue-50/30 transition-all group">
-          <i class="bi bi-cloud-upload text-2xl text-slate-300 group-hover:text-blue-400 transition-colors mb-2"></i>
-          <span class="text-xs text-slate-400 group-hover:text-blue-500 transition-colors">Clic para seleccionar archivo</span>
-          <span class="text-[11px] text-slate-300 mt-0.5">PDF, JPG, PNG, TIFF — máx. 20 MB</span>
+        <label for="doc-file" class="flex flex-col items-center justify-center h-36 border-2 border-dashed border-hueso-300 rounded-2xl cursor-pointer hover:border-ladrillo-400 hover:bg-ladrillo-50/30 transition-all group bg-hueso-50/30">
+          <div class="w-10 h-10 rounded-xl bg-hueso-100 text-marino-400 group-hover:bg-ladrillo-100 group-hover:text-ladrillo-700 flex items-center justify-center transition-colors mb-2">
+            <i class="bi bi-cloud-upload text-xl"></i>
+          </div>
+          <span class="text-xs font-semibold text-marino-700 group-hover:text-ladrillo-700 transition-colors">Clic para adjuntar archivo</span>
+          <span class="text-[11px] text-marino-400 mt-0.5">PDF, JPG, PNG, TIFF — máx. 20 MB</span>
         </label>
         <input type="file" id="doc-file" name="documento" accept=".pdf,.jpg,.jpeg,.png,.tiff" class="sr-only">
-        <p id="file-preview" class="text-xs text-blue-600 mt-2 min-h-[16px]"></p>
+        <p id="file-preview" class="text-xs font-semibold text-ladrillo-600 mt-2 min-h-[16px] truncate"></p>
 
-        <div class="mt-4 flex items-start gap-2 p-3 rounded-lg bg-slate-50 border border-slate-100">
-          <i class="bi bi-info-circle text-slate-400 flex-shrink-0 mt-0.5"></i>
-          <p class="text-xs text-slate-500">El archivo se almacena en MinIO y solo se entrega el original al solicitante.</p>
+        <div class="mt-4 flex items-start gap-2.5 p-3.5 rounded-xl bg-hueso-100/80 border border-hueso-200">
+          <i class="bi bi-shield-check text-bosque-600 flex-shrink-0 text-sm mt-0.5"></i>
+          <p class="text-xs text-marino-600 leading-relaxed">El archivo se almacena en MinIO y se preserva íntegro para entrega ante trámites oficiales.</p>
         </div>
       </div>
 
-      <button type="submit" class="w-full h-10 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
-        <i class="bi bi-floppy"></i> Registrar cuadro
+      <button type="submit" class="w-full h-11 bg-gradient-to-r from-ladrillo-600 to-ladrillo-700 text-white text-sm font-bold font-display rounded-xl hover:from-ladrillo-700 hover:to-ladrillo-800 shadow-sm shadow-ladrillo-600/25 transition-all flex items-center justify-center gap-2">
+        <i class="bi bi-floppy"></i> Guardar Cuadro
       </button>
-      <a href="/cuadros" class="w-full h-10 bg-white border border-slate-200 text-slate-600 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors flex items-center justify-center">
+      <a href="/cuadros" class="w-full h-10 bg-white border border-hueso-300 text-marino-700 text-sm font-semibold rounded-xl hover:bg-hueso-100 transition-colors flex items-center justify-center">
         Cancelar
       </a>
     </div>
@@ -156,14 +174,14 @@
         empty.classList.add('hidden');
         filtered.slice(0, 8).forEach(t => {
           const div = document.createElement('div');
-          div.className = 'flex items-center gap-3 px-4 py-2.5 cursor-pointer hover:bg-blue-50 transition-colors';
+          div.className = 'flex items-center gap-3 px-3.5 py-2 cursor-pointer hover:bg-hueso-100 rounded-xl transition-colors';
           div.innerHTML =
-            '<div class="w-7 h-7 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold flex-shrink-0">' +
+            '<div class="w-7 h-7 rounded-lg bg-ladrillo-100 text-ladrillo-700 flex items-center justify-center text-xs font-bold flex-shrink-0">' +
               t.full_name.charAt(0).toUpperCase() +
             '</div>' +
             '<div class="min-w-0">' +
-              '<div class="text-sm font-medium text-slate-800 truncate">' + t.full_name + '</div>' +
-              (t.email ? '<div class="text-xs text-slate-400 truncate">' + t.email + '</div>' : '') +
+              '<div class="text-sm font-semibold text-marino-900 truncate">' + t.full_name + '</div>' +
+              (t.email ? '<div class="text-xs text-marino-400 truncate">' + t.email + '</div>' : '') +
             '</div>';
           div.addEventListener('mousedown', function (e) {
             e.preventDefault();
@@ -203,3 +221,4 @@
   })();
 })();
 </script>
+
