@@ -1,0 +1,35 @@
+name: Deploy to Azure VM
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Permite disparar el despliegue manualmente desde la pestaña Actions de GitHub
+
+jobs:
+  deploy:
+    name: Despliegue en Azure VM (Debian)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Conectar por SSH y actualizar contenedores
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script: |
+            set -e
+            echo "🚀 Iniciando despliegue en el servidor..."
+            cd /home/${{ secrets.SSH_USER }}/app
+            
+            echo "📥 Descargando últimos cambios de Git..."
+            git pull origin main
+            
+            echo "🐳 Reconstruyendo y actualizando contenedores..."
+            docker compose up -d --build --remove-orphans
+            
+            echo "🧹 Limpiando imágenes antiguas en desuso..."
+            docker image prune -f
+            
+            echo "✅ Despliegue finalizado con éxito."

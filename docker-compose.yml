@@ -61,7 +61,7 @@ services:
     restart: unless-stopped
 
   minio:
-    image: quay.io/minio/minio
+    image: cgr.dev/chainguard/minio:latest
     command: server /data --console-address ":9001"
     env_file: .env
     environment:
